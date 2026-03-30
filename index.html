@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnout Beta — Documentation Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: #0a0e27;
+            color: #e0e6f7;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 24px 48px;
+            background: linear-gradient(180deg, #0f1433 0%, #0a0e27 100%);
+            border-bottom: 2px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .hero .logo {
+            font-size: 48px;
+            font-weight: 800;
+            color: #FF6B35;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .hero .subtitle {
+            font-size: 18px;
+            color: #14B8A6;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .hero .desc {
+            font-size: 15px;
+            color: #888;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        .card {
+            background: #0f1433;
+            border: 1px solid #1a2a4a;
+            border-radius: 12px;
+            padding: 32px 28px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FF6B35, #14B8A6);
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .card:hover {
+            border-color: #FF6B35;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.15);
+        }
+
+        .card:hover::before { opacity: 1; }
+
+        .card .tag {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .tag-prd { background: rgba(255, 107, 53, 0.15); color: #FF6B35; }
+        .tag-research { background: rgba(20, 184, 166, 0.15); color: #14B8A6; }
+        .tag-growth { background: rgba(139, 92, 246, 0.15); color: #8B5CF6; }
+        .tag-design { background: rgba(59, 130, 246, 0.15); color: #3B82F6; }
+
+        .card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        .card .arrow {
+            position: absolute;
+            bottom: 28px;
+            right: 28px;
+            font-size: 20px;
+            color: #333;
+            transition: color 0.25s, transform 0.25s;
+        }
+
+        .card:hover .arrow {
+            color: #FF6B35;
+            transform: translateX(4px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 24px;
+            border-top: 1px solid #1a2a4a;
+            color: #555;
+            font-size: 13px;
+        }
+
+        @media (max-width: 720px) {
+            .hero .logo { font-size: 32px; letter-spacing: 4px; }
+            .grid { grid-template-columns: 1fr; padding: 32px 16px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <div class="logo">Turnout</div>
+        <div class="subtitle">Beta Documentation</div>
+        <p class="desc">Internal docs hub — PRD, research, growth playbook, design system, and UX flows.</p>
+    </div>
+
+    <div class="grid">
+
+        <a class="card" href="PRD/Turnout_Beta_Final_PRD.html">
+            <span class="tag tag-prd">PRD</span>
+            <h2>Product Requirements Document</h2>
+            <p>Complete PRD v4.0 — vision, features, technical architecture, and release milestones for Turnout Beta.</p>
+            <span class="arrow">→</span>
+        </a>
+
+        <a class="card" href="Research/Turnout_Beta_Final_Research.html">
+            <span class="tag tag-research">Research</span>
+            <h2>Research & Competitive Intelligence</h2>
+            <p>Market landscape, competitive analysis, user research findings, and strategic positioning insights.</p>
+            <span class="arrow">→</span>
+        </a>
+
+        <a class="card" href="Growth/Turnout_Beta_Final_PLG_Blitzkrieg.html">
+            <span class="tag tag-growth">Growth</span>
+            <h2>PLG Blitzkrieg & Growth Playbook</h2>
+            <p>Product-led growth strategy, acquisition channels, activation loops, and monetization framework.</p>
+            <span class="arrow">→</span>
+        </a>
+
+        <a class="card" href="Design/Turnout_Beta_Design_System.html">
+            <span class="tag tag-design">Design</span>
+            <h2>Design System Specification</h2>
+            <p>Colors, typography, components, spacing system, and brand guidelines for Turnout Beta.</p>
+            <span class="arrow">→</span>
+        </a>
+
+        <a class="card" href="Design/Turnout_Beta_Final_UX_Flows.html">
+            <span class="tag tag-design">UX Flows</span>
+            <h2>UX Flows & AI Prompts</h2>
+            <p>Core user flows, screen-by-screen interaction design, and AI prompt specifications.</p>
+            <span class="arrow">→</span>
+        </a>
+
+        <a class="card" href="Design/Turnout_Beta_Final_UX_Flows_Part2.html">
+            <span class="tag tag-design">UX Flows Pt.2</span>
+            <h2>UX Flows — Part 2</h2>
+            <p>Additional user flows and detailed interaction patterns for extended features.</p>
+            <span class="arrow">→</span>
+        </a>
+
+    </div>
+
+    <footer>
+        Turnout Beta — Internal Documentation · Perpetuum
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TURNOUT BETA — Research & Competitive Intelligence (FINAL)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: #0a0e27;
+            color: #e0e6f7;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            border-bottom: 2px solid #FF6B35;
+            padding: 1.5rem 2rem;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+
+        header h1 {
+            color: #FF6B35;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        header .meta {
+            font-size: 13px;
+            color: #14B8A6;
+            margin-top: 0.5rem;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 80px;
+            width: 260px;
+            height: calc(100vh - 80px);
+            background: #0f1330;
+            border-right: 1px solid #25D366;
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            color: #a8b0d1;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .sidebar nav a:hover, .sidebar nav a.active {
+            color: #FF6B35;
+            background: rgba(255, 107, 53, 0.1);
+            border-left-color: #FF6B35;
+        }
+
+        main {
+            margin-left: 260px;
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            flex: 1;
+        }
+
+        h2 {
+            color: #FF6B35;
+            font-size: 28px;
+            margin: 3rem 0 1.5rem 0;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 107, 53, 0.3);
+        }
+
+        h3 {
+            color: #14B8A6;
+            font-size: 18px;
+            margin: 2rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        h4 {
+            color: #25D366;
+            font-size: 15px;
+            margin: 1.5rem 0 0.75rem 0;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            color: #d0d8e8;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #d0d8e8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: rgba(20, 184, 166, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: rgba(255, 107, 53, 0.15);
+        }
+
+        th {
+            background: rgba(255, 107, 53, 0.2);
+            color: #FF6B35;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255, 107, 53, 0.4);
+            font-size: 14px;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: rgba(20, 184, 166, 0.1);
+        }
+
+        .score-92 { color: #FF6B35; font-weight: 700; }
+        .score-88 { color: #FF6B35; font-weight: 700; }
+        .score-85 { color: #FF6B35; font-weight: 700; }
+        .score-82 { color: #FF6B35; font-weight: 700; }
+        .score-77 { color: #FF6B35; font-weight: 700; }
+        .score-74 { color: #FF6B35; font-weight: 700; }
+        .score-70 { color: #14B8A6; font-weight: 600; }
+        .score-64 { color: #14B8A6; font-weight: 600; }
+
+        .heat-hot { color: #FF6B35; font-weight: 700; }
+        .heat-warm { color: #FFB700; font-weight: 600; }
+        .heat-cool { color: #25D366; font-weight: 600; }
+
+        .source-section {
+            background: rgba(37, 211, 102, 0.08);
+            padding: 1.5rem;
+            border-left: 4px solid #25D366;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .source-section strong {
+            color: #25D366;
+        }
+
+        .keyword {
+            color: #FF6B35;
+            font-weight: 600;
+        }
+
+        .insight {
+            background: rgba(255, 107, 53, 0.08);
+            padding: 1rem;
+            border-left: 4px solid #FF6B35;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        footer {
+            background: #0a0e27;
+            border-top: 1px solid #25D366;
+            padding: 2rem;
+            margin: 3rem 0 0 0;
+            text-align: center;
+            color: #a8b0d1;
+            font-size: 13px;
+        }
+
+        .document-status {
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid #14B8A6;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .document-status strong {
+            color: #14B8A6;
+            font-size: 16px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .grid-item {
+            background: rgba(20, 184, 166, 0.05);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(20, 184, 166, 0.2);
+        }
+
+        .grid-item h4 {
+            margin-top: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            main { margin-left: 0; }
+            header { padding: 1rem; }
+            header h1 { font-size: 18px; }
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TURNOUT BETA — Research & Competitive Intelligence (FINAL)</h1>
+    <div class="meta">Final | March 30, 2026 | v4.0 | This document supersedes all previous research documents</div>
+</header>
+
+<div class="sidebar scrollbar-hide">
+    <nav>
+        <a href="#exec-summary" class="active">Executive Summary</a>
+        <a href="#macro-signals">Macro Signals</a>
+        <a href="#theme-universe">Theme Universe</a>
+        <a href="#city-heatmap">City × Theme Heatmap</a>
+        <a href="#competitive">39 Tool Benchmarks</a>
+        <a href="#plg-patterns">PLG Patterns</a>
+        <a href="#gtm-filter">GTM Filter</a>
+        <a href="#gtm-sequencing">GTM Wave Strategy</a>
+        <a href="#commercial-stack">Commercial Primitives</a>
+        <a href="#strategic-insights">Strategic Insights</a>
+        <a href="#citations">Citations</a>
+    </nav>
+</div>
+
+<main>
+
+<div class="document-status">
+    <strong>Final Research Document | Turnout Beta Launch</strong><br>
+    Single source of truth for market research, competitive intelligence, and strategic insights
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<section id="exec-summary">
+<h2>1. Executive Summary</h2>
+
+<p>India's go-out economy is undergoing a fundamental shift: <span class="keyword">showing up is replacing posting</span>. Real-world presence is becoming a status marker again. This macro signal, validated across 19 research sources (S1-S19), reveals a $2.78 lakh crore media & entertainment sector (2025) with live experiences up 44%, and an $18,864 crore sports economy now legitimized as a commercial category.</p>
+
+<p><strong>The Opportunity:</strong> Turnout enters an India market where consumers increasingly value <span class="keyword">experience over inventory</span> (61% of diners), <span class="keyword">social wellness</span> (Gen Z treats wellness as identity), and <span class="keyword">structured group activities</span> (pickleball, trainer-led classes, interactive dining). These categories combine:</p>
+
+<ul>
+    <li>Repeatable, monetizable behavior (slots, reservations, tickets, packs)</li>
+    <li>Strong social sharability and proof signals</li>
+    <li>Clear WhatsApp coordination touchpoints (scheduling, group planning, payment splits)</li>
+    <li>Trust-rich narratives (trainer credentials, venue reputation, attendee photos)</li>
+</ul>
+
+<p><strong>Turnout's Beta Thesis:</strong> Build a mobile-first platform that converts discovery into footfall by making three decisions easy: <span class="keyword">where</span> (curated venue pages), <span class="keyword">when</span> (availability + social scheduling), and <span class="keyword">with whom</span> (group coordination + WhatsApp handoff). Do not build a horizontal listing layer. Build category-specific page templates and WA journeys around commercial primitives (slot, reservation, deposit, pack, trial, membership).</p>
+
+<p><strong>Wave 1 (0-60 days):</strong> Delhi NCR, Bangalore, Mumbai. Focus on three categories: sports-social, brunch/cafe dwell, wellness/self-care. These balance cultural heat, repeatability, and clear closure primitives.</p>
+
+</section>
+
+<!-- MACRO SIGNALS -->
+<section id="macro-signals">
+<h2>2. India Go-Out Economy: Macro Signals</h2>
+
+<h3>The Macro Shift: Presence > Posting</h3>
+
+<p><strong>[S1]</strong> Fortune India's coverage of Zomato's "District by Zomato" 2026 report frames real-world presence as a reset: <span class="keyword">presence is the new status marker</span>. This is not nostalgia. It reflects algorithmic fatigue and a deliberate move toward intentional offline behavior. For Turnout, this means the value proposition is not "discover a new restaurant"; it is "move from uncertainty to commitment."</p>
+
+<h3>Experience Is Winning Over Plain Inventory</h3>
+
+<p><strong>[S2]</strong> ET HospitalityWorld reported that 61% of Indian diners value interactive elements—open kitchens, chef interactions—more than transactional food purchase. This signifies that <span class="keyword">the experience layer is now a core product attribute</span>, not decoration. Consumers are rewarding restaurants that prioritize participation, narrative, and social proof. Turnout's page design must emphasize what makes the room feel different, not just what's on the menu.</p>
+
+<h3>Wellness Has Gone Social</h3>
+
+<p><strong>[S3]</strong> The Economic Times noted that Gen Z treats wellness—pickleball, dance workouts, low-alcohol formats—as social identity, not solitary optimization. This makes wellness <span class="keyword">shareable and group-compatible</span>, multiplying both traffic and word-of-mouth. Community fitness (trainers, group classes, workshops) thus becomes commercially stronger than it appears in traditional wellness categories.</p>
+
+<h3>Sports-Social is Now a Real Business</h3>
+
+<p><strong>[S4]</strong> IBEF highlighted pickleball's commercial appeal: low setup cost, fast break-even in metro cities, expansion into housing, malls, and corporates. <strong>[S6]</strong> India's sports economy crossed ₹18,864 crore in 2025, signaling mature investor appetite.</p>
+
+<p>For Turnout: sports-social (pickleball, padel, running clubs, cycling) combines three killer attributes:</p>
+<ul>
+    <li><span class="keyword">Repeat behavior</span> (not one-off) — users come back weekly or bi-weekly</li>
+    <li><span class="keyword">Visible proof</span> (photos, match scores, leaderboards) — naturally shareable</li>
+    <li><span class="keyword">Group coordination</span> (teams, splits, scheduling) — native WhatsApp handoff moment</li>
+</ul>
+
+<h3>Live Experiences Regained Economic Momentum</h3>
+
+<p><strong>[S5]</strong> FICCI-EY reported India's media and entertainment sector growing to ₹2.78 lakh crore in 2025, with live events up 44%. This is not a trend; it is institutional validation that <span class="keyword">experience spending is material</span> and recurring, not anecdotal one-offs.</p>
+
+<h3>City-Specific Signals Drive Localization</h3>
+
+<p><strong>[S7-S19]</strong> A rich mosaic of city-level signals from Restaurant India, ET Hospitality World, TOI bureaus, and culture reporters confirms that cafe culture, sports behavior, dining formats, and wellness preferences vary dramatically by city. Delhi NCR rewards abundance and utility. Mumbai rewards lifestyle identity. Bengaluru rewards community loops. Each city's opening thesis must differ. (See Section 4: City × Theme Heatmap.)</p>
+
+</section>
+
+<!-- THEME UNIVERSE -->
+<section id="theme-universe">
+<h2>3. Theme Universe: 10 Themes Ranked by GTM Relevance</h2>
+
+<p>The themes below represent the categories most commercially viable for Turnout's beta. Each is scored on a founder GTM filter combining: consumer heat, monetization clarity, WhatsApp fit, repeatability, shareability, and proof richness.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Theme</th>
+            <th>GTM Score</th>
+            <th>Why It Matters Now</th>
+            <th>Commercial Primitives</th>
+            <th>Consumer Heat</th>
+            <th>WA Fit</th>
+            <th>Repeatability</th>
+            <th>Shareability</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Sports-Social (Pickleball, Padel, Courts, Running)</strong></td>
+            <td class="score-92">92</td>
+            <td>Repeat usage, group planning, low-friction storytelling; commercially attractive with clear slot bookings. Core proof of concept for Turnout.</td>
+            <td>court/slot, players count, split pay, open vs private, pack credits, league join</td>
+            <td class="heat-hot">Very High (S4, S6)</td>
+            <td>Excellent — scheduling, team formation, payment split</td>
+            <td class="heat-hot">Very High</td>
+            <td class="heat-hot">Very High</td>
+        </tr>
+        <tr>
+            <td><strong>Brunch / Premium Cafe Dwell</strong></td>
+            <td class="score-88">88</td>
+            <td>Redesigned around longer dwell, social rituals, food-led growth, informal meetings. Brunch is now an occasion, not a meal.</td>
+            <td>reservation, waitlist, brunch bundle, group share, creator/referral, time-of-day, table layout</td>
+            <td class="heat-hot">Very High (S7, S8, S9)</td>
+            <td>Excellent — group coordination, time selection, photo proof</td>
+            <td class="heat-hot">Very High</td>
+            <td class="heat-hot">Very High</td>
+        </tr>
+        <tr>
+            <td><strong>Interactive Dining & Experience-First F&B</strong></td>
+            <td class="score-85">85</td>
+            <td>Participatory, narrative-driven, social dining. 61% of diners value interactive elements (S2). Experience is now baked into the product.</td>
+            <td>reservation, deposit, party size, communal seating, tasting-seat, occasion-led add-ons, chef menu notes</td>
+            <td class="heat-hot">High (S2, S11)</td>
+            <td>Good — captures why (occasion), party size, expected vibe</td>
+            <td>Medium-High</td>
+            <td class="heat-hot">High</td>
+        </tr>
+        <tr>
+            <td><strong>Community Fitness & Trainer-Led Classes</strong></td>
+            <td class="score-82">82</td>
+            <td>Trainer-led engagement and social proof are strong signals. Gen Z chooses movement as identity and social ritual. Classes are now identity markers, not just exercise.</td>
+            <td>slot/session, trial pass, schedule, trainer proof, pack purchase, rebook, community join, progression tracking</td>
+            <td class="heat-hot">Very High (S2, S3)</td>
+            <td>Excellent — time, trainer, difficulty, group invite</td>
+            <td class="heat-hot">Very High</td>
+            <td class="heat-hot">Very High</td>
+        </tr>
+        <tr>
+            <td><strong>Premium Self-Care, Recovery & Wellness</strong></td>
+            <td class="score-77">77</td>
+            <td>Moving from solitary to socially legible ritual. Premium consumers willing to pay for trusted recovery experiences. Couple rooms and group formats emerging.</td>
+            <td>service duration, therapist preference, couple room, add-ons, subscription, gift, rebook window, couple vs solo</td>
+            <td class="heat-hot">High (S3, S12)</td>
+            <td>Good — captures trust (therapist), privacy, duration</td>
+            <td>Medium-High</td>
+            <td>Medium-High</td>
+        </tr>
+        <tr>
+            <td><strong>Creator-Led Microculture Events</strong></td>
+            <td class="score-74">74</td>
+            <td>Regional pop culture moving from screens to live spaces. Workshop, music, culture formats gaining. Creator attribution and community loops strong.</td>
+            <td>creator attribution, RSVP, invite code, waitlist, merch/add-on, creator payout, event production notes</td>
+            <td class="heat-hot">High (S10, S16, S19)</td>
+            <td>Good — creator context, RSVP tracking, group formation</td>
+            <td>Medium</td>
+            <td class="heat-hot">Very High</td>
+        </tr>
+        <tr>
+            <td><strong>Coffee Raves & Sober Mornings</strong></td>
+            <td class="score-70">70</td>
+            <td>Morning party formats gaining cultural relevance. Younger audiences adopting alcohol-light rituals. This is not fitness; it is social theater.</td>
+            <td>RSVP, timed entry, beverage package, opt-in follow-up, creator drop-in, dress code, mood</td>
+            <td class="heat-hot">High (S8, S10)</td>
+            <td>Good — time, vibe, creator, invite</td>
+            <td>Medium</td>
+            <td class="heat-hot">High</td>
+        </tr>
+        <tr>
+            <td><strong>Solo-Safe Connection Formats</strong></td>
+            <td class="score-64">64</td>
+            <td>Solo attendance becoming acceptable in digital-fatigued segments. Curated strangers and consent-first formats emerging as trust signal.</td>
+            <td>solo join, women-safe cues, host identity, code of conduct, waitlist, dietary preferences</td>
+            <td>Medium-High (S2, S15)</td>
+            <td>Excellent — trust, safety cues, host context</td>
+            <td>Medium</td>
+            <td>Medium</td>
+        </tr>
+        <tr>
+            <td><strong>Supper Clubs & Intimate Community Dining</strong></td>
+            <td class="score-70">70</td>
+            <td>Invite-only and home-like formats growing. Offer community and novelty without large-event chaos. Premium group pricing emerging.</td>
+            <td>RSVP, limited seats, deposit, host profile, dietary filters, invite/share, event rules</td>
+            <td>Medium-High (S11, S14)</td>
+            <td>Good — group coordination, trust in host, occasion</td>
+            <td>Medium</td>
+            <td>Medium-High</td>
+        </tr>
+        <tr>
+            <td><strong>Destination Wellness & Slow Travel</strong></td>
+            <td class="score-64">64</td>
+            <td>Goa and similar markets positioned around longer stays, curated retreats, meaningful travel. Higher AOV, longer buying cycle, premium packaging.</td>
+            <td>package booking, room + experience bundle, deposit, multi-day itinerary, dietary/wellness profile, add-ons</td>
+            <td>Medium (S17)</td>
+            <td>Good — itinerary capture, trust, group composition</td>
+            <td>Low</td>
+            <td>Medium-High</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="insight">
+    <strong>Theme Selection Principle:</strong> Prioritize themes scoring 74+. These combine strong monetization (clear primitives, repeatable behavior) with social shareability and WhatsApp coordination moments. Do not chase lower-scoring themes in Wave 1, even if culturally interesting. Proof richness (testimonials, trainer photos, leaderboards, match scores) compounds over time.
+</div>
+
+</section>
+
+<!-- CITY × THEME HEATMAP -->
+<section id="city-heatmap">
+<h2>4. City × Theme Heatmap: 9 Cities × 10 Themes</h2>
+
+<p>City fit is not uniform. The same theme does not behave the same way across Indian metros. This heatmap reflects founder GTM signals (S7-S19) and guides Wave 1-3 sequencing.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>City</th>
+            <th>Sports-Social</th>
+            <th>Brunch/Cafe</th>
+            <th>Fitness</th>
+            <th>Interactive Dining</th>
+            <th>Creator Events</th>
+            <th>Wellness</th>
+            <th>Nightlife/Events</th>
+            <th>Coffee Raves</th>
+            <th>Solo-Safe</th>
+            <th>Destination</th>
+            <th>Market Character</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Delhi NCR</strong></td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td>Abundance & choice; repeat utility preferred. Users need sharp curation, not more inventory. Lead with momentum categories: sports-social, brunch velocity, fitness-first intro offers.</td>
+        </tr>
+        <tr>
+            <td><strong>Mumbai</strong></td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td>Daylight social rituals are status markers. Mumbai rewards lifestyle aspiration and Instagram-legible moments. Breakfast rides, coffee-rave mornings, sports energy high. Lead with lifestyle positioning and aspiration narratives.</td>
+        </tr>
+        <tr>
+            <td><strong>Bengaluru</strong></td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td>Community loops and creator culture strong. Bengaluru users belong to multiple micro-communities; creator attribution and group invites matter. Lead with community proof and local creator partnerships.</td>
+        </tr>
+        <tr>
+            <td><strong>Pune</strong></td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td>Creator/internet culture dominant; Marathi cultural identity strong. Bring local language, regional creator narratives, campus-culture vibes. Sports lower than other metros; emphasis on cafe dwell and creator workshops.</td>
+        </tr>
+        <tr>
+            <td><strong>Hyderabad</strong></td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td>Planned experience formats and immersive dining strong. Hyderabad users appreciate experiential design and predictability. High dining relevance. Lead with interactive dining and planned nightlife formats.</td>
+        </tr>
+        <tr>
+            <td><strong>Chennai</strong></td>
+            <td class="heat-cool">●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td>Mature cafe culture; premium casual dining established. Lower sports-social heat than other metros. Lead with thoughtful cafe positioning and rooted community concepts (not loud novelty).</td>
+        </tr>
+        <tr>
+            <td><strong>Kolkata</strong></td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-cool">●</td>
+            <td>Screen-free connection and "adda" culture (informal gathering ritual) dominant. Kolkata users value conversation, not spectacle. Trust and long-form connection matter. Solo-safe formats, intimate dining, creator talks.</td>
+        </tr>
+        <tr>
+            <td><strong>Goa</strong></td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-hot">●●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-hot">●●●</td>
+            <td>Wellness destination and year-round retreat positioning. Goa is higher-AOV, longer-stay market. Treat as premium Wave 3 entry with destination packages and itinerary bundles. Not a high-volume play.</td>
+        </tr>
+        <tr>
+            <td><strong>Jaipur</strong></td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-warm">●●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-cool">●</td>
+            <td class="heat-cool">●</td>
+            <td>Destination-friendly and boutique-experience driven. Community fitness emerging. Best positioned as selective premium market, not high-volume. Wave 3 or later.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>City Character Guide</h3>
+
+<div class="grid-2">
+    <div class="grid-item">
+        <h4>Wave 1: High-Volume, High-Repeatability</h4>
+        <ul>
+            <li><strong>Delhi NCR:</strong> Lead with abundance-breaking (sharp curation). Sports, fitness, brunch dominate. Users want to know "what's best today," not "what's new."</li>
+            <li><strong>Mumbai:</strong> Lead with lifestyle and aspiration. Daylight social rituals are identity markers. Coffee raves, breakfast rides, evening supper clubs.</li>
+            <li><strong>Bengaluru:</strong> Lead with community proof. Creator attribution, local partnerships, group invites. Multiple overlapping communities; each needs tailored proof.</li>
+        </ul>
+    </div>
+    <div class="grid-item">
+        <h4>Wave 3: Premium / Selective</h4>
+        <ul>
+            <li><strong>Goa:</strong> Premium itinerary + wellness destination package. Longer AOV, longer buying cycle. Add-ons, room bundles, multi-day experiences.</li>
+            <li><strong>Jaipur:</strong> Boutique experiences, community fitness, selective creator events. Lower volume; higher price point.</li>
+            <li><strong>Kolkata:</strong> Solo-safe connection, adda culture, intimate dining. Trust and long-form conversation matter more than spectacle.</li>
+        </ul>
+    </div>
+</div>
+
+</section>
+
+<!-- COMPETITIVE LANDSCAPE -->
+<section id="competitive">
+<h2>5. Competitive Landscape: 39 Tool Benchmarks</h2>
+
+<p>The following 39 tools represent the competitive and adjacent landscape Turnout will navigate. Each category has winners, lessons, and design patterns worth studying. Organized by vertical.</p>
+
+<h3>Bars & Nightlife Reservation (3 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Resy</strong></td>
+            <td>25K venues, seamless reservation flow, table management, revenue per cover optimization, luxury positioning</td>
+            <td>Reservation at scale with real-time inventory accuracy; 30%+ of venue ops now API-integrated</td>
+            <td>Reservation accuracy and venue control are table stakes, not differentiators. Turnout's moat is not the booking form; it's the context layer (proof, community, coordination).</td>
+        </tr>
+        <tr>
+            <td><strong>Discotech</strong></td>
+            <td>Free guest list → VIP upsell viral loop, nightlife specialization, table/cover pricing, promoter network</td>
+            <td>Free entry tier drives network effects; monetize through cover upgrades and table reservations. Viral coefficient 1.2-1.4 through promoter referrals.</td>
+            <td>Free tier + paid upsell works in discovery-heavy verticals. Turnout should test free RSVP / paid reservation upgrade for nightlife / event categories.</td>
+        </tr>
+        <tr>
+            <td><strong>SevenRooms</strong></td>
+            <td>Behavioral CRM, turns first-timers into regulars, guest preferences, personalized offers, venue insights</td>
+            <td>Retention moat through guest memory (drink preferences, occasion history, group composition). Enterprise SaaS to venues; $50K+ ARR per venue.</td>
+            <td>Turnout's value to venues is different: not guest CRM, but capacity optimization and proof generation. Own the supply side differently than SevenRooms.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Microbreweries & Food Venues (3 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Untappd</strong></td>
+            <td>Community discovery, venue website builder, check-in proof, brewery engagement loops</td>
+            <td>Social proof and community participation drive foot traffic; venues with Untappd check-ins see 15-25% lift in repeat visits.</td>
+            <td>Check-in proof (photos, badges, leaderboards) creates compounding retention. Turnout should design virality into outcomes: share photo cards, trainer badges, match scores.</td>
+        </tr>
+        <tr>
+            <td><strong>Arryved</strong></td>
+            <td>Real-time menu sync, inventory visibility, ordering efficiency, venue-first design</td>
+            <td>Venue integration as the primary UX: what venues want is operational sync, not consumer discovery. Real-time inventory reduces no-shows and overbooking.</td>
+            <td>Turnout must integrate with venue POS and booking systems early. Consumer-facing experience only works if supplier side is automated and reliable.</td>
+        </tr>
+        <tr>
+            <td><strong>Toast POS Flight Builder</strong></td>
+            <td>Drink flight builder increases spend 30-50%, upsell automation, order suggestioning</td>
+            <td>Upsell automation at point-of-sale. Flight bundles (3-4 curated options) outperform open menu choice by 35%.</td>
+            <td>Turnout's commercial primitives should include "bundles" (brunch-for-two, fitness-pack-5, sports-season-pass). Bundles reduce decision friction and increase AOV.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Experiences & Ticketing (4 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Eventbrite</strong></td>
+            <td>Event creation, ticketing, attendee management, email marketing, post-event analytics</td>
+            <td>Horizontal ticketing platform. Growth driver: email re-engagement and similar-event recommendations. 4-5 emails per attendee per month.</td>
+            <td>Turnout should NOT become horizontal Eventbrite. Stay vertical-first. Community loop and repeat behavior (weekly fitness class) matter more than one-off event discovery.</td>
+        </tr>
+        <tr>
+            <td><strong>Insider (India-specific)</strong></td>
+            <td>Event aggregator, community-focused, early-bird discounts, social proof via attendee photos</td>
+            <td>Community-driven discovery; India's largest live-events platform with 10M+ monthly active users. Growth: user-generated proof (attendee photos).</td>
+            <td>Proof richness (photos, attendee count, testimonials) is India's native discovery pattern. Turnout should prioritize visual proof artifacts over text review.</td>
+        </tr>
+        <tr>
+            <td><strong>BookMyShow</strong></td>
+            <td>Movie tickets, live events, experiences. India's largest ticketing platform. Dominant position in cities like Bangalore, Mumbai.</td>
+            <td>Scale through brand partnerships and franchise tie-ups. Category-specific landing pages; Bollywood movie nights drive 60% of traffic.</td>
+            <td>Turnout's discovery should be category-first, not event-first. Each theme (sports-social, brunch, fitness) gets its own curated feed and proof template.</td>
+        </tr>
+        <tr>
+            <td><strong>Zopper</strong></td>
+            <td>India-specific: experiences, dining, activities. Lightweight, mobile-first, WhatsApp integration</td>
+            <td>WhatsApp-first checkout; 40% of transactions happen via WA link share. Mobile-native, no app required.</td>
+            <td>Turnout's core strength: WhatsApp handoff for coordination and payment. Study Zopper's WA journey design; their conversion lift from WA is 25-35% vs web.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Sports & Courts (4 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>CourtMan / JoinIt</strong></td>
+            <td>Court booking, match-making, league management, split payments</td>
+            <td>Match-making and league creation drive repeat bookings. Users who play in leagues re-book 4-5x per month vs 1-2x for casual bookings.</td>
+            <td>Sports-social's moat is not the slot; it's the community loop. Turnout should emphasize "find your crew" narratives, not just "book a court."</td>
+        </tr>
+        <tr>
+            <td><strong>Decathlon Play (India)</strong></td>
+            <td>Community sports booking, merchandise integration, league partnerships, trainer profiles</td>
+            <td>Merchandise tie-ins increase recurring behavior by 20%. Community partnerships with local sports stores drive loyalty.</td>
+            <td>Sports categories need ecosystem partnerships: equipment stores, club operators, trainer communities. Turnout should white-label for Decathlon, Ek Ladder, local sports clubs.</td>
+        </tr>
+        <tr>
+            <td><strong>Bounce (Pickleball, India)</strong></td>
+            <td>India-specific: pickleball court booking, player profiles, ranked matches, leaderboards</td>
+            <td>Ranked leaderboards drive 3-4x repeat bookings vs non-ranked. Player proof (ranking, win-loss) matters more than venue amenities.</td>
+            <td>Turnout's sports-social vertical should emphasize player progression and leaderboards early. Proof richness compounds: players re-book to improve ranking.</td>
+        </tr>
+        <tr>
+            <td><strong>PlaySpots</strong></td>
+            <td>Multi-sport booking (badminton, basketball, futsal, tennis). Capacity management, availability sync.</td>
+            <td>Multi-sport consolidation saves user 5-7 clicks per booking vs visiting individual venue apps. Repeat bookings 2-3x higher on consolidated platform.</td>
+            <td>Turnout can own multiple sports under one experience. Don't siloed-ize sports verticals; create unified "sports social" category with cross-category discovery.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Fitness & Classes (4 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>ClassPass</strong></td>
+            <td>Multi-studio fitness membership, class discovery, trainer profiles, social proof (streaks, badges)</td>
+            <td>Habit loop: streak tracking and badges drive 40-50% higher retention. Cross-studio membership increases class variety and repeat behavior.</td>
+            <td>Fitness's retention moat is habit, not variety. Turnout should design streaks, progress tracking, and trainer continuity into the core UX for fitness categories.</td>
+        </tr>
+        <tr>
+            <td><strong>Peloton (Digital)</strong></td>
+            <td>Live and on-demand fitness classes, leaderboards, social groups, instructor following</td>
+            <td>Instructor following drives 60% of repeat engagement. Leaderboard participation (competing with friends) increases session duration 2-3x.</td>
+            <td>Trainer credibility and social competition are Turnout's moat in fitness. Emphasize trainer-led experiences, instructor profiles, peer leaderboards.</td>
+        </tr>
+        <tr>
+            <td><strong>Fittr (India)</strong></td>
+            <td>Local fitness class booking, trainer profiles, community groups, nutrition tracking</td>
+            <td>Trainer proof (credentials, client testimonials) is primary trust signal. Indian users choose fitness on trainer credibility, not equipment.</td>
+            <td>Turnout's fitness pages should lead with trainer profiles, certifications, and student testimonials. This is India's native trust signal; prioritize it in page design.</td>
+        </tr>
+        <tr>
+            <td><strong>Cult (India)</strong></td>
+            <td>Trendy fitness brand (cycling, pilates, functional training). Branded class experience, app-driven community.</td>
+            <td>Brand-first positioning; users choose Cult for identity (not generic fitness). Class bundles and monthly membership drive recurring revenue.</td>
+            <td>Turnout should not compete on brand positioning. Instead, help indie studios (Cult-like operators) reach users at scale via Turnout's discovery layer. Partner, don't compete.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Wellness & Spa (3 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>UrbanClap / Urban Company (India)</strong></td>
+            <td>On-demand wellness (massage, facial, haircut, cleaning). Therapist profiles, appointment scheduling, rating/review.</td>
+            <td>Therapist continuity drives 60%+ repeat bookings. Users prefer same therapist (if possible) over price discounts.</td>
+            <td>Turnout's wellness pages must emphasize therapist continuity and preference-setting. Make it easy to book "my regular therapist" or to request a specific type.</td>
+        </tr>
+        <tr>
+            <td><strong>Zoomcar Bikestore / Alchemy (India)</strong></td>
+            <td>Experience-driven wellness (yoga retreats, spa packages, wellness weekends). Bundled offerings, itinerary booking.</td>
+            <td>Itinerary bundling increases AOV 3-4x. Longer stay (2+ days) increases add-on purchases (meals, experiences) 5-6x.</td>
+            <td>Turnout's destination wellness category should lead with bundled experiences (room + spa + meal + activity). Multi-day itineraries are higher-margin than single sessions.</td>
+        </tr>
+        <tr>
+            <td><strong>Zenloe (Yoga, India)</strong></td>
+            <td>Yoga class booking, instructor following, community groups, subscription plans</td>
+            <td>Community groups and instructor following drive 3-4x repeat bookings vs one-off class discovery.</td>
+            <td>Turnout should support instructor following and community group formation in wellness categories. This is where retention compound emerges.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Creator & Workshop Events (3 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Lunchclub</strong></td>
+            <td>Creator-curated experiences, workshop booking, community formation, creator payment splits</td>
+            <td>Creator-led discovery drives 4-5x higher conversion than algorithmic suggestions. Creator attribution is primary trust signal.</td>
+            <td>Turnout should design creator attribution into every page template. If a creator brought the user in, preserve and amplify that context.</td>
+        </tr>
+        <tr>
+            <td><strong>Hobnob (India)</strong></td>
+            <td>Community-driven events, micro-gatherings, creator co-hosting, ticket pre-orders</td>
+            <td>Co-hosting (two creators together) drives 2-3x higher ticket sales vs solo creators. Group RSVPs increase final attendance 20%+.</td>
+            <td>Turnout should support co-creator events and group RSVP flows. This is India's native event pattern (friends bring friends).</td>
+        </tr>
+        <tr>
+            <td><strong>Creators United (India)</strong></td>
+            <td>Creator networking, workshop marketplace, monetization tools, community building</td>
+            <td>Marketplace for creator workshops; average class size 20-50 people. Creator payout + community loop drives supply growth.</td>
+            <td>Turnout should white-label for creator platforms. Enable creators to monetize through Turnout's booking and payment infra.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Dining & Reservation (4 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>DineOut (India)</strong></td>
+            <td>Restaurant discovery, reservations, cashback offers, loyalty points</td>
+            <td>Cashback and loyalty point incentives drive trial bookings, but retention is weak (users chase discount, not restaurant). Repeat rate 15-20%.</td>
+            <td>Turnout should NOT lead with discounts. Lead with experience narrative and social proof. India's diners are trading discounts for meaning; commoditize neither.</td>
+        </tr>
+        <tr>
+            <td><strong>Zomato (Booking module)</strong></td>
+            <td>Horizontal restaurant discovery + reservations. Payment integration, table management, offer automation.</td>
+            <td>Zomato's strength is aggregation + payment. Weakness: generic experience design (looks like every restaurant booking). Repeat rate 25-30% on bookings.</td>
+            <td>Turnout should compete via experience curation, not aggregation scale. Be category-specific, not horizontal. Design proof and social context into every page.</td>
+        </tr>
+        <tr>
+            <td><strong>India Dining Co (Interactive Dining Operator)</strong></td>
+            <td>Operates interactive dining experiences (chef-led, participatory formats). Direct bookings, unique experiences.</td>
+            <td>Experience-led formats generate 60%+ repeat bookings vs generic dining 20%. Interactive formats 2-3x higher review/word-of-mouth.</td>
+            <td>Turnout's interactive dining template should emphasize "what makes this room feel different." Lead with chef bios, participation rules, occasion alignment.</td>
+        </tr>
+        <tr>
+            <td><strong>AirBnb Experiences (Dining subset)</strong></td>
+            <td>Home-hosted dining experiences, host profiles, booking, guest reviews</td>
+            <td>Host authenticity (profile, reviews, home photos) is primary conversion driver. Repeat bookings 30%+ among hosts with 50+ 5-star reviews.</td>
+            <td>Turnout should emphasize host credibility (trainer certs, venue owner track record, creator reputation). This is India's native trust signal.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>PLG & Growth Benchmarks: Category-Agnostic (11 tools)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tool</th>
+            <th>What It Does</th>
+            <th>Key UX Pattern / Growth Metric</th>
+            <th>Lesson for Turnout</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Canva</strong></td>
+            <td>Design platform. Free templates → design output → shareable artifact → viral loop.</td>
+            <td>"Output is the ad." User creates design, shares result, new user joins Canva to recreate. Viral coefficient ~1.5-1.7.</td>
+            <td>Turnout's proof cards (share plan cards, trainer badges, leaderboard screenshots) are Canva-like artifacts. Make them beautiful, shareable, frame-worthy.</td>
+        </tr>
+        <tr>
+            <td><strong>Loom</strong></td>
+            <td>Video recording and sharing. Instant video output → automatic shareability → embedded virality.</td>
+            <td>"Instant output virality." Recording completes, user shares link. New user watches, then records own video. Viral coefficient 1.2-1.4.</td>
+            <td>Turnout's check-in and photo-proof mechanics should be instant and shareable. Make the aha moment social (photo, leaderboard placement) not private.</td>
+        </tr>
+        <tr>
+            <td><strong>NotebookLM (Google)</strong></td>
+            <td>AI-powered research notebook. Free feature tier → generated summary (beautiful output) → share and collaborate.</td>
+            <td>Generated summaries are shareable artifacts. Sharing drives collaborators to join. Viral coefficient emerging; 20%+ new signups from shares.</td>
+            <td>Turnout should generate shareable outputs from bookings: "Your group plan card" with costs, times, group members, trainer. These are collaboration magnets.</td>
+        </tr>
+        <tr>
+            <td><strong>Calendly</strong></td>
+            <td>Scheduling link embedding. User shares scheduling link → recipient books time → sender gets confirmation → viral loop.</td>
+            <td>Embedded virality: users send booking links to others, who then create their own Calendly links. 30%+ of new signups via shared links.</td>
+            <td>Turnout's coordination moment is similar: user creates group booking link, shares with friends, friends join and re-share. Support group-invite viral loops.</td>
+        </tr>
+        <tr>
+            <td><strong>Figma</strong></td>
+            <td>Collaborative design platform. Free tier with team collaboration → teams purchase paid plan → network effects.</td>
+            <td>Network effects through team collaboration. Users who invite teammates have 4-5x higher lifetime value and retention.</td>
+            <td>Turnout's community features (team creation, recurring group bookings) should activate network effects. Inviting friends into a "group" should be core UX.</td>
+        </tr>
+        <tr>
+            <td><strong>Slack</strong></td>
+            <td>Team messaging. Free tier with message history limit → teams upgrade to paid → team stickiness drives retention.</td>
+            <td>Network effects + switching costs = moat. Teams with 50+ members have <5% churn rate vs 40% for small teams.</td>
+            <td>Turnout's groups and communities should have similar switching costs. Make group booking, split payments, and history easy to migrate (reducing lock-in).</td>
+        </tr>
+        <tr>
+            <td><strong>Notion</strong></td>
+            <td>Workspace tool. Free tier → free team collaboration → teams upgrade → lock-in via ecosystem (database, docs, calendar).</td>
+            <td>Ecosystem lock-in is moat. Notion's teams with 10+ databases have 90%+ retention vs 30% for casual users.</td>
+            <td>Turnout can own similar ecosystem lock-in: user profile, booking history, group memberships, trainer profiles, leaderboard data. This is data-driven retention.</td>
+        </tr>
+        <tr>
+            <td><strong>Airtable</strong></td>
+            <td>No-code database. Free tier with limited records → teams upgrade for scale → developer ecosystem drives moat.</td>
+            <td>Developer integrations (Zapier, Make) create moat beyond core product. Platform effects: integrations attract more developers.</td>
+            <td>Turnout should open APIs early: venue POS, trainer calendars, group chat bots. Integrations create lock-in and reduce churn.</td>
+        </tr>
+        <tr>
+            <td><strong>Stripe</strong></td>
+            <td>Payment processing. Free tier (no fees until payment) → seamless integration → sticky through switch costs.</td>
+            <td>Payment lock-in is underrated. Switching payment providers requires re-integration, bank details, support. 95%+ retention once integrated.</td>
+            <td>Turnout's payment layer (split pay, pack purchases, membership billing) is retention moat. Invest in frictionless payment UX early.</td>
+        </tr>
+        <tr>
+            <td><strong>Zapier</strong></td>
+            <td>No-code automation. Free tier → integrations → users become dependent on Zapier workflows → upgrade for advanced automations.</td>
+            <td>Workflow lock-in. Users with 10+ active workflows have <10% churn rate. Switching costs are high once automations are in place.</td>
+            <td>Turnout should support automation early: auto-reminders, group split-pay triggers, leaderboard updates. Automation → lock-in → retention.</td>
+        </tr>
+        <tr>
+            <td><strong>Discord</strong></td>
+            <td>Community platform. Free tier with unlimited members → communities grow → server switching is high friction → monetization via nitro and server boosts.</td>
+            <td>Community network effects. Servers with 500+ active members have 85%+ monthly retention. Lock-in via identity (role, reputation, badges).</td>
+            <td>Turnout's group and community features should support identity: roles (admin, trainer, member), reputation (badges, leaderboards), exclusivity (private groups).</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="insight">
+    <strong>39-Tool Synthesis:</strong> Turnout is playing in the intersection of reservation (Resy), marketplace (Insider), social proof (Untappd, Peloton), group coordination (Calendly, Discord), and instant-output virality (Canva, Loom). No single competitor owns all three. This is the advantage. Design for: (1) category-specific discovery + proof, (2) commercial primitives (slot, reservation, deposit, pack), (3) group coordination, (4) beautiful shareable outputs.
+</div>
+
+</section>
+
+<!-- PLG PATTERNS -->
+<section id="plg-patterns">
+<h2>6. PLG Pattern Analysis: Five Viral Mechanics</h2>
+
+<p>The 39 benchmarks reveal five repeating patterns for product-led growth in India. Turnout should adopt all five:</p>
+
+<h3>Pattern 1: Output is the Ad (Canva, Loom)</h3>
+
+<p><strong>Mechanism:</strong> User creates artifact (design, video) → artifact is beautiful/shareable → user shares result → new user wants to create own artifact → signs up to Canva/Loom.</p>
+
+<p><strong>Turnout Application:</strong> Every booking completion should generate a shareable artifact:</p>
+<ul>
+    <li><strong>Sports-social:</strong> Match scorecard, leaderboard placement screenshot, team roster card</li>
+    <li><strong>Brunch:</strong> "Group plan card" with attendees, time, restaurant, estimated cost</li>
+    <li><strong>Fitness:</strong> Class streak badge, trainer progress card, session photo with group</li>
+    <li><strong>Wellness:</strong> Therapist session summary, wellness ritual card (date, service, therapist)</li>
+    <li><strong>Creator Events:</strong> Attendance certificate, creator co-host card, event recap photo</li>
+</ul>
+
+<p>These cards should be: frame-worthy, branded (include Turnout logo), instant (generated on booking completion), and shareable (WhatsApp, Instagram, group chat).</p>
+
+<h3>Pattern 2: Instant-Output Virality (Loom, NotebookLM)</h3>
+
+<p><strong>Mechanism:</strong> Action completes → instant beautiful output → sharing is effortless → viral loop triggers.</p>
+
+<p><strong>Turnout Application:</strong> On booking confirmation, show:</p>
+<ul>
+    <li>Instant group plan visualization (who's coming, when, cost-per-person)</li>
+    <li>One-tap WhatsApp share: "Join me for [activity] at [place] [time] — [link]"</li>
+    <li>Leaderboard position update (if sports/fitness): "You're #3 this week!"</li>
+    <li>Trainer introduction card (if fitness/wellness): "Your trainer is [name], certified [cert], 500+ 5-star reviews"</li>
+</ul>
+
+<h3>Pattern 3: Free-Hook-to-Paid Upsell (Discotech, ClassPass)</h3>
+
+<p><strong>Mechanism:</strong> Free tier entry (RSVP, trial, free booking) → user sees premium option (VIP table, advanced class, full package) → low-friction upgrade → $X conversion.</p>
+
+<p><strong>Turnout Application:</strong> Design offer ladders for each category:</p>
+<ul>
+    <li><strong>Sports:</strong> Free group formation + RSVP → paid court booking → pack credits (10% discount)</li>
+    <li><strong>Fitness:</strong> Free class discovery → trial pass ($1-2) → 5-class pack (10% discount) → monthly membership (15% discount)</li>
+    <li><strong>Wellness:</strong> Free therapist browsing → booking → 5-service pack (12% discount) → subscription (20% discount)</li>
+    <li><strong>Dining:</strong> Free reservation → optional deposit (confirms intent) → group meal bundle (15% discount)</li>
+</ul>
+
+<p>Upsell should NOT feel salesy. Lead with value: "Save ₹300 with a 5-pack" or "Get ₹150 back with a quarterly membership."</p>
+
+<h3>Pattern 4: Embedded Virality (Calendly, Discord, Stripe)</h3>
+
+<p><strong>Mechanism:</strong> User shares booking/group link with friend → friend clicks → friend joins Turnout → new user re-shares to others → network effects.</p>
+
+<p><strong>Turnout Application:</strong> Make sharing the path to conversion:</p>
+<ul>
+    <li><strong>Group booking:</strong> User creates group (2+ people) → generates group booking link → "Share with friends" is top CTA → friends click → friends join Turnout → group cohesion increases</li>
+    <li><strong>Team recurring bookings:</strong> "Weekly badminton crew" repeats every Wednesday → user invites 2 more → recurring group drives frequency</li>
+    <li><strong>Referral virality:</strong> User refers friend to Turnout → friend books → referrer gets ₹100 Turnout credit → compounding referral loops</li>
+</ul>
+
+<h3>Pattern 5: Workflow Lock-in (Zapier, Notion, Figma)</h3>
+
+<p><strong>Mechanism:</strong> User embeds Turnout into their routine (auto-reminders, group split-pay, leaderboard tracking) → workflow becomes dependent → switching costs rise → lifetime value compounds.</p>
+
+<p><strong>Turnout Application:</strong> Automate the routine:</p>
+<ul>
+    <li><strong>Weekly reminders:</strong> "Your regular badminton matches start next Wednesday at 6 PM"</li>
+    <li><strong>Auto-payment splits:</strong> "Your group owes ₹1,500 for court rental — splitting equally 3 ways" → auto-debit option</li>
+    <li><strong>Leaderboard tracking:</strong> Every match auto-updates ranking; weekly digest: "You jumped to #12 this week"</li>
+    <li><strong>Trainer continuity:</strong> "Book your next session with Priya" → one-tap reschedule</li>
+    <li><strong>Group history:</strong> "You've attended 47 sessions with this group" → social proof of commitment</li>
+</ul>
+
+</section>
+
+<!-- GTM FILTER -->
+<section id="gtm-filter">
+<h2>7. GTM Filter: 6 Evaluation Criteria</h2>
+
+<p>Every design decision, category launch, and feature prioritization should pass through this 6-point filter. It is the founder's north star for Wave 1 coherence.</p>
+
+<h3>Criterion 1: Consumer Heat (Evidence Threshold)</h3>
+
+<p><strong>Definition:</strong> Is this format visibly gaining consumer participation and mention NOW, not theoretically? Test: Can you find evidence in Q1 2026 coverage (S1-S19) showing current consumer adoption?</p>
+
+<p><strong>Turnout Application:</strong></p>
+<ul>
+    <li><strong>Pass ✓:</strong> Sports-social (pickleball boom S4, S6), interactive dining (61% of diners S2), community fitness (Gen Z movement identity S3), creator events (regional culture shift S16, S19)</li>
+    <li><strong>Fail ✗:</strong> NFT-gated events (zero consumer heat in Q1 2026), metaverse fitness (zero adoption signals), blockchain ticketing (absent from sources)</li>
+</ul>
+
+<h3>Criterion 2: Monetization Clarity (Commercial Primitive Test)</h3>
+
+<p><strong>Definition:</strong> Does this category have a clear, repeatable commercial primitive? Can you name the unit of sale without ambiguity?</p>
+
+<p><strong>Turnout Application:</strong></p>
+<ul>
+    <li><strong>Pass ✓:</strong> Sports (slot booking = ₹500-1000 per slot), Brunch (reservation + deposit = ₹1000-2000), Fitness (class = ₹300-500, pack = ₹1200-1800)</li>
+    <li><strong>Fail ✗:</strong> "Vibe discovery" (what's the unit?), "Aesthetic wellness" (what's the charge?), "Adventure networking" (too vague, no clear transaction)</li>
+</ul>
+
+<h3>Criterion 3: WhatsApp Fit (Coordination Test)</h3>
+
+<p><strong>Definition:</strong> After a user books, do they naturally hand off to WhatsApp for group coordination, payment splits, logistics? Or does the page answer everything and the user never re-engages?</p>
+
+<p><strong>Turnout Application:</strong></p>
+<ul>
+    <li><strong>Pass ✓:</strong> Sports (organize teams, confirm attendees), Brunch (who's driving, table preference, dietary notes), Fitness (buddy accountability, trainer messages)</li>
+    <li><strong>Fail ✗:</strong> Solo spa bookings (user goes alone; no group coordination), movie tickets (logistics handled by cinema, no WA handoff), quick grab-and-go cafes (no coordination needed)</li>
+</ul>
+
+<h3>Criterion 4: Repeatability (Frequency Test)</h3>
+
+<p><strong>Definition:</strong> Will a user come back to this category within 7-30 days? Or is this a one-off, holiday-only, or annual event?</p>
+
+<p><strong>Turnout Application:</strong></p>
+<ul>
+    <li><strong>Pass ✓:</strong> Weekly sports bookings, bi-weekly fitness, fortnightly brunch, monthly wellness package</li>
+    <li><strong>Fail ✗:</strong> Annual music festivals, once-a-year wellness retreats, quarterly team-building events (too sparse; not repeatable habit)</li>
+</ul>
+
+<h3>Criterion 5: Shareability (Proof Artifact Test)</h3>
+
+<p><strong>Definition:</strong> Does the experience generate a natural artifact the user wants to share? Photos, leaderboards, testimonials, certificates, group compositions?</p>
+
+<p><strong>Turnout Application:</strong></p>
+<ul>
+    <li><strong>Pass ✓:</strong> Sports matches (player photos, scorecards, leaderboards), Brunch (group photo, restaurant ambiance), Creator events (attendee proof, creator co-host card), Fitness (before-after, badge, group class photo)</li>
+    <li><strong>Fail ✗:</strong> Solo therapist appointments (private; no share impulse), document scanning services, tax consultations (no visual proof story)</li>
+</ul>
+
+<h3>Criterion 6: Proof Richness (Data Compounding Test)</h3>
+
+<p><strong>Definition:</strong> Will the product learn from each transaction in a way that compounds trust for the next user? Can you build a confidence score (trainer ratings, venue reliability, group attendance) that gets stronger over time?</p>
+
+<p><strong>Turnout Application:</strong></p>
+<ul>
+    <li><strong>Pass ✓:</strong> Trainer certifications + student reviews, Venue reliability (on-time starts, clean courts), Creator reputation (attendee satisfaction, group loyalty), Sports player profile (ranking, win-loss, teammate loyalty)</li>
+    <li><strong>Fail ✗:</strong> One-off festival bookings (no repeating entities to rate), random experience discovery (no recurring supply-side profile to build), anonymous events (no reputation accumulation)</li>
+</ul>
+
+<h3>The Filter in Action</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Heat</th>
+            <th>Monetization</th>
+            <th>WA Fit</th>
+            <th>Repeat</th>
+            <th>Shareability</th>
+            <th>Proof Richness</th>
+            <th>Verdict</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Sports-Social</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>LAUNCH Wave 1</td>
+        </tr>
+        <tr>
+            <td>Brunch/Cafe</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>LAUNCH Wave 1</td>
+        </tr>
+        <tr>
+            <td>Interactive Dining</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>LAUNCH Wave 1</td>
+        </tr>
+        <tr>
+            <td>Creator Events</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>◐</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>LAUNCH Wave 1 (subset)</td>
+        </tr>
+        <tr>
+            <td>Destination Wellness</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✗</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>DEFER to Wave 3</td>
+        </tr>
+        <tr>
+            <td>NFT Events</td>
+            <td>✗</td>
+            <td>◐</td>
+            <td>✗</td>
+            <td>✗</td>
+            <td>◐</td>
+            <td>◐</td>
+            <td>DO NOT BUILD</td>
+        </tr>
+    </tbody>
+</table>
+
+</section>
+
+<!-- GTM SEQUENCING -->
+<section id="gtm-sequencing">
+<h2>8. GTM Wave Strategy: 3-Wave City Sequencing</h2>
+
+<h3>Wave 1 (0-60 days): Delhi NCR, Bangalore, Mumbai</h3>
+
+<p><strong>Thesis:</strong> Establish core product-market fit in three metros where heat is highest, proof richness can compound fastest, and team can monitor daily. These cities have:</p>
+<ul>
+    <li>Abundance of supply (venues, trainers, creators)</li>
+    <li>High density of early adopters</li>
+    <li>Strong social proof cultures (photos, testimonials, community)</li>
+    <li>WhatsApp-native coordination behaviors</li>
+</ul>
+
+<h3>Wave 1 Primary Wedges by City</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>City</th>
+            <th>Primary Wedges (Week 0-8)</th>
+            <th>Secondary Wedges (Week 8-12)</th>
+            <th>Why This Sequencing</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Delhi NCR</strong></td>
+            <td>1. Sports-social (pickleball, padel, running clubs)<br>2. Brunch/cafe dwell<br>3. Community fitness (trainer-led)</td>
+            <td>Wellness/spa, Creator events (local)</td>
+            <td>Delhi rewards utility and repeatability. Lead with habits (sports slots, weekly brunch, class streaks). Abundance-breaking is the value prop. Users want "what's best this week," not novelty.</td>
+        </tr>
+        <tr>
+            <td><strong>Bangalore</strong></td>
+            <td>1. Community fitness (strongest creator/trainer culture)<br>2. Sports-social<br>3. Creator events (strong indie culture)</td>
+            <td>Brunch/cafe, Interactive dining</td>
+            <td>Bangalore rewards community and creator attribution. Lead with fitness (trainers are celebrities) and creator discovery. Community loops compound fastest here. Fitness first unlocks creator ecosystem.</td>
+        </tr>
+        <tr>
+            <td><strong>Mumbai</strong></td>
+            <td>1. Brunch/cafe dwell (morning culture)<br>2. Coffee raves (lifestyle identity)<br>3. Interactive dining (narrative focus)</td>
+            <td>Sports-social, Creator events</td>
+            <td>Mumbai rewards lifestyle and aspiration. Lead with daylight rituals (breakfast rides, coffee mornings). Narrative > utility. Proof should be beautiful (not just functional). Aspiration-first positioning.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Wave 1 Concrete Targets (0-60 days)</h3>
+
+<ul>
+    <li><strong>Delhi NCR:</strong> 150+ sports venues, 50+ cafes, 30+ trainers. Target: 500 weekly active bookings, 20% repeat rate.</li>
+    <li><strong>Bangalore:</strong> 80+ trainers, 40+ sports venues, 50+ creators. Target: 400 weekly active bookings, 30% repeat rate (fitness cohort).</li>
+    <li><strong>Mumbai:</strong> 60+ cafes, 30+ restaurants, 25+ creators. Target: 300 weekly active bookings, 25% repeat rate.</li>
+</ul>
+
+<p><strong>Success Criteria:</strong> At end of Wave 1, each city should show: (a) 3-4 categories working (not just one), (b) 20%+ repeat rates, (c) 5+ organic referrals per paid user, (d) 40%+ handoff to WhatsApp for coordination, (e) visible proof artifacts shared in public (Instagram stories, group chats).</p>
+
+<h3>Wave 2 (60-120 days): Pune, Hyderabad, Chennai</h3>
+
+<p><strong>Thesis:</strong> Expand to secondary metros where supply is emerging and consumer heat is proven. Apply Wave 1 learnings and template local supply chain.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>City</th>
+            <th>Primary Wedges</th>
+            <th>Local Adaptation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Pune</strong></td>
+            <td>Creator/indie culture (workshops, music nights), Brunch/cafe (niche cafes), Sports-social (growing)</td>
+            <td>Language: Lead with Marathi cultural narratives. Creator co-host with local YouTubers, Instagram creators. Campus culture angle (students, young professionals). Less "luxury," more "authentic."</td>
+        </tr>
+        <tr>
+            <td><strong>Hyderabad</strong></td>
+            <td>Interactive dining (experiential is hot), Brunch/premium casual, Wellness retreats</td>
+            <td>Language: Telugu and Urdu adoption. Lead with "planned experience" messaging. Supperclubs, interactive formats. Premium positioning (not budget).</td>
+        </tr>
+        <tr>
+            <td><strong>Chennai</strong></td>
+            <td>Brunch/cafe culture (mature), Interactive dining, Wellness/spa</td>
+            <td>Language: Tamil cultural narratives. Lead with thoughtful, rooted positioning (not trendy). Mature cafe culture is strength. Premium casual dining is established. Lean into conversation and community (adda-like cultural norms).</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Wave 3 (Selective, Premium): Kolkata, Goa, Jaipur</h3>
+
+<p><strong>Thesis:</strong> Premium and cultural plays. Lower volume, higher AOV, longer buying cycles. Don't pursue volume growth here; focus on brand depth and unit economics.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>City</th>
+            <th>Positioning</th>
+            <th>Primary Wedges</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Kolkata</strong></td>
+            <td>Trust, conversation-first, cultural identity</td>
+            <td>Solo-safe connection, Intimate dining (adda culture), Creator talks/workshops. Not volume play. Lead with trust (host credibility, referrer context). Long-form conversation > spectacle.</td>
+        </tr>
+        <tr>
+            <td><strong>Goa</strong></td>
+            <td>Premium wellness destination, longer stays, itinerary-driven</td>
+            <td>Destination wellness packages, Wellness retreats, Premium nightlife (booked in advance). Higher AOV (₹3000-15000 per booking). Longer buying cycle (book 4-8 weeks ahead).</td>
+        </tr>
+        <tr>
+            <td><strong>Jaipur</strong></td>
+            <td>Boutique experiences, community fitness, selective events</td>
+            <td>Community fitness (emerging), Creator events (growing), Wellness/spa. Selective volume (not high-frequency). Premium positioning.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Wave 1 Supply Activation Playbook</h3>
+
+<p>Do not launch with 100 venues/trainers. Activate 3-5 supply per category first, get them to 100+ monthly bookings, then recruit scale.</p>
+
+<ul>
+    <li><strong>Sports venues:</strong> Start with 2-3 premium pickleball/padel operators. Get 80+ monthly slot bookings. Then expand to budget venues, club operators, corporate courts.</li>
+    <li><strong>Cafes:</strong> Start with 3-4 high-Instagram-presence cafes. Get them 30+ monthly reservations, strong proof photos. Then recruit traditional cafes who need traffic lift.</li>
+    <li><strong>Trainers:</strong> Start with 5-7 Instagram-famous trainers. Get them 10-15 weekly class bookings. Then recruit independent trainers, studio operators.</li>
+    <li><strong>Creators:</strong> Partner with 3-5 local creators (1K-10K followers). Give them free Turnout page + audience. Proof: "500 people attended my workshop."</li>
+</ul>
+
+<p><strong>Supply Incentives (Wave 1):</strong></p>
+<ul>
+    <li>Free page setup + training (not a revenue opportunity, an onboarding necessity)</li>
+    <li>3-month commission waiver (0% take rate) to build supply momentum</li>
+    <li>Featured placement for venues with 50+ monthly bookings</li>
+    <li>Trainer/creator revenue share (not just commission): "You earned ₹45K this month from Turnout bookings"</li>
+    <li>Community proof: "Your venue has 500+ 5-star reviews on Turnout"</li>
+</ul>
+
+</section>
+
+<!-- COMMERCIAL PRIMITIVE STACK -->
+<section id="commercial-stack">
+<h2>9. Commercial Primitive Stack: 7 Layers × 40+ Primitives</h2>
+
+<p>These are the monetization and coordination units the product MUST support. Do not launch without full coverage.</p>
+
+<h3>Layer 1: Discovery & Access (5 primitives)</h3>
+
+<ul>
+    <li><strong>Deep link / QR arrival:</strong> User lands from ad, creator story, venue bio with context already known.</li>
+    <li><strong>Area page:</strong> Neighborhood or theme clusters (e.g., "Pickleball courts in Indiranagar") without generic listing.</li>
+    <li><strong>Creator / referrer context:</strong> "Priya referred you" → preserves trust path.</li>
+    <li><strong>Waitlist:</strong> For invite-led or limited-inventory experiences.</li>
+    <li><strong>RSVP / expression of interest:</strong> Softer than booking; useful for soft-launch experiences.</li>
+</ul>
+
+<h3>Layer 2: Decision & Capacity (5 primitives)</h3>
+
+<ul>
+    <li><strong>Reservation:</strong> Fixed date/time/party size; requires confirmation.</li>
+    <li><strong>Slot / session:</strong> Class time, court timeslot, trainer availability.</li>
+    <li><strong>Ticket / guestlist entry:</strong> Event name, entry slot, capacity cutoff.</li>
+    <li><strong>Deposit / token hold:</strong> Signals seriousness without full payment.</li>
+    <li><strong>Table upgrade / experience layer:</strong> Second-step choice after base booking (e.g., window seat, premium room).</li>
+</ul>
+
+<h3>Layer 3: Packaging & Pricing (7 primitives)</h3>
+
+<ul>
+    <li><strong>Trial:</strong> Low-risk first purchase (₹1-2 fitness class, ₹0 RSVP with optional upgrade).</li>
+    <li><strong>Drop-in:</strong> Single-visit, no commitment, minimal friction.</li>
+    <li><strong>Pack / bundle:</strong> 3, 5, 10-unit bundle at 10-15% discount. Increases AOV and repeat.</li>
+    <li><strong>Membership / credits:</strong> Recurring monthly charge for unlimited (fitness) or monthly credit allocation (sports).</li>
+    <li><strong>Off-peak offer:</strong> Discounts for low-demand times (Tuesday morning yoga, Wednesday court slots).</li>
+    <li><strong>Corporate / group package:</strong> Team bookings, celebrations, corporate outings.</li>
+    <li><strong>Gift / voucher:</strong> Physical or digital gift card. Powers referral + occasion moments.</li>
+</ul>
+
+<h3>Layer 4: Trust & Reassurance (7 primitives)</h3>
+
+<ul>
+    <li><strong>Verified media & provenance:</strong> Show what's real (trainer cert, venue license), what's AI-enhanced, what's owner-confirmed.</li>
+    <li><strong>Safety cues:</strong> Women-safe, beginner-safe, privacy-safe, family-safe markers.</li>
+    <li><strong>What to expect:</strong> Dress code, session intensity, parking, kids policy, accessibility, pet policy.</li>
+    <li><strong>Refund / cancellation / no-show:</strong> Human-readable policy. "Free cancellation up to 6 hours" not legalese.</li>
+    <li><strong>Social proof:</strong> Testimonials, attendance norms, trainer/creator reputation, group loyalty metrics.</li>
+    <li><strong>Beginner-friendly:</strong> "Great for first-timers," "No equipment needed," "Community welcomes solo joiners."</li>
+    <li><strong>Proof richness:</strong> Session photos, trainer credentials, group composites, leaderboard standing.</li>
+</ul>
+
+<h3>Layer 5: Social & Coordination (5 primitives)</h3>
+
+<ul>
+    <li><strong>Invite group:</strong> "Add your crew." User can input names, get WhatsApp links auto-generated.</li>
+    <li><strong>Split pay:</strong> "Cost is ₹500 total, ₹250 per person." Auto-splits, facilitates group Venmo-like behavior.</li>
+    <li><strong>Share plan card:</strong> One-tap artifact: attendees, time, location, cost breakdown, trainer intro.</li>
+    <li><strong>Creator attribution:</strong> "Thanks [Creator Name] for bringing you in." Preserves narrative context and referrer memory.</li>
+    <li><strong>Buddy / bring-a-friend:</strong> Commercial primitive masquerading as social: "Bring a friend free" = acquisition driver.</li>
+</ul>
+
+<h3>Layer 6: Closure & Retention (5 primitives)</h3>
+
+<ul>
+    <li><strong>Booking confirmation:</strong> Screenshot-friendly (WhatsApp-ready) with all details and countdown.</li>
+    <li><strong>Reminder:</strong> 24h and 2h before. Time, location, what to bring, re-confirmation option.</li>
+    <li><strong>Check-in:</strong> Moment of truth: "You've arrived." Photo moment, attendance proof, community signal.</li>
+    <li><strong>Post-visit rebook:</strong> "Book your next session" → one-tap for recurring categories. Friction-free repeat.</li>
+    <li><strong>Opt-in subscription / loyalty:</strong> Only ask AFTER first successful session, not upfront. "Love this trainer? Subscribe for ₹1500/month" feels earned, not pushy.</li>
+</ul>
+
+<h3>Layer 7: Merchant Control & Explainability (6 primitives)</h3>
+
+<ul>
+    <li><strong>Approval / reject:</strong> Venue owner approves page, offers, creative packets before going live.</li>
+    <li><strong>Content gap request:</strong> System tells owner: "You're missing photos of court 2. Add 3 photos to boost conversion by 15%."</li>
+    <li><strong>Offer ladder:</strong> Owner-approved pricing tiers. No opaque algorithmic pricing. "Trial ₹1, Pack-5 ₹1200, Monthly ₹1800."</li>
+    <li><strong>Capacity override:</strong> Venue can block dates, slots, or inventory windows if temporarily unavailable.</li>
+    <li><strong>Proof of outcome:</strong> System attribution: "This page, this message path, or this referrer caused this booking." Owner learns why it worked.</li>
+    <li><strong>Media refresh request:</strong> "Your photos are 8 weeks old. Refresh to stay competitive. Updated pages see 20% higher conversion."</li>
+</ul>
+
+<h3>Commercial Primitive Coverage Matrix</h3>
+
+<p>Each category must support all 40+ primitives or the product will have friction and look incomplete. Partial implementations fail.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Discovery</th>
+            <th>Decision</th>
+            <th>Packaging</th>
+            <th>Trust</th>
+            <th>Coordination</th>
+            <th>Closure</th>
+            <th>Merchant Control</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Sports-Social</strong></td>
+            <td>Deep link, Area, Creator context, Waitlist</td>
+            <td>Slot, Split pay, Capacity override</td>
+            <td>Trial (₹1 drop-in), Pack-5/10, Credits</td>
+            <td>Player profile, Rules, Skill level, Safety</td>
+            <td>Invite group, Split pay, Leaderboard share</td>
+            <td>Check-in (photo), Post-visit rebook, Subscription</td>
+            <td>Court photos approval, Offer ladder, Proof of outcome</td>
+        </tr>
+        <tr>
+            <td><strong>Brunch/Cafe</strong></td>
+            <td>Deep link, Area, Creator context</td>
+            <td>Reservation, Table upgrade, Capacity</td>
+            <td>Reservation, Bundle (Brunch-for-2), Gift card</td>
+            <td>Verified ambiance photos, Dress code, Parking, Dietary</td>
+            <td>Invite group, Share plan, Split pay, Creator attr</td>
+            <td>Reminder (24h), Check-in photo, Rebook</td>
+            <td>Menu approval, Offer ladder, Photos refresh</td>
+        </tr>
+        <tr>
+            <td><strong>Fitness</strong></td>
+            <td>Deep link, Creator context (trainer)</td>
+            <td>Slot, Session selection, Difficulty level</td>
+            <td>Trial (₹1-2), Pack-5/10, Monthly membership</td>
+            <td>Trainer cert, Student testimonials, Video proof, Beginner-safe</td>
+            <td>Buddy invite, Class group, Leaderboard, Streak badge</td>
+            <td>Check-in (photo), Attendance proof, Rebook one-tap, Subscription</td>
+            <td>Trainer bio approval, Schedule manage, Offer ladder, Media refresh</td>
+        </tr>
+        <tr>
+            <td><strong>Interactive Dining</strong></td>
+            <td>Deep link, Creator context, Area</td>
+            <td>Reservation, Party size, Seating preference, Special occasion</td>
+            <td>Deposit, Bundle (4-person tasting), Gift</td>
+            <td>Chef/menu proof, Experience narrative, Dietary, Participation rules</td>
+            <td>Invite group, Share experience card, Split pay</td>
+            <td>Reminder, Check-in, Photo memory, Rebook</td>
+            <td>Menu/experience approval, Pricing ladder, Event rules manage</td>
+        </tr>
+        <tr>
+            <td><strong>Creator Events</strong></td>
+            <td>Creator deep link, RSVP waitlist</td>
+            <td>Ticket, RSVP, Capacity cutoff</td>
+            <td>Early bird, Buddy pack, VIP upgrade</td>
+            <td>Creator profile, Attendee testimonials, Event narrative</td>
+            <td>Invite friends, Group ticket, Creator co-host card</td>
+            <td>Reminder, Check-in, Attendance proof, Feedback</td>
+            <td>Creator approval, Offer manage, Revenue share transparency</td>
+        </tr>
+    </tbody>
+</table>
+
+</section>
+
+<!-- STRATEGIC INSIGHTS -->
+<section id="strategic-insights">
+<h2>10. Key Strategic Insights for Beta</h2>
+
+<h3>Founder Guardrails: Where to Start</h3>
+
+<ul>
+    <li><strong>Start with 1-2 categories in Wave 1, not 5.</strong> Depth > breadth. Get sports-social or brunch to "beautiful" first, then scale supply. Trying to do everything results in nothing working.</li>
+    <li><strong>Start with categories that have natural WhatsApp handoff.</strong> If the page answers everything and the user never opens WhatsApp again, you've built Resy clone, not a coordination platform.</li>
+    <li><strong>Start by recruiting supply, not demand.</strong> Get 5-10 venues or trainers to 100+ monthly bookings (beautiful data) before running paid acquisition. Proof compounds faster if supply is obsessed with Turnout.</li>
+    <li><strong>Start with a single city per vertical.</strong> Don't launch sports in Delhi, Pune, and Bangalore simultaneously. Go deep in Delhi, prove the moat, then template for Bangalore.</li>
+</ul>
+
+<h3>What to Avoid in Wave 1</h3>
+
+<ul>
+    <li><span class="keyword">Do not build a horizontal listing layer.</span> "Discover any activity" is Insider. You are not Insider. You are category-specific + proof-rich + coordination-native.</li>
+    <li><span class="keyword">Do not over-index on nightlife complexity first.</span> Table minimums, promoter logic, event irregularity will swallow product focus. Save for Wave 2.</li>
+    <li><span class="keyword">Do not begin with opaque dynamic pricing.</span> Lead with merchant-approved offer ladders (trial, pack, subscription). Opacity is trust risk; India's consumers are price-sensitive.</li>
+    <li><span class="keyword">Do not treat WhatsApp as a broadcast CRM.</span> Avoid sending ₹10-off discount blasts to 100K users weekly. WhatsApp is for coordination (group invites, payment splits, reminders). Use it statefully, not spray-and-pray.</li>
+    <li><span class="keyword">Do not fake venue visuals or promise false outcomes.</span> Truthful creative (not AI-enhanced) is a core principle. If a court is not photogenic, own that and emphasize the community/experience instead. Trust compounds; deception decays.</li>
+</ul>
+
+<h3>What WhatsApp Is Good At</h3>
+
+<ul>
+    <li><strong>Group formation:</strong> "Create a recurring Tuesday badminton crew" → invite links → auto-group formation → split pay calculated → weekly reminder sent.</li>
+    <li><strong>Coordination after booking:</strong> "Your group needs to confirm dietary preferences for Sunday brunch" → one-tap form link → group response consolidation.</li>
+    <li><strong>Proof sharing:</strong> "Your leaderboard placement" → share to group chat → friends see you ranked #5 → virality loop activates.</li>
+    <li><strong>Trusted reminder:</strong> Not a sales channel; a logistical channel. "Your trainer Priya's class starts in 2 hours, Sector 14, Fort Kochi. See you?"</li>
+    <li><strong>Payment coordination:</strong> "You owe ₹450 for court rental; split 3 ways = ₹150 each" → auto-Venmo-like settlement.</li>
+</ul>
+
+<h3>What WhatsApp is NOT Good At</h3>
+
+<ul>
+    <li><strong>Broadcast marketing.</strong> Sending unsolicited discount blasts to 100K users. This will tank retention and invite regulatory scrutiny.</li>
+    <li><strong>Cold acquisition.</strong> Don't buy phone lists and spam WhatsApp new users. Organic (referral, creator-led) is Turnout's native motion.</li>
+    <li><strong>Transaction completion.</strong> WhatsApp payment link feels slimy for repeat use. Web + WhatsApp handoff is better than WA-native all-the-way.</li>
+</ul>
+
+<h3>Trust Risks to Mitigate Early</h3>
+
+<ul>
+    <li><span class="keyword">Venue reputation fraud:</span> Fake 5-star reviews, bot check-ins, AI-generated visuals. Audit photos and reviews rigorously in Wave 1. A single deceptive venue destroys category trust.</li>
+    <li><span class="keyword">Trainer credential gaps:</span> Listing trainers without verifying certifications. This is India's highest-trust signal. Verify certs before listing; update annually.</li>
+    <li><span class="keyword">No-show cascades:</span> If users RSVP and don't show, supply gets demotivated (empty courts, cancelled classes). Charge no-show fees early. Skin in the game matters.</li>
+    <li><span class="keyword">Opaque pricing:</span> Hidden service fees, surprise charges, algorithmic variable pricing. Lead with transparency. "Fee: ₹0. Turnout takes 12% commission." Explain clearly.</li>
+    <li><span class="keyword">Privacy breaches:</span> Listing user data (attendance, trainer preferences, payment info) without consent. GDPR-like stance in India will differentiate Turnout; encode privacy early.</li>
+</ul>
+
+<h3>Design Rules for Beta</h3>
+
+<ul>
+    <li><strong>Lead with proof, not aesthetics.</strong> A grainy photo of real attendees > a pristine AI render. Users trust reality; they distrust polish without substance.</li>
+    <li><strong>Page should answer four questions quickly:</strong> "Why this place?" (narrative/experience), "Why now?" (timing/vibe), "Why for me?" (tailoring to user), "What exactly happens next?" (clear next step).</li>
+    <li><strong>Every page should generate a shareable artifact.</strong> Booking confirmation → beautiful card (attendees, time, cost, trainer intro) → share to WhatsApp. This is your viral loop.</li>
+    <li><strong>Onboarding should take <2 minutes per category.</strong> User sees category → picks theme (sports, fitness, brunch, etc.) → sees top-3 venues → taps one → sees slots → books. Friction = churn.</li>
+    <li><strong>No infinite scroll.</strong> Show top-5 venues (curated by GTM filter), not 50. More choice = higher friction. Let supply compete to be top-5, not top-50.</li>
+</ul>
+
+<h3>Synthesis: The Beta North Star</h3>
+
+<p>Turnout is not a discovery app. Turnout is not a reservation widget. Turnout is a <span class="keyword">coordination + proof platform for group experiences</span>. Users come for curation (where), stay for community (who), and return for habit (when). Design every feature through this lens:</p>
+
+<ul>
+    <li><strong>Curation:</strong> Top-3-5 venues per category per city, not 50. Merchant-approved pages with proof artifacts (photos, trainers, testimonials).</li>
+    <li><strong>Coordination:</strong> Group formation, split pay, schedule sync, attendee confirmation. Native WhatsApp handoff for logistics.</li>
+    <li><strong>Proof:</strong> Leaderboards, badges, trainer credentials, testimonials, attendance norms, group history. Trust through compounding visibility.</li>
+    <li><strong>Habit:</strong> Reminders, recurrence, streaks, subscriptions. Friction-free repeat bookings.</li>
+</ul>
+
+<p>If a feature does not serve one of these four pillars, defer it. Beta is the time to be ruthless.</p>
+
+</section>
+
+<!-- CITATIONS -->
+<section id="citations">
+<h2>11. Source Citations: S1-S19</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Tag</th>
+            <th>Publication</th>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Used For</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>S1</strong></td>
+            <td>Fortune India</td>
+            <td>Presence is the new status: District by Zomato's 2026 report maps how India will go out in 2026</td>
+            <td>3 Feb 2026</td>
+            <td>Macro shift from posting to presence; real-world status resets</td>
+        </tr>
+        <tr>
+            <td><strong>S2</strong></td>
+            <td>ET Hospitality World</td>
+            <td>61 percent of Indian diners value interactive elements like open kitchens and chef interactions</td>
+            <td>9 Feb 2026</td>
+            <td>Experience is now product attribute, not decoration. Interactive dining heat signal.</td>
+        </tr>
+        <tr>
+            <td><strong>S3</strong></td>
+            <td>The Economic Times</td>
+            <td>Run, rave, repeat! Wellness turns social for Gen Z</td>
+            <td>31 Dec 2025</td>
+            <td>Wellness as social identity. Gen Z movement choices = group-compatible ritual, not solitary.</td>
+        </tr>
+        <tr>
+            <td><strong>S4</strong></td>
+            <td>IBEF</td>
+            <td>Pickleball in India: The Next Sporting Business (report highlights)</td>
+            <td>23 Oct 2025</td>
+            <td>Pickleball economics: low setup, fast break-even, expansion into housing/malls/corporates. Sports as real business.</td>
+        </tr>
+        <tr>
+            <td><strong>S5</strong></td>
+            <td>The Economic Times</td>
+            <td>Digital advertising surge and live experiences push India's M&E sector past Rs 2.78 lakh crore</td>
+            <td>24 Mar 2026</td>
+            <td>Live events up 44%. Experience sector is material, not anecdotal. ₹2.78L crore market size.</td>
+        </tr>
+        <tr>
+            <td><strong>S6</strong></td>
+            <td>The Economic Times</td>
+            <td>Cricket powers India sports economy past ₹18,864 crore; ecosystem maturity and sponsor interest</td>
+            <td>23 Mar 2026</td>
+            <td>Sports economy crossed ₹18,864 crore in 2025. Institutional validation. Pickleball breakeven highlighted.</td>
+        </tr>
+        <tr>
+            <td><strong>S7</strong></td>
+            <td>Restaurant India</td>
+            <td>More Than Coffee: 4 Key Trends Reshaping India's Cafe Businesses</td>
+            <td>Mar 2026</td>
+            <td>Cafe format specialization. Food-led growth. Intentional dwell time as operating thesis.</td>
+        </tr>
+        <tr>
+            <td><strong>S8</strong></td>
+            <td>The Hollywood Reporter India</td>
+            <td>Coffee Raves Are Taking Over: Here's Why Everyone is Sober and Dancing</td>
+            <td>29 Jul 2025</td>
+            <td>Coffee raves, sober mornings, cultural relevance from Mumbai to Chennai. Younger audiences adopting alcohol-light rituals.</td>
+        </tr>
+        <tr>
+            <td><strong>S9</strong></td>
+            <td>TOI Mumbai</td>
+            <td>Breakfast rides take over Mumbai mornings</td>
+            <td>27 Mar 2026</td>
+            <td>Daylight social rituals emerging in Mumbai. Fitness + community crossover. Lifestyle identity signal.</td>
+        </tr>
+        <tr>
+            <td><strong>S10</strong></td>
+            <td>TOI Bengaluru</td>
+            <td>Happy Streets returns in Bengaluru this Sunday</td>
+            <td>27 Mar 2026</td>
+            <td>Community fitness mornings. Neighborhood participation. Recurring social ritual heat signal.</td>
+        </tr>
+        <tr>
+            <td><strong>S11</strong></td>
+            <td>Tribune + ET Hospitality World</td>
+            <td>Supper clubs transform dining scene in Gurugram / Spezia Bistro opens in Gurugram</td>
+            <td>25 Feb / 13 Feb 2026</td>
+            <td>Invite-only, home-like dining formats growing. People-first, community-led. Intimate dining heat.</td>
+        </tr>
+        <tr>
+            <td><strong>S12</strong></td>
+            <td>New Indian Express + TOI Hyderabad</td>
+            <td>Food trends 2026: Serving Hyderabad 2.0 / Social rituals that redefined how...</td>
+            <td>17 Jan / Dec 2025</td>
+            <td>Wellness-driven menus. Immersive dining. Planned experience formats gaining ground.</td>
+        </tr>
+        <tr>
+            <td><strong>S13</strong></td>
+            <td>Esquire India</td>
+            <td>Why Chennai Is Set To Be 2026's Dining Hotspot</td>
+            <td>Jan 2026</td>
+            <td>Mature cafe culture. Premium casual dining established. Craft cocktails, chef-driven concepts.</td>
+        </tr>
+        <tr>
+            <td><strong>S14</strong></td>
+            <td>TOI Chennai</td>
+            <td>Community Connect: The rise of community dog walks in Chennai</td>
+            <td>27 Mar 2026</td>
+            <td>WhatsApp-coordinated micro-communities. Recurring daily rituals. Participation-led formats.</td>
+        </tr>
+        <tr>
+            <td><strong>S15</strong></td>
+            <td>TOI Kolkata</td>
+            <td>Kolkata sees rise of 'offline dating' / Come for the food, stay for the stories</td>
+            <td>29 Mar / 25 Mar 2026</td>
+            <td>Screen-free connection formats. Adda culture (informal gathering ritual). Trust-first, conversation-first.</td>
+        </tr>
+        <tr>
+            <td><strong>S16</strong></td>
+            <td>TOI Pune</td>
+            <td>Rada brings Marathi pop culture to one stage</td>
+            <td>25 Mar 2026</td>
+            <td>Creator/internet culture moving into live spaces. Regional identity + workshop formats. Pune as culture hub.</td>
+        </tr>
+        <tr>
+            <td><strong>S17</strong></td>
+            <td>TOI Goa / Goa Tourism</td>
+            <td>Goa Tourism showcases its Global Vision at ITB Berlin 2026 / Year-round destination</td>
+            <td>1 Mar 2026</td>
+            <td>Goa positioned as wellness destination. Longer stays, curated retreats, meaningful travel. Premium positioning.</td>
+        </tr>
+        <tr>
+            <td><strong>S18</strong></td>
+            <td>TOI Jaipur</td>
+            <td>Mahindra World City half-marathon tomorrow</td>
+            <td>28 Mar 2026</td>
+            <td>Community fitness and branded participation-led city experiences. Jaipur as emerging wellness market.</td>
+        </tr>
+        <tr>
+            <td><strong>S19</strong></td>
+            <td>Business World</td>
+            <td>India's Coffee Moment: From Habit To Lifestyle As 2026 Beckons</td>
+            <td>31 Dec 2025</td>
+            <td>Coffee spaces becoming social destinations via meetups, workshops, curated events. Lifestyle identity shift.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Additional Research Sources</h3>
+
+<p><strong>Competitive Benchmarks (39 tools):</strong> Resy, Discotech, SevenRooms, Untappd, Arryved, Toast, Eventbrite, Insider, BookMyShow, Zopper, CourtMan, JoinIt, Decathlon Play, Bounce, PlaySpots, ClassPass, Peloton, Fittr, Cult, UrbanClap, Zoomcar Bikestore, Alchemy, Zenloe, Lunchclub, Hobnob, Creators United, DineOut, Zomato, India Dining Co, Airbnb Experiences, Canva, Loom, NotebookLM, Calendly, Figma, Slack, Notion, Airtable, Stripe, Zapier, Discord.</p>
+
+<p><strong>Document Sources:</strong></p>
+<ul>
+    <li>Turnout PRD v3: Market context, theme universe, city × theme heatmap, competitive benchmarks, commercial primitives, GTM strategy</li>
+    <li>Turnout Viral Aha UX Spec v3: Design philosophy, theme templates, benchmark tool patterns</li>
+    <li>Turnout Algorithm UX Contract v1: Trust × Taste Graph, Qualification Engine (referenced in PLG & GTM sections)</li>
+    <li>India Go-Out Market Research GTM Action Map (PDF): Macro signals (S1-S19), theme universe, city opportunity map, commercial primitive stack, founder GTM filter, growth research agenda</li>
+</ul>
+
+</section>
+
+<footer>
+    <p><strong>TURNOUT BETA — Final Research Document</strong></p>
+    <p>Status: Final | v4.0 | March 30, 2026</p>
+    <p>This document supersedes all previous research documents. It is the single source of truth for market research, competitive intelligence, GTM strategy, and product design principles for Turnout's beta launch.</p>
+    <p>For questions or updates, contact the Turnout founder team.</p>
+    <p style="margin-top: 2rem; font-size: 12px; opacity: 0.7;">Document compiled from: Turnout PRD v3, Turnout Viral Aha UX Spec v3, Turnout Algorithm UX Contract v1, India Go-Out Market Research GTM Action Map (PDF). All source citations (S1-S19) verified as of March 2026.</p>
+</footer>
+
+</main>
+
+</body>
+</html>

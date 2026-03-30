@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnout Beta — Final UX Flows & AI Prompts</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0e27;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        header {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(10, 14, 39, 0.98);
+            border-bottom: 3px solid #FF6B35;
+            padding: 14px 32px; z-index: 1000;
+            backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        header h1 { font-size: 16px; color: #FF6B35; letter-spacing: 2px; font-weight: 700; }
+        header .ver { font-size: 11px; color: #888; }
+
+        nav.sidebar {
+            position: fixed; left: 0; top: 56px;
+            width: 260px; height: calc(100vh - 56px);
+            background: #080c22; border-right: 1px solid #1a2a4a;
+            overflow-y: auto; padding: 20px 12px;
+            z-index: 999;
+        }
+        nav.sidebar a {
+            display: block; color: #888; text-decoration: none;
+            padding: 7px 10px; border-radius: 4px;
+            margin-bottom: 3px; font-size: 12px; transition: all 0.2s;
+        }
+        nav.sidebar a:hover { background: #0f1a35; color: #FF6B35; }
+        nav.sidebar .nav-group {
+            color: #FF6B35; font-size: 11px; text-transform: uppercase;
+            letter-spacing: 1.5px; margin-top: 16px; margin-bottom: 6px;
+            padding-left: 10px; font-weight: 600;
+        }
+
+        main {
+            margin-left: 260px; margin-top: 56px;
+            padding: 40px 48px 80px; max-width: 1200px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #FF6B35 0%, #14B8A6 100%);
+            color: #fff; padding: 44px 36px; border-radius: 8px; margin-bottom: 48px;
+        }
+        .hero h2 { font-size: 28px; margin-bottom: 12px; line-height: 1.25; }
+        .hero p { font-size: 15px; opacity: 0.95; margin-bottom: 6px; }
+        .hero .meta { font-size: 12px; opacity: 0.7; margin-top: 16px; }
+
+        h2 { color: #FF6B35; font-size: 24px; margin-top: 52px; margin-bottom: 16px;
+             border-bottom: 2px solid #14B8A6; padding-bottom: 8px; }
+        h3 { color: #14B8A6; font-size: 18px; margin-top: 28px; margin-bottom: 12px; }
+        h4 { color: #25D366; font-size: 15px; margin-top: 18px; margin-bottom: 8px; font-weight: 600; }
+        p { margin-bottom: 12px; }
+        strong { color: #FF6B35; }
+        em { color: #14B8A6; font-style: italic; }
+        ul, ol { margin-left: 24px; margin-bottom: 12px; }
+        li { margin-bottom: 6px; }
+
+        .screen-box {
+            background: #0f1a35; border: 1px solid #1a2a4a; border-left: 4px solid #FF6B35;
+            padding: 24px; margin: 20px 0; border-radius: 0 6px 6px 0;
+        }
+        .screen-box h4 { color: #FF6B35; margin-top: 0; }
+
+        .prompt-box {
+            background: #050810; border: 1px solid #1a2a4a; border-left: 4px solid #25D366;
+            padding: 20px; margin: 16px 0; border-radius: 0 6px 6px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px; white-space: pre-wrap; color: #25D366;
+            overflow-x: auto; line-height: 1.5;
+        }
+
+        .algo-box {
+            background: #0f1a35; border: 1px solid #1a2a4a; border-left: 4px solid #14B8A6;
+            padding: 20px 24px; margin: 20px 0; border-radius: 0 6px 6px 0;
+        }
+
+        .wa-chat {
+            background: #050810; border: 1px solid #25D366; border-left: 4px solid #25D366;
+            padding: 16px; margin: 16px 0; border-radius: 0 6px 6px 0;
+            font-size: 13px; line-height: 1.6;
+        }
+        .wa-chat .msg-user { color: #14B8A6; margin: 8px 0; }
+        .wa-chat .msg-concierge { color: #25D366; margin: 8px 0; }
+        .wa-chat .msg-label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .flow {
+            background: #050810; border: 1px solid #1a2a4a;
+            padding: 24px; margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px; white-space: pre-wrap; color: #14B8A6;
+            border-radius: 6px; overflow-x: auto; line-height: 1.6;
+        }
+
+        .edge-case {
+            background: #0f1a35; border-left: 4px solid #e74c3c;
+            padding: 16px 20px; margin: 16px 0; border-radius: 0 4px 4px 0;
+            font-size: 13px;
+        }
+        .edge-case strong { color: #e74c3c; }
+
+        table {
+            width: 100%; border-collapse: collapse; margin: 20px 0;
+            background: #0f1a35; border: 1px solid #1a2a4a; border-radius: 6px; overflow: hidden;
+        }
+        th {
+            background: #1a2a4a; padding: 12px 14px; text-align: left; color: #FF6B35;
+            font-weight: 600; font-size: 13px;
+        }
+        td {
+            padding: 12px 14px; border-bottom: 1px solid #1a2a4a; font-size: 13px;
+        }
+        tr:last-child td { border-bottom: none; }
+
+        .persona-label {
+            display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 6px; margin-bottom: 4px;
+        }
+        .persona-beginner { background: #1a2a4a; color: #14B8A6; }
+        .persona-regular { background: #1a2a4a; color: #FF6B35; }
+        .persona-group { background: #1a2a4a; color: #25D366; }
+        .persona-solo { background: #1a2a4a; color: #FF6B35; }
+        .persona-corporate { background: #1a2a4a; color: #14B8A6; }
+        .persona-pricesensitive { background: #1a2a4a; color: #25D366; }
+
+        footer {
+            text-align: center; padding: 40px; color: #666; font-size: 12px; margin-top: 80px;
+            border-top: 1px solid #1a2a4a;
+        }
+        footer strong { color: #14B8A6; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TURNOUT BETA — UX Flows & AI Prompts (FINAL)</h1>
+    <span class="ver">Final | March 30, 2026 | v4.0</span>
+</header>
+
+<nav class="sidebar">
+    <div class="nav-group">JOURNEY 1</div>
+    <a href="#j1-landing">1.1 turnout.so Landing</a>
+    <a href="#j1-preorder">1.2 Pre-Order Form</a>
+    <a href="#j1-questions">1.3 Journey Questions</a>
+    <a href="#j1-qualification">1.4 Qualification Result</a>
+    <a href="#j1-welcome">1.5 OG Welcome</a>
+
+    <div class="nav-group">JOURNEY 2</div>
+    <a href="#j2-welcome">2.1 Welcome + Enrichment</a>
+    <a href="#j2-minus1">2.2 −1 Page</a>
+    <a href="#j2-template">2.3 Template Selection</a>
+    <a href="#j2-primitives">2.4 Primitive Config</a>
+    <a href="#j2-concierge">2.5 Concierge Setup</a>
+    <a href="#j2-review">2.6 Final Review</a>
+
+    <div class="nav-group">JOURNEY 3</div>
+    <a href="#j3-toggle">3.1 Customer Mode</a>
+    <a href="#j3-simulation">3.2 Simulation Flow</a>
+    <a href="#j3-feedback">3.3 Feedback Overlay</a>
+    <a href="#j3-approval">3.4 Approval</a>
+    <a href="#j3-artifacts">3.5 Shareable Artifacts</a>
+    <a href="#j3-share">3.6 Share Screen</a>
+
+    <div class="nav-group">JOURNEY 4</div>
+    <a href="#j4-entry">4.1 Entry (Hero)</a>
+    <a href="#j4-input">4.2 Single Input</a>
+    <a href="#j4-generation">4.3 Generation</a>
+    <a href="#j4-reveal">4.4 Reveal</a>
+    <a href="#j4-activation">4.5 Activation</a>
+    <a href="#j4-personas">Persona Adaptations</a>
+
+    <div class="nav-group">JOURNEY 5</div>
+    <a href="#j5-entry">5.1 Entry Messages</a>
+    <a href="#j5-price">5.2 Price Hesitation</a>
+    <a href="#j5-fit">5.3 Fit Ambiguity</a>
+    <a href="#j5-group">5.4 Group Coordination</a>
+    <a href="#j5-slot">5.5 Slot Confusion</a>
+    <a href="#j5-safety">5.6 Safety/Trust</a>
+    <a href="#j5-reclassify">5.7 Re-Classification</a>
+    <a href="#j5-closure">5.8 Closure</a>
+
+    <div class="nav-group">JOURNEY 6</div>
+    <a href="#j6-confirmation">6.1 Confirmation</a>
+    <a href="#j6-reminders">6.2 Reminders</a>
+    <a href="#j6-checkin">6.3 Check-in</a>
+    <a href="#j6-rebook">6.4 Post-Visit Rebook</a>
+    <a href="#j6-owner-summary">6.5 Owner Summary</a>
+    <a href="#j6-content-gap">6.6 Content Gap</a>
+    <a href="#j6-owner-edit">6.7 Owner Page Edit</a>
+</nav>
+
+<main>
+
+<div class="hero">
+    <h2>The Complete Beta Implementation Spec</h2>
+    <p>This document specifies every screen, every algorithm, every AI prompt, and every edge case for all 6 beta journeys: Owner Pre-Launch → Onboarding → Testing → Customer Page Experience → WA Concierge → Post-Booking.</p>
+    <p>An engineer can build from this. A designer can design from this. A product person can review this.</p>
+    <div class="meta">Consolidated from: Viral Aha UX Spec v3, Algorithm × UX Contract v1, Persona Concierge Deep Spec, PRD v3 | March 30, 2026</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JOURNEY 1: OWNER PRE-LAUNCH
+     ═══════════════════════════════════════════════════════════════════ -->
+<h2>JOURNEY 1: OWNER PRE-LAUNCH (turnout.club → turnout.so → qualification → OG)</h2>
+<p>Owner discovers Turnout via Instagram (@turnout.club), lands on turnout.so, pre-orders, qualifies via automated scoring, and enters launch cohort with OG status if score ≥70.</p>
+
+<div id="j1-landing" class="screen-box">
+    <h4>Screen 1.1: turnout.so Landing Page</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li>Hero section: "Your venue deserves a landing page that works" + demo video (15s) of a Turnout page in action</li>
+        <li>Social proof: "Already live with [N] venues in Delhi, Bangalore, Mumbai" + 2-3 testimonial cards (venue name, category, result quote)</li>
+        <li>3-panel feature breakdown: "Real Photos Only → AI Composition → WhatsApp Concierge" with icons</li>
+        <li>Pricing visible: "Pre-order for your city: Rs 4,999/month OR Rs 12,999 annual"</li>
+        <li>CTA button: "Claim Your Spot" (primary) + "See Sample Pages" (secondary)</li>
+        <li>Bottom section: FAQ (5 common questions: "How fast?", "Do you use my photos?", "What if I'm not on Instagram?", "Can I cancel?", "Who has early access?")</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Demo video plays inline, with skip option</li>
+        <li>"See Sample Pages" button opens modal with 4 sample pages (Sports, Brunch, Fitness, Dining) — user can swipe through</li>
+        <li>"Claim Your Spot" → scrolls to form</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Static landing. No personalization yet. Forms measure: video view time, CTA button click, form submission.</p>
+    <p><strong>Edge cases:</strong> Mobile-optimized. If video doesn't load, show fallback static image carousel. If user already submitted form in past 7 days, show "Your application is being reviewed" instead of CTA.</p>
+</div>
+
+<div id="j1-preorder" class="screen-box">
+    <h4>Screen 1.2: Pre-Order Form (turnout.so/pre-order)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li>Form fields (required marked with *):</li>
+        <ul>
+            <li>Venue name *</li>
+            <li>Category dropdown (Restaurant, Cafe, Sports, Fitness, Wellness, Nightlife, Event Space) *</li>
+            <li>City dropdown (Delhi, Bangalore, Mumbai) *</li>
+            <li>Owner email * (auto-prefill if logged in)</li>
+            <li>Owner phone * (WhatsApp-enabled number)</li>
+            <li>Venue address *</li>
+            <li>Instagram handle (optional) — "We'll scrape your public posts to build your profile"</li>
+            <li>Website URL (optional) — "We'll pull your menu, photos, and hours"</li>
+            <li>Google Places URL (optional) — "Link to your Google Business listing"</li>
+        </ul>
+        <li>Consent checkboxes (required):</li>
+        <ul>
+            <li>☐ "I consent to Turnout analyzing my Instagram (public posts, follower count, engagement)" *</li>
+            <li>☐ "I consent to Turnout accessing my website (menu, photos, hours, pricing)" *</li>
+            <li>☐ "I consent to Turnout contacting me via WhatsApp and email" *</li>
+            <li>☐ "I understand Turnout will ask me 5-8 discovery questions next" *</li>
+        </ul>
+        <li>Submit button: "Start Pre-Order" (disabled until all * fields filled)</li>
+        <li>Bottom: "We'll reach out in 2 hours with next steps"</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>All fields have client-side validation (email format, phone format, min 3 chars for name)</li>
+        <li>Instagram handle field includes autocomplete for verified accounts (if exists)</li>
+        <li>Clicking consent checkbox reveals tooltip explaining what data Turnout accesses and how</li>
+        <li>Submit button shows loading spinner and "Submitting..." during API call</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Form submits to /api/preorder endpoint. Creates owner profile record. Immediately triggers qualification engine in background (scrapes Instagram, website, Google). Sends confirmation email + WhatsApp message with next steps link.</p>
+    <p><strong>Edge cases:</strong> If Instagram handle invalid or private, skip IG scrape and note "IG data unavailable" in profile. If website unreachable, skip website scrape. If phone number not WhatsApp-enabled, send SMS confirmation + email. If owner submits duplicate (same email), show "You already pre-ordered. Check your email for status."</p>
+</div>
+
+<div id="j1-questions" class="screen-box">
+    <h4>Screen 1.3: Journey Questions (5-8 structured questions)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <p>Owner receives WhatsApp message: "Hi [Venue]! We're excited to help. Please answer 5 quick questions so we can recommend the perfect template for you."</p>
+    <p>Questions (presented one-by-one in WA, or as a form link to turnout.so/journey/[owner_id]):</p>
+    <ol>
+        <li><strong>How long has your venue been operating?</strong> → Single choice: "0-6 months" / "6-12 months" / "1-3 years" / "3+ years"</li>
+        <li><strong>What's your biggest current challenge?</strong> → Single choice: "Low footfall during off-peak hours" / "Awareness among target audience" / "Difficulty coordinating group bookings" / "Price sensitivity from customers" / "Not sure yet"</li>
+        <li><strong>What's your venue's primary use case?</strong> → Single choice: "Walk-in (customers just show up)" / "Reservation-based (customers book ahead)" / "Slot/class-based (timed sessions)" / "Both walk-in + reservation"</li>
+        <li><strong>How many real photos do you have of your space?</strong> → Single choice: "1-5" / "5-15" / "15-30" / "30+"</li>
+        <li><strong>Are you comfortable with pricing experiments?</strong> → Single choice: "Yes, optimize for revenue" / "Yes, optimize for volume" / "Prefer to keep pricing fixed" / "Unsure"</li>
+        <li><strong>[Optional] What's your current monthly marketing spend?</strong> → Text input: "Rs X" or "Not tracked"</li>
+        <li><strong>[Optional] Are you on any other booking platforms (Zomato, Dineout, etc)?</strong> → Checkbox group: IG / Website only / Zomato / Dineout / EazyDiner / Other</li>
+        <li><strong>[If restaurant/cafe] Do you have a digital menu available?</strong> → Yes / No / Uploading soon</li>
+    </ol>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>In WA: Each question sent as interactive button list (if WA Flow API available), or free-text with user response parsing</li>
+        <li>In form: Each question is a radio group or dropdown</li>
+        <li>Progress indicator: "Q3/5" at top of form</li>
+        <li>Can go back to edit previous answer</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Qualification Scoring Engine (runs on form submit). Inputs to scoring:</p>
+    <ul>
+        <li><strong>Content Readiness:</strong> "How many photos?" + IG scrape result (photo count, quality) + website scrape (menu, gallery) → 0-25 points</li>
+        <li><strong>Commercial Readiness:</strong> Venue category + "reservation vs walk-in" answer + pricing visibility from website/Zomato → 0-25 points</li>
+        <li><strong>Growth Signal:</strong> "Biggest challenge" answer + venue age + IG engagement trend + owner willingness to experiment → 0-25 points</li>
+        <li><strong>Theme-City Fit:</strong> Category + city + owner's booking model (e.g., "Sports + Delhi + Reservation" = high fit) → 0-25 points</li>
+    </ul>
+    <p><strong>Qualification Score Logic:</strong></p>
+    <div class="algo-box">
+        <p><strong>Content Readiness (0-25):</strong></p>
+        <ul>
+            <li>1-5 photos = 5 pts | 5-15 = 10 pts | 15-30 = 18 pts | 30+ = 25 pts</li>
+            <li>Bonus: +5 if IG engagement rate > city median | +5 if website gallery has 10+ distinct images</li>
+        </ul>
+        <p><strong>Commercial Readiness (0-25):</strong></p>
+        <ul>
+            <li>Pricing visible on website = 10 pts | Reservation system active = 8 pts | Zomato/Dineout presence = 7 pts</li>
+            <li>Venue age 1+ years = 5 pts | Category in Wave 1 (Sports, Brunch, Wellness, Dining) = 10 pts</li>
+        </ul>
+        <p><strong>Growth Signal (0-25):</strong></p>
+        <ul>
+            <li>"Off-peak footfall" challenge = 10 pts (high motivation) | "Awareness" challenge = 8 pts | "Group coordination" = 7 pts</li>
+            <li>Willing to experiment (pricing/volume) = 10 pts | Prefer fixed pricing = 3 pts</li>
+            <li>IG posting frequency > 2x/week = 5 pts bonus</li>
+        </ul>
+        <p><strong>Theme-City Fit (0-25):</strong></p>
+        <ul>
+            <li>Category match to Wave 1 heatmap + city priority. Example: "Pickleball + Delhi" = 25 pts. "Cloud kitchen + Mumbai" = 8 pts.</li>
+        </ul>
+        <p><strong>Total Score Threshold: Launch Cohort = 55+. OG Status = 70+.</strong></p>
+    </div>
+    <p><strong>Edge cases:</strong> If owner skips questions, use defaults from pre-order form (category, IG handle) to estimate. If score < 55, system still qualifies but shows "improvement roadmap." If duplicate answer detection (copy-paste), flag for manual review.</p>
+</div>
+
+<div id="j1-qualification" class="screen-box">
+    <h4>Screen 1.4: Qualification Result (Score & OG Status)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <p>Owner receives WhatsApp message or email with result. If qualified:</p>
+    <ul>
+        <li><strong>Score display:</strong> "You scored 72/100 — Congratulations, you're a Turnout OG!" (big badge with confetti animation if Web)</li>
+        <li><strong>Score breakdown:</strong> Bar chart showing 4 sub-scores (Content: 22/25, Commercial: 19/25, Growth: 18/25, Theme-City: 13/25)</li>
+        <li><strong>What this means:</strong> "As a Turnout OG, you get: Priority onboarding (this week), Access to exclusive community, Free content shoot (photos + video), Early feature access"</li>
+        <li><strong>Next steps:</strong> "Click below to schedule your content shoot or start onboarding immediately" (2 buttons)</li>
+    </ul>
+    <p>If not qualified (score < 55):</p>
+    <ul>
+        <li><strong>Result:</strong> "Score: 48/100 — You're close! Let's get you launch-ready."</li>
+        <li><strong>Improvement roadmap:</strong></li>
+        <ul>
+            <li>"Your content is strong (20/25). No action needed."</li>
+            <li>"Your booking setup needs work (8/25). Action: Add pricing and hours to your website (estimated time: 30 min)."</li>
+            <li>"Your growth signal is uncertain (12/25). Action: Post 5 more behind-the-scenes photos on IG this week."</li>
+        </ul>
+        <li><strong>Requalify button:</strong> "Re-take the journey questions in 7 days to improve your score"</li>
+        <li><strong>Alternative CTA:</strong> "Still interested? Let's talk to our team" → book call with founder</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Score breakdown bars are interactive (hover shows detail)</li>
+        <li>Improvement actions are clickable (e.g., "Add pricing to website" links to tutorial)</li>
+        <li>CTA buttons: "Schedule Content Shoot" or "Start Onboarding Now"</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Qualification score persists in owner profile. Score triggers template recommendation confidence level in Journey 2.</p>
+    <p><strong>Edge cases:</strong> If owner was previously not qualified but requalifies, celebrate the progress. If score drops on re-qualification (venue removed photos from IG), notify owner proactively.</p>
+</div>
+
+<div id="j1-welcome" class="screen-box">
+    <h4>Screen 1.5: OG Welcome + Content Shoot Scheduling</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li>Email subject: "Welcome, [Venue]! You're a Turnout OG 🎉"</li>
+        <li>Email content:</li>
+        <ul>
+            <li>Hero section: OG badge + confetti animation (if email supports, fallback to static badge)</li>
+            <li>"As a Turnout OG, you've been selected as a launch partner. Here's what happens next:"</li>
+            <li>Timeline (3 items):</li>
+            <ul>
+                <li>"This week: Free content shoot (30-45 min, our team, photos + 1 min video). This becomes your hero image."</li>
+                <li>"Next week: You set up your page (15 min, guided onboarding, AI helps with copy)."</li>
+                <li>"Launch week: Your page goes live. We promote you to our audience. You start converting."</li>
+            </ul>
+            <li>CTA: "Schedule your content shoot" (link to Calendly or Turnout scheduler)</li>
+            <li>Secondary: "Start onboarding now" (link to Journey 2)</li>
+            <li>Footer: "Questions? Reply to this email or WhatsApp us at [Concierge number]"</li>
+        </ul>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Calendly/Turnout scheduler embedded or linked (shows 5 available time slots for content shoot, filtered by venue's open hours)</li>
+        <li>When owner books slot, confirmation sent via email + WhatsApp + calendar invite</li>
+        <li>"Start onboarding now" button goes to Journey 2.1</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Content shoot scheduling integrates with venue's open hours (from pre-order form or Google Places). Sends reminders 24h and 4h before shoot. After shoot, content uploaded to owner's Turnout dashboard and flagged as "Tier 1 assets" in the Venue Profiler.</p>
+    <p><strong>Edge cases:</strong> If owner declines content shoot, they can still onboard but without "OG content" tag. If shoot is cancelled by owner, offer rescheduling with 2x urgency (email + SMS + WhatsApp). If team can't reach venue for shoot, mark as "attempted" and move to manual review.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JOURNEY 2: OWNER ONBOARDING
+     ═══════════════════════════════════════════════════════════════════ -->
+<h2>JOURNEY 2: OWNER ONBOARDING (enrichment → −1 page → template selection → primitives → concierge setup)</h2>
+<p>Owner enters guided onboarding flow. System shows enriched venue data, problem analysis, template recommendations, primitive selection, and concierge personalization.</p>
+
+<div id="j2-welcome" class="screen-box">
+    <h4>Screen 2.1: Welcome + "We Already Know You"</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li>Hero: "Welcome to Turnout, [Venue Name]! We already know quite a bit about you." (with warm, personal tone)</li>
+        <li><strong>Enriched Venue Data Card (read-only, with edit link):</strong></li>
+        <ul>
+            <li>Venue name (edit link)</li>
+            <li>Category: "[Detected category]" (with confidence: "We're 95% sure this is [category]" + edit link)</li>
+            <li>Location: "[Address from Google]" (edit link)</li>
+            <li>Hours: "[From Google/website]" (edit link)</li>
+            <li>Average rating: "4.2⭐ from 87 Google reviews" (if exists)</li>
+            <li>Price range: "[Rs XXX-YYY per person]" (if detected from website/Zomato)</li>
+            <li>Vibe tags (auto-generated from IG captions): "Casual • Instagram-worthy • Group-friendly" (edit link)</li>
+        </ul>
+        <li><strong>Trust Meter (0-100):</strong> "Trust Score: 78/100 — Your data is strong. Most sections of your page will be Tier 1." (Visual bar with explanation)</li>
+        <li><strong>Content Summary:</strong></li>
+        <ul>
+            <li>"✓ Instagram: 2,450 followers, 4.2% engagement, 24 recent posts (excellent)"</li>
+            <li>"✓ Website: Menu, 12 photos, hours visible (strong)"</li>
+            <li>"✓ Google Places: 87 reviews, last updated 3 days ago (fresh)"</li>
+            <li>"⚠ Missing: Team bios, chef credentials. This is optional but helps build trust."</li>
+        </ul>
+        <li><strong>CTA:</strong> "Great! Let's build your page. Ready?" → "Next"</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>All "edit link" fields are clickable and open inline forms</li>
+        <li>Trust score bar is interactive (hover shows breakdown by component)</li>
+        <li>Vibe tags show edit icon on hover</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Venue Profiler (Skill 1) outputs enriched profile. Trust score calculated from 6 components (Media Richness, Review Credibility, Operational Proof, Credential Depth, Revenue Signal, Owner Engagement). Confidence = qualification score + freshness of data.</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: Vibe Tag Generator
+You are analyzing Instagram captions and Google reviews to extract the emotional/cultural vibe of a venue.
+
+Input:
+- Venue name: {{venue_name}}
+- Category: {{category}}
+- Recent IG captions (10 most recent):
+{{ig_captions_list}}
+- Google reviews (top 5 by helpfulness):
+{{google_reviews_list}}
+
+Task: Generate 3-5 vibe tags that capture the *feeling* of this venue, not just its function.
+
+Format: Return as JSON:
+{
+  "vibe_tags": ["tag1", "tag2", "tag3"],
+  "explanation": "Why these tags matter for this venue"
+}
+
+Rules:
+- Use common cultural motifs (e.g., "Influencer-approved", "Gram-worthy", "Local favorite", "Upscale escape", "Student-friendly", "Family-safe", "Wellness-focused")
+- Avoid generic tags ("Nice place", "Good food")
+- If captions/reviews mention specific themes (e.g., "bring your yoga mat", "sunset views", "group-friendly"), prioritize those
+    </div>
+    <p><strong>Edge cases:</strong> If IG private or no data available, skip IG enrichment and note "IG data unavailable." If venue just opened (< 7 days), Trust score capped at 45 but show "New venue? We'll learn as you grow." If Trust < 50, highlight "Content Gap" section and ask owner to upload photos.</p>
+</div>
+
+<div id="j2-minus1" class="screen-box">
+    <h4>Screen 2.2: The −1 Journey Page ("Venues like yours face these problems")</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Hero:</strong> "Venues like yours typically face 3-4 specific challenges. Let's solve them."</li>
+        <li><strong>Problem Cards (AI-generated, personalized by category + city + challenge from qualification):</strong></li>
+        <li>Each card has:</li>
+        <ul>
+            <li>Problem title (e.g., "Off-peak slots sit empty")</li>
+            <li>Why it happens (1-2 sentences, specific to venue category/city)</li>
+            <li>Impact: "This costs you ~Rs X/month in lost revenue" (estimated based on category benchmarks)</li>
+            <li>How Turnout solves it: "WhatsApp concierge converts hesitant leads. Pricing experiments find demand."</li>
+            <li>Evidence: "Similar venues saw 23% footfall lift in month 1"</li>
+        </ul>
+        <li>Example problems (by category/city):</li>
+        <ul>
+            <li><strong>Brunch cafe in Bangalore:</strong> "Weekday mornings are slow. Customers don't know about your new filter coffee blend."</li>
+            <li><strong>Pickleball court in Delhi:</strong> "Off-peak slots (Tue-Thu 2-5pm) are empty. Beginners don't feel confident booking. Corporate groups don't know about your team rates."</li>
+            <li><strong>Yoga studio in Mumbai:</strong> "New students see your schedule and don't book because they're nervous. Group class coordination is chaotic on WhatsApp."</li>
+        </ul>
+        <li><strong>CTA:</strong> "These are the problems we solve. Ready to build your page?" → "Next"</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Problem cards have "Learn more" link (expands to show case study or FAQ)</li>
+        <li>Evidence section shows confidence level (e.g., "Based on 47 similar venues")</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Problems Database (seeded from market research) × Venue Profile × City-Theme Heatmap. Retrieves top 3-4 problems most relevant to this venue's category, city, and stated challenge (from Journey 1 questions).</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: Problems Generator (−1 Page)
+You are a venue operations expert helping owners understand their category-specific challenges.
+
+Input:
+- Venue name: {{venue_name}}
+- Category: {{category}}
+- City: {{city}}
+- Stated challenge (from qualification): {{owner_challenge}}
+- Venue age: {{venue_age}}
+- Current footfall tier: {{footfall_tier}} (estimated from Google/Zomato)
+
+Task: Generate 3-4 problem statements specific to this venue. Each problem should:
+1. Feel real and relatable (not generic)
+2. Have quantified impact (estimated Rs loss per month)
+3. Show how Turnout solves it
+4. Reference evidence from similar venues
+
+Format:
+{
+  "problems": [
+    {
+      "title": "Problem title",
+      "why": "Why this happens specifically at {{venue_name}}",
+      "impact": "This costs ~Rs X/month in lost revenue",
+      "solution": "How Turnout solves it",
+      "evidence": "Similar venues saw X% improvement"
+    },
+    ...
+  ]
+}
+
+Rules:
+- Draw from these categories-specific patterns:
+  * Brunch cafes: Weekday awareness gap, group coordination, walk-in discovery
+  * Sports (pickleball): Off-peak booking anxiety, beginner confidence, group pricing
+  * Fitness: Beginner hesitation, class coordination, package upsells
+  * Fine dining: Group coordination, occasion framing, deposit communication
+- Use city-specific language (e.g., "South Delhi crowd wants Instagram-worthy spots", "Bangalore early-birds want weekday deals")
+- If {{owner_challenge}} is known, amplify that problem in the list
+    </div>
+    <p><strong>Edge cases:</strong> If venue too new to have reliable data, use category averages. If owner stated "Not sure" for challenge, show 4 generic problems for category. If venue is already high-performing (Google rating 4.5+), reframe problems as "optimization opportunities" not "problems."</p>
+</div>
+
+<div id="j2-template" class="screen-box">
+    <h4>Screen 2.3: Template Selection (2-3 options, Turnout recommendation, previews)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Hero:</strong> "Choose your page template. Based on your venue, we recommend [Template Name]."</li>
+        <li><strong>Recommended Template Card (highlighted with accent color border):</strong></li>
+        <ul>
+            <li>Template name (e.g., "Sports-Social")</li>
+            <li>"Turnout recommended based on your category and booking model"</li>
+            <li>Why (1 sentence): "Best for venues with slot-based booking and group coordination."</li>
+            <li>Features: "• Court/slot picker • Group split-pay • Beginner reassurance • Pack options"</li>
+            <li>Preview button: "See a demo" → opens side-by-side comparison showing how the page looks for a sample venue in same category</li>
+            <li>CTA: "Use this template"</li>
+        </ul>
+        <li><strong>Alternative Template Cards (2-3 options):</strong> Same structure, but without "recommended" tag. Example alternatives: "Reservation-First" (if venue fits multiple categories), "Premium Dining" (if upscale fine dining).</li>
+        <li><strong>Preview feature:</strong> When user clicks "See a demo" on any template, show side panel with:</li>
+        <ul>
+            <li>Mobile phone mockup (iPhone 12 Pro size)</li>
+            <li>Actual page from similar real venue in same category/city</li>
+            <li>Scroll-through animation showing all 5 screens of customer flow</li>
+            <li>Overlay explaining each section: "This hero image is from a venue like yours"</li>
+        </ul>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Template card hover effect (slight scale up, shadow increase)</li>
+        <li>"See a demo" button opens full-screen modal</li>
+        <li>Demo modal has close button + "Next" to see next template's demo</li>
+        <li>Selecting template highlights card border and shows checkmark</li>
+    </ul>
+    <p><strong>Algorithm:</strong> recommend_template() function (outputs in Trust × Taste Graph). Uses Trust score (high = more aggressive Tier 1 creativity) and Taste profile (category × city × vibe tags) to select best template. Confidence score returned (75-100 = high confidence, "Use this"; 50-74 = medium, show alternatives; <50 = "Choose what feels right").</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: Template Recommendation Explanation
+You are the product recommending a page template to a venue owner based on their profile.
+
+Input:
+- Venue name: {{venue_name}}
+- Category: {{category}}
+- City: {{city}}
+- Qualification score: {{qual_score}}/100
+- Trust score: {{trust_score}}/100
+- Taste profile: {{taste_vector}} (e.g., "sports-social, group-focused, outdoor")
+- Owner's stated challenge: {{challenge}}
+
+Task: Recommend the best template and explain why in 1-2 sentences.
+
+Output:
+{
+  "recommended_template": "Template name",
+  "confidence": 85,
+  "why": "Why this template is best for them",
+  "features_highlight": "Why these specific features solve their challenge"
+}
+
+Rules:
+- Use the taste_vector to match template. If "sports-social + group-focused", recommend Sports-Social template.
+- If trust_score < 50, recommend the most lenient template with minimal AI composition
+- If challenge == "off-peak footfall", recommend template with strong daypart/offer features
+- If owner is repeat, recommend their previous template (for consistency) unless they changed challenge
+    </div>
+    <p><strong>Edge cases:</strong> If multiple templates equally good (confidence 65-75), show 3 options with equal prominence. If trust score too low to support any template confidently, show "Let's improve your data first" and return to Screen 2.1. If owner selects non-recommended template, ask "Are you sure?" with explanation of why recommended one might be better.</p>
+</div>
+
+<div id="j2-primitives" class="screen-box">
+    <h4>Screen 2.4: Primitive Bundle Configuration (core + optional add-ons)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Hero:</strong> "Now let's configure how customers book. Choose what you support."</li>
+        <li><strong>Core Bundle (recommended, can't uncheck all):</strong></li>
+        <ul>
+            <li>☑ Reservation (date + time + party size picker) — checked by default</li>
+            <li>Details: "Let customers reserve a table or slot. Pricing visible."</li>
+            <li>Cost: Included</li>
+        </ul>
+        <li><strong>Optional Add-ons (checkboxes):</strong></li>
+        <ul>
+            <li>☐ Group Split-Pay (allows customers to split bill, invite friends to pay their share)</li>
+            <li>Details: "Turn group bookings into group payments. Works with WhatsApp coordination."</li>
+            <li>Cost: +Rs 500/month (or included if qual score ≥ 70)</li>
+            <li>Relevance badge: "Highly relevant for your venue" (if venue is group-oriented, e.g., sports/brunch)</li>
+        </ul>
+        <ul>
+            <li>☐ Pack/Membership (allow customers to buy prepaid packs, e.g., "10-class pack" or "monthly unlimited")</li>
+            <li>Details: "Boost recurring revenue. Customers commit upfront."</li>
+            <li>Cost: +Rs 800/month</li>
+            <li>Relevance badge: "Recommended for recurring venues" (if fitness/wellness)</li>
+        </ul>
+        <ul>
+            <li>☐ Deposit (require upfront payment or hold, e.g., "Rs 500 deposit for reservation")</li>
+            <li>Details: "Reduce no-shows. Deposit refunded after visit."</li>
+            <li>Cost: +Rs 300/month</li>
+            <li>Warning (if selected): "Deposits may reduce conversion for first-timers. Use cautiously."</li>
+        </ul>
+        <ul>
+            <li>☐ Waitlist (if venue has capacity limits, e.g., "slots full" → customer joins waitlist)</li>
+            <li>Details: "Manage overflow. Customers notified when slot opens."</li>
+            <li>Cost: +Rs 400/month</li>
+            <li>Relevance: Only shown if venue type supports (restaurants, fitness classes)</li>
+        </ul>
+        <ul>
+            <li>☐ Referral Tracking (enable sharing, referral rewards)</li>
+            <li>Details: "Customers share page with friends. Track who referred whom."</li>
+            <li>Cost: Included</li>
+        </ul>
+        <li><strong>Summary at bottom:</strong> "Selected: 3 features. Monthly cost: Rs 500 (add-ons). Pricing visible? [Yes/No]"</li>
+        <li><strong>CTA:</strong> "This looks good. Next." or "I need help choosing." → link to Concierge chat</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Checkboxes for each add-on (core bundle can't be unchecked)</li>
+        <li>Clicking checkbox expands details</li>
+        <li>Cost summary updates in real-time as checkboxes toggle</li>
+        <li>Warning box appears/disappears based on selections (e.g., deposit warning)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Primitive Bundle Selection based on template choice + category + owner feedback. System recommends bundle and marks as "Highly relevant" or "Optional" based on venue type. Cost calculated from preset add-on pricing.</p>
+    <p><strong>Edge cases:</strong> If owner selects incompatible primitives (e.g., "Waitlist" for a brunch cafe with walk-in focus), show warning: "This primitive may not match your venue model. Sure?" If owner selects many add-ons (5+), show cost summary and ask "Does this fit your budget?" If owner deselects all recommended add-ons, nudge: "We recommend Group Split-Pay for your venue. Sure you don't want it?"</p>
+</div>
+
+<div id="j2-concierge" class="screen-box">
+    <h4>Screen 2.5: Concierge Setup (personality, tone, knowledge injection)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Hero:</strong> "Last step: Meet your WhatsApp concierge. Let's give them a personality that matches your venue."</li>
+        <li><strong>Concierge Preview Card:</strong></li>
+        <ul>
+            <li>Avatar (emoji or icon based on category, e.g., 🏸 for sports, ☕ for cafe)</li>
+            <li>Name suggestion (e.g., "Alex" for sports, "Brew Bot" for cafe — owner can edit)</li>
+            <li>Sample first message: "Hi! 👋 Interested in [venue]? I'm here to help make booking easy."</li>
+            <li>Sample conversation snippet (1-2 messages showing tone)</li>
+        </ul>
+        <li><strong>Tone Selection (radio buttons):</strong></li>
+        <ul>
+            <li>◯ Friendly & Casual ("Hey!", emojis, conversational)</li>
+            <li>◯ Professional & Helpful (clear, structured, respectful)</li>
+            <li>◯ Enthusiastic & Energetic (exclamation marks, emojis, excited)</li>
+        </ul>
+        <li><strong>Knowledge Injection (text area):</strong></li>
+        <ul>
+            <li>Label: "Tell the concierge about your venue (optional). This helps them have better conversations."</li>
+            <li>Placeholder: "E.g., 'We're beginner-friendly with zero experience required,' or 'Ask about our Tuesday off-peak special.'"</li>
+            <li>Char limit: 300 characters</li>
+            <li>Hint: "3-5 facts about your venue, offers, or vibe"</li>
+        </ul>
+        <li><strong>Sample Conversation Display:</strong> When owner changes tone or adds knowledge, sample message updates in real-time</li>
+        <li><strong>CTA:</strong> "Perfect! Create my page." → submits and goes to Screen 2.6</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Radio buttons for tone selection (default = Friendly & Casual)</li>
+        <li>Text area with char counter</li>
+        <li>Sample message updates dynamically as tone/knowledge changes</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Concierge Flavor Mapping (from Algorithm × UX Contract). Stores concierge_tone + knowledge_facts in owner profile. These feed into WA conversation system prompt (Journey 5).</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: Concierge First Message Generator
+You are personalizing the first message the WA concierge will send to a customer.
+
+Input:
+- Venue name: {{venue_name}}
+- Category: {{category}}
+- Tone: {{tone}} (friendly, professional, enthusiastic)
+- Knowledge facts: {{knowledge_facts}}
+
+Task: Generate a natural, warm first message that:
+1. Acknowledges the customer landed on the venue page
+2. Introduces the concierge
+3. Offers help
+4. Matches the selected tone
+
+Output: Single message string (max 200 chars)
+
+Rules:
+- If tone == friendly: Use "Hey", casual language, emojis (👋 ☕ 🏸)
+- If tone == professional: Formal greeting, clear structure, no emojis
+- If tone == enthusiastic: Exclamation marks, positive energy, multiple emojis
+- Personalize with venue name, never generic "venue"
+- End with open-ended question to invite response
+    </div>
+    <p><strong>Edge cases:</strong> If owner leaves knowledge_facts empty, use category defaults (e.g., "Sports-Social: 'Beginner-friendly, no gear rental needed'"). If tone selection seems mismatched to category (e.g., "Casual" for upscale fine dining), show nudge but allow. If owner enters off-brand knowledge (e.g., "We serve alcohol" for wellness studio), flag for review.</p>
+</div>
+
+<div id="j2-review" class="screen-box">
+    <h4>Screen 2.6: Final Review + Page Creation</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Hero:</strong> "Review everything before we build your page."</li>
+        <li><strong>Review Summary (read-only cards, each with "Edit" link):</strong></li>
+        <ul>
+            <li><strong>Venue Profile:</strong> Name, category, location, hours, rating</li>
+            <li><strong>Template:</strong> Template name + "Preview"</li>
+            <li><strong>Primitives:</strong> Selected features (Reservation, Group Split-Pay, etc.) + monthly cost</li>
+            <li><strong>Concierge:</strong> Name + tone + sample first message</li>
+        </ul>
+        <li><strong>Final Confirmation:</strong> "Ready to launch? Your page will be live in 2-3 hours."</li>
+        <li><strong>CTAs:</strong></li>
+        <ul>
+            <li>Primary: "Create My Page Now" (triggers page generation API)</li>
+            <li>Secondary: "I need to edit something" (each card's "Edit" link goes back to relevant screen)</li>
+        </ul>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Each summary card has "Edit" link (goes back to relevant screen in Journey 2)</li>
+        <li>Create button shows spinner and "Generating..." during API call</li>
+        <li>On success: "Your page is being created! Check your email in 2-3 hours." + journey to Journey 3 (owner-as-customer test)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Triggers Page Composition Engine (Skill 3) with inputs: template selection, venue profile, primitives config, concierge flavor. Generates page layout, content, and configuration. Page status stored as "draft" until owner approves (Journey 3).</p>
+    <p><strong>Edge cases:</strong> If page generation fails (e.g., insufficient photo data), show "Let's improve your page" and return to Screen 2.1 to collect more photos. If generation takes >30 min, send progress email + WA notification. If owner tries to edit 5+ times, show message: "Let's get a human review. Chat with our team?" and link to concierge chat.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JOURNEY 3: OWNER-AS-CUSTOMER TEST + SHAREABLE ARTIFACTS
+     ═══════════════════════════════════════════════════════════════════ -->
+<h2>JOURNEY 3: OWNER-AS-CUSTOMER TEST + SHAREABLE ARTIFACTS</h2>
+<p>Owner experiences their page as a customer would, provides feedback, approves or requests edits, then generates shareable preview cards and OG badge for promotion.</p>
+
+<div id="j3-toggle" class="screen-box">
+    <h4>Screen 3.1: Customer Mode Toggle ("Experience Your Page")</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Email subject:</strong> "Your page is ready for review! 🎉"</li>
+        <li><strong>Email body:</strong></li>
+        <ul>
+            <li>Hero: "Your Turnout page is ready. Try it as a customer would."</li>
+            <li>Preview of page thumbnail (screenshot of Screen 4.1: Entry)</li>
+            <li>CTA: "Enter Customer Mode (tap below)" → link to /owner/[owner_id]/customer-mode?page=[page_id]</li>
+            <li>Secondary: "View report" → link to /owner/[owner_id]/pages/[page_id]/report (Analytics dashboard, empty for pre-launch)</li>
+            <li>Info: "In Customer Mode, you'll see your page exactly as customers see it. Test the booking flow, check the copy, and flag anything that needs editing."</li>
+        </ul>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>"Enter Customer Mode" button navigates to full-screen mobile page view</li>
+        <li>Header shows "👤 CUSTOMER MODE" with "Exit" button</li>
+        <li>Page fully interactive (all buttons work, all pickers functional)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Page served in "customer view" with mode=customer in query param. Analytics disabled (no events tracked). Owner can navigate full 5-screen flow without booking actually submitted.</p>
+    <p><strong>Edge cases:</strong> If owner is already in Customer Mode and page is edited backend, show notification "Page was updated since you entered customer mode. Reload to see changes?" If owner tries to submit a fake booking while in customer mode, show "This is test mode — no booking created" instead of submission.</p>
+</div>
+
+<div id="j3-simulation" class="screen-box">
+    <h4>Screen 3.2: Full Customer Journey Simulation (5-screen flow walkthrough)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <p>Owner navigates the full 5-screen customer flow (Screens 4.1-4.5 from Journey 4, fully functional for test purposes):</p>
+    <ul>
+        <li><strong>Screen 4.1 (Entry):</strong> Hero image, vibe tags, pricing, social proof — owner checks if photos look good, copy makes sense</li>
+        <li><strong>Screen 4.2 (Single Input):</strong> Date/time picker or slot selector — owner confirms primitive works, prices update correctly</li>
+        <li><strong>Screen 4.3 (Generation):</strong> Secondary info, testimonials, "what to expect" — owner checks if additional content loaded correctly</li>
+        <li><strong>Screen 4.4 (Reveal):</strong> Final pricing, add-ons, split-pay toggle — owner confirms offer looks right</li>
+        <li><strong>Screen 4.5 (Activation):</strong> Confirmation screen (but in test mode, doesn't create real booking) — owner sees confirmation copy and share card</li>
+    </ul>
+    <p><strong>Owner has access to inline feedback overlay at each screen (see Screen 3.3).</strong></p>
+    <p><strong>Algorithm:</strong> Full page UI rendered with live data. All dynamic sections populated. Form submissions collected but not persisted (test bookings). Page content queries executed to ensure no errors.</p>
+    <p><strong>Edge cases:</strong> If page has missing content (e.g., no testimonials loaded), show placeholder "Test data" to allow owner to continue testing flow. If image fails to load, show fallback gray box. If API error during flow (e.g., pricing calculation fails), show error message in Customer Mode only (not visible to real customers).</p>
+</div>
+
+<div id="j3-feedback" class="screen-box">
+    <h4>Screen 3.3: Inline Feedback Overlay (tap to flag, rate sections)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Floating action button (FAB):</strong> "📝 Feedback" button in bottom-right corner of page</li>
+        <li>When clicked, reveals bottom sheet with:</li>
+        <ul>
+            <li><strong>Section Feedback:</strong> List of page sections (Hero, Pricing, Concierge Sample, Testimonials, CTA). Owner taps section name to flag it.</li>
+            <li><strong>Feedback modal (for each section):</strong></li>
+            <ul>
+                <li>Section name + screenshot thumbnail</li>
+                <li>Feedback type: "Looks great 👍" / "Change copy" / "Change image" / "Add more info" / "Remove this section"</li>
+                <li>Optional comment box: "Tell us what's wrong" (text area, max 200 chars)</li>
+                <li>Submit button: "Flag for Review"</li>
+            </ul>
+            <li><strong>Concierge Rating (appears after Screen 4.3):</strong></li>
+            <ul>
+                <li>"How helpful is the concierge?" 1-5 star rating</li>
+                <li>Optional comment: "What could the concierge improve?"</li>
+            </ul>
+        </ul>
+        <li><strong>Summary at end:</strong> "Thanks for the feedback! You'll see changes in 2-4 hours. Review again when ready."</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>FAB is sticky (visible at all scroll positions)</li>
+        <li>Section list is interactive (tap to expand feedback form for that section)</li>
+        <li>Radio buttons for feedback type</li>
+        <li>Star rating for concierge (interactive, 1-5)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Feedback collected and stored in owner_feedback table. Flagged sections tagged for manual review or automated correction (if obvious, e.g., typo correction). High-priority flags (e.g., "image is broken") trigger email to internal team.</p>
+    <p><strong>Edge cases:</strong> If owner submits duplicate feedback for same section, show "Already flagged. Anything else?" If owner rates concierge < 3 stars, ask "Would you like to change the concierge tone or knowledge facts?" and link to Screen 2.5 edit flow. If owner leaves 10+ feedback flags, offer call with founder instead.</p>
+</div>
+
+<div id="j3-approval" class="screen-box">
+    <h4>Screen 3.4: Approval + Edit Requests</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>After exiting Customer Mode:</strong> Modal appears with summary of feedback and approval options</li>
+        <li><strong>Summary:</strong> "You flagged [N] sections. Here's what we're changing:"</li>
+        <ul>
+            <li>List of flagged sections + feedback type (e.g., "Pricing section: Change copy")</li>
+            <li>Timeline: "Updates in 2-4 hours"</li>
+        </ul>
+        <li><strong>Approval Options:</strong></li>
+        <ul>
+            <li>☑ "Go live now (don't wait for changes)" — page goes live to customers immediately</li>
+            <li>☑ "Wait for changes, then go live" — page stays draft until feedback processed, then auto-goes-live</li>
+            <li>☑ "I need to review again first" — keeps page in review, schedule another test</li>
+        </ul>
+        <li><strong>CTA:</strong> "Approve" (button enabled only if one option selected)</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Checkboxes for approval options (mutually exclusive via JS)</li>
+        <li>Approve button navigates to Screen 3.5 (Shareable Artifacts)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Page status transitions from "draft → in_review → live" based on approval choice. If "wait for changes," background task processes feedback and auto-publishes. If "go live now," page immediately published regardless of pending feedback.</p>
+    <p><strong>Edge cases:</strong> If owner selects "wait for changes" but feedback processing encounters error, auto-notify owner via email + WA. If owner selects "go live now" but later wants to revert changes, they can still edit (Screen 6.7) but change goes live after 24h review period.</p>
+</div>
+
+<div id="j3-artifacts" class="screen-box">
+    <h4>Screen 3.5: Shareable Artifact Generation (preview cards + OG badge)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Hero:</strong> "Your page is live! 🚀 Here's how to promote it."</li>
+        <li><strong>OG Badge (if qual score ≥ 70):</strong></li>
+        <ul>
+            <li>Downloadable badge (PNG, 500x500px) with "Turnout OG" text + Turnout logo</li>
+            <li>Label: "Add this to your Instagram bio or website"</li>
+            <li>Download buttons: "PNG" / "SVG" / "Instagram Story (pre-sized)"</li>
+        </ul>
+        <li><strong>Page Preview Cards (3 variants):</strong></li>
+        <ul>
+            <li><strong>Variant 1 (IG Feed Post — 1080x1350px):</strong></li>
+            <ul>
+                <li>Venue photo + Turnout branding + CTA "Book via Turnout"</li>
+                <li>Download: "PNG" / "Post to Instagram" (if logged in via meta account)</li>
+            </ul>
+            <li><strong>Variant 2 (IG Stories template — 1080x1920px):</strong></li>
+            <ul>
+                <li>Venue photo + animated sticker "Book via Turnout" with arrow</li>
+                <li>Download: "PNG" / "MP4" / "Send to Instagram Stories" (if logged in)</li>
+            </ul>
+            <li><strong>Variant 3 (WhatsApp Share Card — 540x960px):</strong></li>
+            <ul>
+                <li>Venue name + photo + "Available [time slots]" + Turnout logo</li>
+                <li>Download: "PNG" / "Share via WhatsApp"</li>
+            </ul>
+        </ul>
+        <li><strong>Link to Page (QR code + short URL):</strong></li>
+        <ul>
+            <li>QR code points to page (e.g., turnout.so/[venue_slug])</li>
+            <li>Short URL: "turnout.so/[venueslug]" (copyable)</li>
+            <li>Download QR as PNG</li>
+        </ul>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>Download buttons for each artifact (PNG, SVG, MP4 as applicable)</li>
+        <li>Direct Instagram/WhatsApp share buttons (if authenticated)</li>
+        <li>QR code is interactive (click to enlarge, long-press to copy URL)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Artifact Generator (backend service) creates 3 variants from page data. Uses venue photo + hero image + copy to render cards. Cards stored in owner dashboard, regenerated if page content changes.</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: ShareableCard Text Generator
+You are creating social media share cards for a venue's Turnout page.
+
+Input:
+- Venue name: {{venue_name}}
+- Category: {{category}}
+- Hero image: [image_url]
+- Available time: {{available_times}} (e.g., "Today 6-8pm, Tomorrow 12-2pm")
+- CTA copy: {{cta_copy}} (e.g., "Book via Turnout")
+
+Task: Generate short, punchy captions for 3 social cards:
+1. IG Feed post (max 200 chars, hashtags optional)
+2. IG Stories overlay text (max 50 chars, action-oriented)
+3. WA share card tagline (max 100 chars, availability focused)
+
+Output:
+{
+  "ig_feed_caption": "Caption with emojis and #hashtags",
+  "ig_stories_overlay": "Short action text",
+  "wa_card_tagline": "Availability-focused tagline"
+}
+
+Rules:
+- Use venue-specific language (not generic "venue")
+- Include availability if provided
+- Action-oriented: "Book now", "Reserve", "Join", "Grab"
+- Emojis appropriate to category (⚽ for sports, ☕ for cafe, 🧘 for fitness)
+    </div>
+    <p><strong>Edge cases:</strong> If OG badge requested but owner not OG (qual < 70), don't show badge section. If venue doesn't have hero image (error in composition), generate card without image (text-only fallback). If venue doesn't have available time data, show "Book whenever" or "Always open" on card.</p>
+</div>
+
+<div id="j3-share" class="screen-box">
+    <h4>Screen 3.6: Share Screen (IG story share, WA share, copy link)</h4>
+    <p><strong>What the owner sees:</strong></p>
+    <ul>
+        <li><strong>Hero:</strong> "Share your page and start getting customers."</li>
+        <li><strong>3 Share Options (large cards):</strong></li>
+        <ul>
+            <li><strong>Option 1: Instagram Stories</strong></li>
+            <ul>
+                <li>Thumbnail of IG Stories card</li>
+                <li>Button: "Send to Instagram" (redirects to Instagram if IG app installed, or shows instructions for manual share)</li>
+            </ul>
+            <li><strong>Option 2: WhatsApp Broadcast</strong></li>
+            <ul>
+                <li>Thumbnail of WA share card</li>
+                <li>Button: "Share via WhatsApp" (opens WA Web, pre-populates message with link)</li>
+            </ul>
+            <li><strong>Option 3: Copy Page Link</strong></li>
+            <ul>
+                <li>Display page short URL: "turnout.so/[venue_slug]"</li>
+                <li>Copy button: "Copy Link" (shows "Copied!" confirmation)</li>
+                <li>QR code preview (copyable)</li>
+            </ul>
+        </ul>
+        <li><strong>Bottom section:</strong> "Tip: Share to your IG Stories, main feed, and WhatsApp broadcast list for maximum reach."</li>
+    </ul>
+    <p><strong>Interactive elements:</strong></p>
+    <ul>
+        <li>"Send to Instagram" button (redirects or shows share instructions)</li>
+        <li>"Share via WhatsApp" button (WA Web link with pre-filled message)</li>
+        <li>"Copy Link" button (copies to clipboard, shows confirmation toast)</li>
+        <li>QR code is interactive (click to enlarge, copy as image)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Share links are tracked for attribution. When customer lands from share link (UTM: source=whatsapp, medium=share, campaign=[venue_id]), attribution logs the referrer. Page view → WA entry → booking all connected in attribution chain.</p>
+    <p><strong>Edge cases:</strong> If owner doesn't have Instagram app installed, show "Copy to clipboard and paste in IG Stories" instead of redirect. If WA Web inaccessible, show QR code for WA scan. If page link generation fails, fall back to base domain + page ID. If owner shares same link 100+ times in 1 day, flag for abuse check.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JOURNEY 4: CUSTOMER PAGE EXPERIENCE (5-screen core flow + persona adaptations)
+     ═══════════════════════════════════════════════════════════════════ -->
+<h2>JOURNEY 4: CUSTOMER PAGE EXPERIENCE (5-screen core flow + persona adaptations)</h2>
+<p>Customer lands on Turnout page. Full 5-screen experience with primitive-aware design, AI-generated content, and friction detection. Each screen adapts based on detected persona.</p>
+
+<div id="j4-entry" class="screen-box">
+    <h4>Screen 4.1: Entry (Hero, vibe tags, social proof, pricing, friction detection)</h4>
+    <p><strong>What the customer sees (base experience):</strong></p>
+    <ul>
+        <li><strong>Hero section (full-width image, 60% of viewport):</strong></li>
+        <ul>
+            <li>High-quality photo of venue (from real assets, Tier 1 priority)</li>
+            <li>Overlay: Venue name (large, bold, 28px) + tagline (light, 16px)</li>
+            <li>Overlay gradient: Dark to transparent (ensures text readable)</li>
+        </ul>
+        <li><strong>Quick Info Bar (below hero):</strong></li>
+        <ul>
+            <li>Rating (if exists): "4.2⭐ 87 reviews" clickable (expands to review snippets)</li>
+            <li>Category badge: "Sports-Social" or "Brunch Cafe"</li>
+            <li>Distance/location: "Indiranagar, Bangalore" + map icon (links to Google Maps)</li>
+            <li>Hours: "Open till 10 PM" or "Closed now, opens tomorrow 10 AM"</li>
+        </ul>
+        <li><strong>Vibe Tags:</strong> 3-5 tags (e.g., "Casual • Beginner-friendly • Group fun • Instagram-worthy")</li>
+        <li><strong>Social Proof Section:</strong></li>
+        <ul>
+            <li>"Popular for [category]" + "X people here now" (if available from data)</li>
+            <li>Creator mentions: "❤️ Loved by @shreya_k, @rohan_d" (clickable handles if public)</li>
+        </ul>
+        <li><strong>Pricing Visibility (always visible):</strong> "Rs 400 per person" or "From Rs 199" (price range, never hidden)</li>
+        <li><strong>Primary CTA Button:</strong> "Book Now" (large, accent color, bottom-fixed or below hero)</li>
+    </ul>
+    <p><strong>Algorithm (Friction Detection):</strong></p>
+    <ul>
+        <li><strong>Signals collected at this screen:</strong> referrer (organic, IG, WA, direct), time-of-day, device (mobile/web), scroll depth on hero</li>
+        <li><strong>Persona hypothesis (draft):</strong> referrer (IG story = group-oriented?) + time-of-day (6pm weeknight = commute time, urgent?) + device (web = planning, mobile = impulse?) generate initial persona hypothesis</li>
+        <li><strong>Friction signals detected:</strong> If user scrolls past hero but doesn't scroll to CTA for 10s, flag as "considering" (low confidence, needs more info). If user revisits page 2x in same session, flag as "hesitant" (may need reassurance).</li>
+    </ul>
+    <p><strong>Prompts (AI-generated page content):</strong></p>
+    <div class="prompt-box">
+# System: Hero Tagline Generator
+You are generating a compelling one-line tagline for a venue's Turnout page hero section.
+
+Input:
+- Venue name: {{venue_name}}
+- Category: {{category}}
+- Vibe tags: {{vibe_tags}} (comma-separated, e.g., "casual, group-friendly")
+- Owner's stated specialty: {{specialty}} (optional, from journey questions)
+
+Task: Generate a 1-line tagline (max 60 chars) that captures the venue's essence and drives the customer to explore.
+
+Output: Single string
+
+Rules:
+- Lead with action or emotion, not description: "Discover your next favorite spot" not "A cool venue"
+- Use city/culture-specific language if possible (e.g., "South Delhi's fastest-growing pickleball hub")
+- Match tone to category: Sports = energetic, Brunch = relaxed, Wellness = calming
+- No generic claims ("best", "amazing")
+    </div>
+    <div class="prompt-box">
+# System: Vibe Tag Generator
+Input: {{ig_captions}}, {{google_reviews}}, {{category}}
+Task: Extract 4-5 emotional/cultural vibe tags that feel authentic to this venue
+Output: ["tag1", "tag2", "tag3", "tag4", "tag5"]
+Rules: Use common cultural motifs specific to category/city
+    </div>
+    <p><strong>Persona Adaptations (visible as variations of above base screen):</strong></p>
+    <table>
+        <tr>
+            <th>Persona</th>
+            <th>Key Adaptations on Screen 4.1</th>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-beginner">BEGINNER</span></td>
+            <td>Add "First-time friendly" badge. Show testimonial snippet: "Super easy, even for beginners!" Emphasize "Zero experience needed" in tagline.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-regular">REGULAR</span></td>
+            <td>Highlight "Last visit: 3 days ago" (if data available). Show "Your pack progress: 7/10 visits used" (if member). Emphasize "Book faster" CTA.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-group">GROUP ORGANIZER</span></td>
+            <td>Highlight "Great for groups" badge. Show "Max capacity: 20 people". Add "Split payment" badge. Vibe tags lean toward "Social • Group-friendly • Photo-op".</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-solo">SOLO</span></td>
+            <td>Highlight "Solo-friendly" badge. Show "Group-free option available". Testimonial: "Even better solo!" Emphasize social but optional angle.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-corporate">CORPORATE</span></td>
+            <td>Highlight "Corporate team events" service. Show "Bulk booking available". Pricing shows "per person" clearly. Add "Contact for quote" secondary CTA.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-pricesensitive">PRICE-SENSITIVE</span></td>
+            <td>Lead with discounts: "First-time offer: Rs 199" prominently. Show "Off-peak specials available". Emphasize value language in tagline.</td>
+        </tr>
+    </table>
+    <p><strong>Edge cases:</strong> If hero image missing (error in composition), show fallback category icon + solid color. If pricing not set, show "Available now" without price (rare but possible during setup). If location data unavailable, omit location bar. If zero reviews, omit rating section but keep "Popular for [category]".</p>
+</div>
+
+<div id="j4-input" class="screen-box">
+    <h4>Screen 4.2: Single Input (primitive-aware date/time picker, party size, etc.)</h4>
+    <p><strong>What the customer sees (base, for reservation primitive):</strong></p>
+    <ul>
+        <li><strong>Hero text:</strong> "When would you like to visit?" or "Pick your slot"</li>
+        <li><strong>Interactive Picker (primitive-specific):</strong></li>
+        <ul>
+            <li><strong>For Reservation/Walk-in:</strong> Date picker (calendar icon opens modal) → Time picker (slider or time grid) → Party size (number stepper or buttons "1" "2" "3" "4+" with visual spacing for larger groups)</li>
+            <li><strong>For Slot-based (fitness, sports):</strong> Weekly grid showing available slots. Each slot shows: date + time + status (available/full/2-spots-left). Scroll to see more weeks.</li>
+            <li><strong>For Ticket/Entry:</strong> Entry time picker with visual queue status ("30 mins wait" or "No wait")</li>
+            <li><strong>For Trial (fitness):</strong> Single button "Try for Rs 199" (rarely needs input, mostly confirmation)</li>
+        </ul>
+        <li><strong>Price Update (in real-time):</strong> Below picker, show "Total: Rs XXX" updated as customer adjusts selections</li>
+        <li><strong>Secondary Info (context):</strong></li>
+        <ul>
+            <li>If slots limited: "Only 2 spots left for Friday 7 PM" (urgency signal)</li>
+            <li>If off-peak pricing available: "Tue-Thu pricing: 20% off" (offer signal)</li>
+            <li>If group discount available: "Group of 4+: 15% off per person" (value signal)</li>
+        </ul>
+        <li><strong>CTA button:</strong> "Next" (enabled only after selection made, shows "← Back" on left)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Primitive type (from owner config in Journey 2.4) determines picker UI. Real-time pricing calculation from primitive config (base price + modifiers for party size, time-of-day, group discount). Availability data from backend (inventory, booking API, or manual data entry).</p>
+    <p><strong>Persona Adaptations:</strong></p>
+    <table>
+        <tr>
+            <th>Persona</th>
+            <th>Adaptation on Screen 4.2</th>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-beginner">BEGINNER</span></td>
+            <td>Show "Beginner-friendly" badge next to each available time. Pre-select smallest group size option (1-2 people) and nearest available time. Add "(low-pressure)" label.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-regular">REGULAR</span></td>
+            <td>Pre-select their last booking time slot (if available). Show "Pack members: 7/10" progress. Emphasize "Book faster" CTA. Option to "Add to existing booking".</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-group">GROUP ORGANIZER</span></td>
+            <td>Default party size to 4. Emphasize "Group discounts" label. Show split-pay option inline. Add "Send invite to friends" button below time picker.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-solo">SOLO</span></td>
+            <td>Show "Solo-friendly times" filter. Emphasize "Meet people" or "Solo OK" badges. Highlight times when venue typically has mix of solo + group.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-corporate">CORPORATE</span></td>
+            <td>Show "Bulk booking available" badge. Add "Contact for custom date" option. Party size limit extended (allow 15+). Show "Invoice available" note.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-pricesensitive">PRICE-SENSITIVE</span></td>
+            <td>Highlight off-peak times with "20% off" label. Pre-select cheapest time slot. Show "Student discount available" if applicable. Lead with discounted price.</td>
+        </tr>
+    </table>
+    <p><strong>Edge cases:</strong> If all slots full, show "All slots booked today. Try tomorrow?" + calendar with first available day highlighted. If availability data unavailable (error), show "Book now (check availability with us)" and flag for manual verification. If customer selects group > capacity, warn "Max capacity is X. This may need confirmation."</p>
+</div>
+
+<div id="j4-generation" class="screen-box">
+    <h4>Screen 4.3: Generation/Detail (secondary info, trust block, friction detection active, WA handoff option)</h4>
+    <p><strong>What the customer sees (base):</strong></p>
+    <ul>
+        <li><strong>Hero text:</strong> "Here's what to expect."</li>
+        <li><strong>Experience Details (context-specific, loaded from content database):</strong></li>
+        <ul>
+            <li>For restaurant: Menu highlights, dietary options, dress code, parking info</li>
+            <li>For fitness: Class description, instructor bio, difficulty level, what to bring</li>
+            <li>For sports: Court/facility details, gear available, experience level required, group dynamics</li>
+        </ul>
+        <li><strong>Trust Block (AI-generated from real data):</strong></li>
+        <ul>
+            <li>Testimonial snippet: "★★★★★ 'First time and so easy!' — Rohan P." (real review or generated from scrape)</li>
+            <li>Credentials (if applicable): "Instructor: Certified by [org]" or "Chef: 15 years experience"</li>
+            <li>Safety/logistics: "In a safe, well-lit area" + "Easy parking" + "COVID-safe protocols"</li>
+            <li>What people love: Icon + statement: "🎉 Group-friendly • 📸 Instagram-worthy • ⚡ Fast pace"</li>
+        </ul>
+        <li><strong>Friction Detection (active, customer unaware):</strong> System samples scroll depth on this screen (target: customer should read trust block). If customer scrolls past trust block quickly, flag as "skimming" (may need reassurance). If customer spends 15+ seconds on testimonial or credentials, flag as "trust-seeking" (confidence low, friction = trust).</li>
+        <li><strong>WA Handoff Option (appears if friction detected):</strong> Small blue banner: "Have questions? 💬 Chat with us on WhatsApp for instant help." → Button "Chat Now" (opens WA Web or pre-fill WA link)</li>
+        <li><strong>CTA button:</strong> "Review Pricing & Book" or "Next" (shows "← Back")</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Content retrieval from venue profile + category content templates. Friction detection engine evaluates 3 signals: scroll depth on trust block, time spent on testimonials, and whether customer reaches CTA. If 2+ signals indicate friction, WA option surfaces.</p>
+    <p><strong>Prompts (AI-generated content):</strong></p>
+    <div class="prompt-box">
+# System: "What to Expect" Content Generator
+You are generating reassuring, honest details about an experience.
+
+Input:
+- Venue name: {{venue_name}}
+- Category: {{category}}
+- Experience type: {{experience_type}} (e.g., "beginner yoga class", "open-play pickleball", "brunch reservation")
+- Venue facts: {{venue_facts}} (duration, capacity, difficulty, etc.)
+- Customer segment: {{persona}} (beginner, regular, group, solo, corporate, price-sensitive)
+
+Task: Generate 3-4 bullet points describing what the customer will experience, tailored to their persona.
+
+Output:
+{
+  "title": "What to expect",
+  "details": [
+    "Bullet point 1 — specific, reassuring",
+    "Bullet point 2 — addresses common concerns for this persona",
+    ...
+  ]
+}
+
+Rules:
+- For beginners: Emphasize "zero pressure", "no judgment", "instructor helps"
+- For groups: Describe group dynamics, photo opportunities
+- For solos: Emphasize "safe, welcoming to solo people", "easy to meet others"
+- Use real facts (duration, capacity, intensity) not made-up claims
+- Address category-specific anxieties (safety for women, beginner-friendliness for fitness, etc.)
+    </div>
+    <div class="prompt-box">
+# System: Trust Block Testimonial Generator
+You are creating authentic-sounding testimonials from real customer reviews.
+
+Input:
+- Recent Google/Zomato reviews: {{reviews_list}}
+- Customer persona: {{persona}}
+- Category: {{category}}
+
+Task: Extract ONE real review quote that matches this persona's concern.
+
+Output:
+{
+  "quote": "Actual review text (max 100 chars)",
+  "reviewer_name": "First name only",
+  "stars": 5,
+  "persona_relevance": "Why this review matters for {{persona}}"
+}
+
+Rules:
+- Use REAL quotes from reviews, never invented
+- Match quote to persona's concern (beginners want "easy", groups want "fun", solos want "welcoming")
+- Truncate to max 100 chars if needed
+- Include star rating (4+ stars only)
+    </div>
+    <p><strong>Persona Adaptations:</strong></p>
+    <table>
+        <tr>
+            <th>Persona</th>
+            <th>Adaptation on Screen 4.3</th>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-beginner">BEGINNER</span></td>
+            <td>Lead with "Beginner FAQ" section. Include "No experience needed" prominently. Testimonial from another beginner ("First time and loved it!"). Add "How to prepare" section.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-regular">REGULAR</span></td>
+            <td>Show "What's new this week?" section (updates to menu, schedule, events). Skip "what to expect" (they know). Highlight pack/membership benefits. Testimonial from repeat customer.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-group">GROUP ORGANIZER</span></td>
+            <td>Lead with "Group Details" (capacity, photo spots, celebration options). Include "Group FAQ" (split payment, invites, timing). Testimonial from group event ("Loved bringing my friends!").</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-solo">SOLO</span></td>
+            <td>Lead with "Solo-Friendly?" section. Emphasize "You won't feel alone" + "Safe environment". Testimonial from solo attendee. Add "How to meet people" section.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-corporate">CORPORATE</span></td>
+            <td>Lead with "Team Event Details" (group dynamics, logistics, setup). Include "Team FAQ" (catering, decorations, invoicing). Testimonial from corporate team ("Perfect for our off-site!").</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-pricesensitive">PRICE-SENSITIVE</span></td>
+            <td>Lead with "Value Breakdown" (what's included, hidden costs? none!). Emphasize "Best value in [city]" claim (if true). Testimonial about affordability ("Great quality, fair price!").</td>
+        </tr>
+    </table>
+    <p><strong>Edge cases:</strong> If venue lacks real reviews for testimonial, generate placeholder "Anonymous customer ★★★★★" with generic positive statement. If trust block content unavailable (missing venue data), show minimal version with just basics (duration, capacity). If friction signals are ambiguous, don't surface WA option (avoid false positives).</p>
+</div>
+
+<div id="j4-reveal" class="screen-box">
+    <h4>Screen 4.4: Reveal (pricing confirmed, packs/bundles, split-pay, CTA)</h4>
+    <p><strong>What the customer sees (base):</strong></p>
+    <ul>
+        <li><strong>Hero text:</strong> "Here's your plan."</li>
+        <li><strong>Booking Summary Card (read-only, clean layout):</strong></li>
+        <ul>
+            <li>Venue name + date + time (e.g., "The Daily Brew • Friday 11 AM")</li>
+            <li>Party size: "4 people"</li>
+            <li>Price breakdown (if applicable): Base (Rs 400) + Tax (Rs 72) = Total (Rs 472)</li>
+            <li>Price per person (if group): "Rs 118 per person"</li>
+            <li>✓ No hidden charges</li>
+        </ul>
+        <li><strong>Add-ons / Packages (if venue supports):</strong></li>
+        <ul>
+            <li>Optional add-ons displayed as checkboxes (e.g., "Gear rental: +Rs 100")</li>
+            <li>Package/bundle options (e.g., "Brunch combo: +Rs 200" or "10-visit pack: Save 15%")</li>
+            <li>Price updates in real-time as checkboxes toggle</li>
+        </ul>
+        <li><strong>Group Payment Options (if multi-person booking):</strong></li>
+        <ul>
+            <li>☑ "Split payment — Everyone pays their share" (default ON)</li>
+            <li>Details: "Send payment link to friends. They'll pay via WhatsApp."</li>
+            <li>Discount label (if applicable): "Group of 4+: 15% off per person"</li>
+        </ul>
+        <li><strong>Final Price Display (large, prominent):</strong> "Total: Rs 472" (large font, accent color)</li>
+        <li><strong>CTA Buttons:</strong></li>
+        <ul>
+            <li>Primary: "Book Now" (goes to payment/confirmation, Screen 4.5)</li>
+            <li>Secondary: "Reserve via WhatsApp" (triggers WA handoff if customer has friction) or "← Back" (return to Screen 4.3)</li>
+        </ul>
+    </ul>
+    <p><strong>Algorithm:</strong> Price calculation from primitive config + add-on pricing + group discounts + time-of-day adjustments (if applicable). Split-pay logic: If group size > 1 AND split-pay toggle ON, generate payment links for each participant (stored for Screen 4.5).</p>
+    <p><strong>Persona Adaptations:</strong></p>
+    <table>
+        <tr>
+            <th>Persona</th>
+            <th>Adaptation on Screen 4.4</th>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-beginner">BEGINNER</span></td>
+            <td>Lead with "First-time offer" if applicable (e.g., "First visit: Rs 199 instead of Rs 399"). Emphasize "No commitment" angle. Show "Money-back guarantee" if applicable. De-emphasize add-ons (keep simple).</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-regular">REGULAR</span></td>
+            <td>Show "Your pack progress: 7/10 visits" (if pack member). Highlight "This visit uses 1 pack credit". Show "Renew pack after visit?" option. CTA: "Book Fast" (emphasize speed).</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-group">GROUP ORGANIZER</span></td>
+            <td>Highlight "Split payment on" badge (reassurance). Show "Share invite with 3 friends" button below. Group discount prominently displayed. CTA: "Book & Invite Friends".</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-solo">SOLO</span></td>
+            <td>Simplify pricing (single person = no split option). Emphasize "Solo-friendly pricing". Remove group-centric language. CTA: "Book Solo".</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-corporate">CORPORATE</span></td>
+            <td>Show per-person breakdown (important for expense reporting). Emphasize "Easy invoicing". Button: "Contact for bulk quote" (alternative to direct booking). CTA: "Proceed to contact form".</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-pricesensitive">PRICE-SENSITIVE</span></td>
+            <td>Lead with price comparison: "20% cheaper than [competitor]" (if true). Emphasize "No hidden charges" strongly. Show "Off-peak discount: 20% off" if applicable. CTA: "Get Best Deal".</td>
+        </tr>
+    </table>
+    <p><strong>Edge cases:</strong> If pricing logic fails (error in calculation), show simplified breakdown and notify backend team. If add-ons not set up, omit that section. If split-pay unavailable (technical issue), toggle OFF and disable. If customer's total exceeds reasonable threshold for category (e.g., > Rs 10K per person for casual brunch), show "Large booking — confirm with venue?" warning.</p>
+</div>
+
+<div id="j4-activation" class="screen-box">
+    <h4>Screen 4.5: Activation (confirmation, share card, invite friends, referral)</h4>
+    <p><strong>What the customer sees:</strong></p>
+    <ul>
+        <li><strong>Hero section (with celebration):</strong> "You're all set! 🎉" + Booking reference number (e.g., "Ref: TN20260330ABC123")</li>
+        <li><strong>Confirmation Card (read-only):</strong></li>
+        <ul>
+            <li>Venue name + date + time + party size</li>
+            <li>Confirmation email: "Check your email for details"</li>
+            <li>What to bring / How to prepare (category-specific, e.g., "Bring your racket or rent one for Rs 50")</li>
+            <li>Directions: "Tap for directions" (Google Maps link)</li>
+            <li>Venue phone: "Call [phone] if running late"</li>
+        </ul>
+        <li><strong>Shareable Confirmation Card (screenshot-friendly):</strong> Visual card showing booking details, designed for sharing on social media (QR code, venue photo, date/time)</li>
+        <li><strong>Action Buttons:</strong></li>
+        <ul>
+            <li>"💬 Share on WhatsApp" — Pre-filled WA message with booking details + venue link</li>
+            <li>"📸 Share on Instagram Stories" — Card optimized for IG Stories (1080x1920px)</li>
+            <li>"🔗 Copy Link" — Shareable page URL (tracking: if friend books via referral, original booker gets reward)</li>
+        </ul>
+        <li><strong>Referral Section (if enabled):</strong></li>
+        <ul>
+            <li>"Invite friends and earn credit!"</li>
+            <li>Referral link (personalized, e.g., "turnout.so/ref?code=ABC123")</li>
+            <li>Reward claim: "Your friend books → You get Rs 100 credit" (venue-configurable)</li>
+            <li>Button: "Copy referral link"</li>
+        </ul>
+        <li><strong>Next Steps Section:</strong></li>
+        <ul>
+            <li>"24 hours before, you'll get a reminder."</li>
+            <li>"See you soon!" + Venue emoji/name</li>
+        </ul>
+        <li><strong>CTA button:</strong> "Done" (closes page, navigates to /confirmation or back to home)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Booking confirmation persisted to database. SMS + email sent to customer with booking details. Referral tracking: If customer shares referral link, tracking code embedded in URL. When friend books via referral, attribution logged (referrer_id → booking_id). Reminder scheduled 24h before and 4h before visit.</p>
+    <p><strong>Prompts (AI-generated):</strong></p>
+    <div class="prompt-box">
+# System: Confirmation Email Subject Generator
+You are creating a subject line for a booking confirmation email.
+
+Input:
+- Venue name: {{venue_name}}
+- Date: {{booking_date}}
+- Confirmation reference: {{ref_number}}
+
+Task: Generate a subject line that is:
+1. Clear and scannable
+2. Includes venue name or date for easy reference
+3. Conveys "confirmed" status
+
+Output: Single string (max 60 chars)
+
+Rules:
+- Lead with emoji if appropriate (✓, 🎉, 📅)
+- Include key detail (venue name OR date)
+- Make scannable in email preview
+    </div>
+    <p><strong>Persona Adaptations:</strong></p>
+    <table>
+        <tr>
+            <th>Persona</th>
+            <th>Adaptation on Screen 4.5</th>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-beginner">BEGINNER</span></td>
+            <td>Add "First-timer tips" section (e.g., "Arrive 10 min early", "Here's what to bring"). Reassurance copy: "You're going to love this!". No pressure on referral.</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-regular">REGULAR</span></td>
+            <td>Show "This is your [Nth] visit" (celebrate loyalty). Highlight "Pack progress update: 8/10". Offer: "Refer a friend, get 1 free visit!".</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-group">GROUP ORGANIZER</span></td>
+            <td>Highlight "Send to friends" button (move to top). Show "Friends' payment status" (if split-pay in use). Offer: "Refer your team for group discount!".</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-solo">SOLO</span></td>
+            <td>Reassurance: "Solo visits welcome!" + "You'll meet cool people here". Less emphasis on group sharing. Referral: "Share with a friend who might join".</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-corporate">CORPORATE</span></td>
+            <td>Show "Invoice will be sent to [email]". Highlight "Team logistics" (parking, group check-in). No referral (already bulk booking).</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-pricesensitive">PRICE-SENSITIVE</span></td>
+            <td>Lead with "You saved Rs 100 with the off-peak offer!" (celebrate savings). Referral: "Refer a friend, both get 10% off next booking!".</td>
+        </tr>
+    </table>
+    <p><strong>Edge cases:</strong> If email delivery fails, show "Check your phone for SMS confirmation instead." If referral disabled (owner choice), omit referral section. If booking requires deposit and deposit not yet paid, show "Complete payment to confirm" instead of celebration. If customer tries to share referral link 50+ times, warn "Spam detected — this referral link may be disabled."</p>
+</div>
+
+<div id="j4-personas" class="screen-box">
+    <h4>Persona-Aware Adaptations Summary (Journey 4 across all screens)</h4>
+    <p><strong>How Persona Detection Works (2-layer system):</strong></p>
+    <div class="algo-box">
+        <p><strong>Layer 1: Page-Level Detection (Screens 4.1-4.3)</strong></p>
+        <p>Signals collected (user unaware): referrer source, time-of-day, device, scroll depth, CTA interaction timing, section dwell time, booking flow choices (party size, add-ons)</p>
+        <p>Output: persona_hypothesis { type, confidence (0-100), signals_used[] }</p>
+        <p>Example: referrer=IG_story (70% group) + party_size_selected=4 (90% group) + scroll_past_testimonials=no (70% not beginner) → Hypothesis: GROUP_ORGANIZER (confidence 80%)</p>
+        <p><strong>Layer 2: WA Entry Confirmation (Journey 5)</strong></p>
+        <p>First WA message from customer (1-2 exchanges) confirms or corrects page hypothesis. Concierge branches accordingly.</p>
+    </div>
+    <p><strong>Persona Universe (all 6 personas):</strong></p>
+    <table>
+        <tr>
+            <th>Persona</th>
+            <th>Signals</th>
+            <th>Motivation</th>
+            <th>Key Friction</th>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-beginner">BEGINNER</span></td>
+            <td>First-time visitor, zero experience search terms, long scroll on testimonials, low engagement on technical sections</td>
+            <td>"Will I be good enough? Will I like it?"</td>
+            <td>Confidence gap, need reassurance, fear of judgment</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-regular">REGULAR</span></td>
+            <td>Repeat visitor (2+ bookings), fast checkout, quick decision, pack member</td>
+            <td>"I like this, want to come again"</td>
+            <td>Speed (want fast rebooking), price (want loyalty discount)</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-group">GROUP ORGANIZER</span></td>
+            <td>Party size 4+, referrer=IG/WA/peer, high engagement on group/capacity sections, split-pay interest</td>
+            <td>"How do I coordinate friends?"</td>
+            <td>Group coordination, split payment, timing confirmation</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-solo">SOLO</span></td>
+            <td>Party size 1, time-of-day off-peak, solo-search terms, dwell on safety/meeting section</td>
+            <td>"Will I feel comfortable alone?"</td>
+            <td>Safety, social acceptance, logistics (solo tables, etc.)</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-corporate">CORPORATE</span></td>
+            <td>Large party size (10+), corporate email domain, weekday timing, interest in invoice/bulk booking</td>
+            <td>"How do we organize a team event?"</td>
+            <td>Bulk logistics, invoicing, liability, custom requirements</td>
+        </tr>
+        <tr>
+            <td><span class="persona-label persona-pricesensitive">PRICE-SENSITIVE</span></td>
+            <td>High engagement on pricing, off-peak time selection, discount/deal search terms, student/budget indicators</td>
+            <td>"Is this worth the money?"</td>
+            <td>Price threshold, hidden costs, value justification</td>
+        </tr>
+    </table>
+    <p><strong>Adaptive Zones on Screen 4.1 (Entry) — Example Detail:</strong></p>
+    <p>Each screen has 2-3 "adaptive zones" (content areas that vary by persona). Example for Screen 4.1 Entry:</p>
+    <ul>
+        <li><strong>Zone A: Badges (below vibe tags):</strong> Dynamic badge selection based on persona_hypothesis confidence</li>
+        <ul>
+            <li>Beginner → "First-time friendly • Zero experience needed"</li>
+            <li>Regular → "Returning member • Fast rebooking"</li>
+            <li>Group → "Great for groups • Split payment available"</li>
+            <li>Solo → "Solo-friendly • Safe environment"</li>
+            <li>Corporate → "Team events • Bulk booking"</li>
+            <li>Price-sensitive → "Best value • Off-peak specials"</li>
+        </ul>
+        <li><strong>Zone B: Social Proof (below badges):</strong> Testimonial selection</li>
+        <ul>
+            <li>Beginner → Quote from first-timer: "Loved it, even though I'd never done this before!"</li>
+            <li>Regular → Quote from repeat customer: "I come here every week"</li>
+            <li>Group → Quote from group event: "Perfect for bringing friends!"</li>
+            <li>Solo → Quote from solo attendee: "Went alone, but felt welcomed"</li>
+            <li>Corporate → Quote from team event: "Our team had a blast"</li>
+            <li>Price-sensitive → Quote about value: "Great quality, fair price"</li>
+        </ul>
+        <li><strong>Zone C: CTA Text:</strong> Button label personalized</li>
+        <ul>
+            <li>Beginner → "Try It" (lower commitment language)</li>
+            <li>Regular → "Book Fast"</li>
+            <li>Group → "Book & Invite Friends"</li>
+            <li>Solo → "Book Solo"</li>
+            <li>Corporate → "Get a Quote" (different flow)</li>
+            <li>Price-sensitive → "Get Best Deal"</li>
+        </ul>
+    </ul>
+</div>
+
+
+
+<hr style="border: none; border-top: 2px solid #FF6B35; margin: 60px 0;">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JOURNEY 5: WA CONCIERGE (per friction type × persona)
+     ═══════════════════════════════════════════════════════════════════ -->
+<h2>JOURNEY 5: WA CONCIERGE (per friction type × persona)</h2>
+<p>WhatsApp concierge detects persona + friction type from page context, enters tailored conversation branch, and closes to booking. Not a sales bot — a helpful assistant.</p>
+
+<div id="j5-entry" class="screen-box">
+    <h4>Flow 5.1: Entry Messages (6 first messages, same venue, different personas)</h4>
+    <p><strong>System Setup:</strong> When customer lands on page (screens 4.1-4.3), system detects persona_hypothesis. If friction detected OR customer scrolls past 90% of page without booking, WA handoff option surfaces. Customer taps "Chat with us on WhatsApp" → opens WA Web with pre-filled message.</p>
+    <p><strong>6 Entry Message Variants (for same Sports-Social venue, Pickleball court):</strong></p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 1: BEGINNER Persona</div>
+        <div class="msg-concierge">Hi! 👋 I see you're interested in [Venue Pickleball]. Great choice! Quick question — is this your first time playing?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Opens with reassurance-seeking question, not sales pitch. Acknowledges beginner concern.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 2: REGULAR Persona</div>
+        <div class="msg-concierge">Hey! Glad to see you back 😊 Looking to book Friday? I remember you like Court 2 in the evening.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Personalization (knows history), faster tone, assumes intent. Builds on familiarity.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 3: GROUP ORGANIZER Persona</div>
+        <div class="msg-concierge">Hey! 🏸 Planning something fun for your crew? I can help you book a court and sort out payment for everyone.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Immediately addresses group coordination (split payment), enthusiastic tone, assumes social intent.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 4: SOLO Persona</div>
+        <div class="msg-concierge">Hi! 👋 Want to play some pickleball solo? I can help you find a slot where you'll meet other players or play at your own pace.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Acknowledges solo intent, provides two options (social vs. solo), reassurance about acceptance.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 5: CORPORATE Persona</div>
+        <div class="msg-concierge">Hi! 👋 Planning a team event at [Venue]? I can help arrange bulk booking, invoicing, and any custom setup you need.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Business tone, immediately mentions admin requirements (bulk, invoice), signals flexibility.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 6: PRICE-SENSITIVE Persona</div>
+        <div class="msg-concierge">Hey! 👋 Interested in [Venue]? Let me tell you about our off-peak deals and what actually fits your budget.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Leads with price, offers transparency, invitation to negotiate or choose budget option.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> WA Entry Classifier samples page context (persona_hypothesis, friction_type, booking_state) and selects appropriate entry message from 6-persona template library. System sends message via WhatsApp Business API (not manual).</p>
+    <p><strong>Edge cases:</strong> If persona_hypothesis confidence < 50%, use generic message ("Hi! What can I help with?"). If customer doesn't respond in 24h, send follow-up reminder (1x only). If customer appears suspicious (VPN, bot-like behavior), require human review before sending offers.</p>
+</div>
+
+<div id="j5-price" class="screen-box">
+    <h4>Flow 5.2: Price Hesitation Branch (offer ladder per persona)</h4>
+    <p><strong>Trigger:</strong> Customer viewed page >20s, scrolled past pricing, but didn't book. OR customer explicitly says "a bit pricey" / "out of budget".</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">BEGINNER Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">I totally get it — let me show you options:
+• First-time offer: Rs 199 (instead of 599)
+• No commitment — try once and see if you love it
+Sound better?</div>
+        <div class="msg-user">Yeah, Rs 199 works</div>
+        <div class="msg-concierge">Perfect! 🎉 When would you like to try? (Friday, Saturday, or next week?)</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Lead with trial pricing, emphasize "try first" low-commitment angle.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">REGULAR Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">You've been great! Here's what I can do:
+• Renew your pack today: Save 20% (vs. single visits)
+• Or try off-peak (Tue-Thu): 15% off
+Which works better?</div>
+        <div class="msg-user">Off-peak might work</div>
+        <div class="msg-concierge">Excellent! Tuesday 2 PM is available. Normally Rs 599, but with off-peak: Rs 509. Ready?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Use pack/loyalty as primary lever, offer time-based discount as secondary.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">GROUP ORGANIZER Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">For groups, we've got:
+• 4+ people: 15% off per person
+• Book 2+ courts: Extra 5% off
+• Off-peak group rate: 25% off Tue-Thu
+How many in your crew?</div>
+        <div class="msg-user">4 people, probably Friday</div>
+        <div class="msg-concierge">Friday is peak, but 15% group discount applies: Rs 510 per person instead of 599.
+Or Friday next week (off-peak): Rs 450/person (25% off).
+What works?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Show multiplying discounts (group + size + time), give clear per-person breakdown.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">SOLO Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">Solo players get:
+• Off-peak deal: Rs 299 (normally 599) Tue-Thu
+• Solo community rate: Rs 399 any time (meet other players too)
+Either appeal to you?</div>
+        <div class="msg-user">Off-peak is cheaper, but I work 9-5</div>
+        <div class="msg-concierge">Got it. Our solo community rate (Rs 399) includes group atmosphere if you want it, or go solo if you prefer. Free to choose when you arrive. Sound good?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Offer flexibility (off-peak + community rate both available), emphasize "your choice" autonomy.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">CORPORATE Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">For team events, pricing is flexible:
+• 20 people: Custom quote available
+• Package deal: 2 courts + catering + host = Rs [custom]
+• No hidden charges (transparent breakdown)
+Can I send you a detailed quote?</div>
+        <div class="msg-user">Yes, that would help</div>
+        <div class="msg-concierge">Sending a custom quote to your email. Also — want to discuss team-building goals? (Icebreaker, fitness, fun?) This helps us customize the experience.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Defer to custom quote (not fixed pricing), add context-building question.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">PRICE-SENSITIVE Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">Rs 599 seems high? Here's reality:
+• Off-peak (Tue-Thu): Rs 239 (60% off) 🔥
+• Student discount: Additional 15% (show ID)
+• Refer a friend: Both get Rs 100 credit
+Best option for you?</div>
+        <div class="msg-user">Off-peak works</div>
+        <div class="msg-concierge">Rs 239 Tuesday 4 PM available. Book now and send this to a friend for Rs 100 credit (stacks with future bookings).</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Lead with aggressive off-peak pricing, add stacking incentives (student + referral).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> offer_ladder() function returns persona-specific pricing options ranked by relevance. Concierge presents top 2-3 options, waits for customer signal, then confirms booking.</p>
+    <p><strong>Edge cases:</strong> If customer still hesitates after 2-3 offer variations, concierge pivots: "What would make this work for you?" (open-ended, building rapport). If price absolutely non-negotiable, offer: "Want to try once at our discounted rate, see if you love it?" If customer suggests alternative price, concierge escalates to manager review.</p>
+</div>
+
+<div id="j5-fit" class="screen-box">
+    <h4>Flow 5.3: Fit Ambiguity Branch (beginner reassurance, vibe confirmation, level check)</h4>
+    <p><strong>Trigger:</strong> Customer saw page but showed unclear intent. OR explicitly says "not sure if this is for me" / "is this for beginners?".</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">BEGINNER Persona - Fit Ambiguity Flow</div>
+        <div class="msg-concierge">First time doing this? Totally normal to wonder if you're ready 😊
+Let me be honest: **This class is beginner-friendly.** Here's why:
+• Instructor trained specifically for first-timers
+• Max 8 people (very personal, no judgment)
+• 60% of our regulars started exactly where you are</div>
+        <div class="msg-user">OK, but what if I'm really unfit?</div>
+        <div class="msg-concierge">Good news: It's not about fitness level. It's about showing up and trying. 90% of beginners tell us they underestimated themselves. You'll be fine 💪</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Normalize anxiety, provide concrete proof (small class, trained instructor), redirect from ability to mindset.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">SOLO Persona - Fit Ambiguity Flow</div>
+        <div class="msg-concierge">Thinking about coming solo? **Good move.** Here's what to expect:
+• Half our solos come alone, half meet friends there
+• No awkward "singles" section — you'll blend in naturally
+• Fastest way to make friends in [city] for this hobby 🤝</div>
+        <div class="msg-user">Will I actually meet people?</div>
+        <div class="msg-concierge">Yes. On open-play nights (Wed/Fri), we rotate partners. You'll play with 8-10 different people. People are genuinely friendly here. Proof: 40% of our solos become regulars who come with friends.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Normalize solo attendance, emphasize social mechanism (partner rotation), provide conversion proof.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">GROUP ORGANIZER Persona - Fit Ambiguity Flow</div>
+        <div class="msg-concierge">Not sure if [Activity] is the vibe for your crew? Let me help think it through:
+• What's your crew's vibe? (Casual fun, competitive, team-building?)
+• First-timers in the group or mostly experienced?
+• Indoor or outdoor preference?
+Answer these and I can tell you if this is perfect for you.</div>
+        <div class="msg-user">We're mostly casual, first-timers mixed with experienced</div>
+        <div class="msg-concierge">**Perfect fit.** Casual + mixed experience is exactly what [Venue] caters to. We level-group on the fly (beginners don't get demolished 😅). You'll have a blast.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Ask clarifying questions to build rapport, then pattern-match to venue vibe, provide reassurance on friction points (beginner mixing).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Fit Ambiguity trigger detected from page dwell patterns or explicit customer message containing uncertainty words ("not sure", "for me?", "beginner", "safe?", "solo?"). Concierge branches to persona-specific fit confirmation flow.</p>
+    <p><strong>Edge cases:</strong> If customer says "This definitely isn't for me" (high confidence rejection), concierge asks "Can I ask why?" (builds data). If reason is addressable (e.g., "too expensive" → price branch), pivot. If reason is fundamental mismatch (e.g., "I don't like sports"), respect the rejection and offer alternative: "Totally fair. Want a referral to a similar spot that might be better?"</p>
+</div>
+
+<div id="j5-group" class="screen-box">
+    <h4>Flow 5.4: Group Coordination Branch (invite link, split-pay, scheduling)</h4>
+    <p><strong>Trigger:</strong> Party size > 1 AND customer explicitly mentions coordinating with others. OR detected as GROUP_ORGANIZER persona.</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Group Coordination Flow</div>
+        <div class="msg-concierge">So you're thinking Friday with 4 people? I can make this super easy:
+1. You pick the time
+2. I send invite links to your friends
+3. They confirm + pay their share via the link
+4. You're all set (no messy back-and-forth)</div>
+        <div class="msg-user">That's cool. We were thinking Friday 6 PM</div>
+        <div class="msg-concierge">Perfect. Here's the invite (copy & paste to WhatsApp group):
+
+---
+Shreya invited you to [Venue] Friday 6 PM
+Party size: 4 | Budget: Rs 500/person
+Payment link: [link]
+Your turn: Pay here → Shreya gets notified
+---
+
+Send this to your group. Once everyone confirms, I'll lock in your booking.</div>
+        <div class="msg-user">[after 30 mins] Ok everyone said yes</div>
+        <div class="msg-concierge">🎉 Awesome! Your booking is locked:
+📅 Friday, March 30 at 6 PM
+👥 4 people confirmed
+💰 Rs 500/person (total Rs 2,000)
+📍 Court 2, [Venue Address]
+What to bring: Rackets provided, bring water bottle
+See you Friday! 🎾</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Structured flow (pick time → send invite → wait for confirmation → lock booking). Reduce friction with pre-formatted invite card.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> group_coordinator() function generates shareable invite card (pre-filled with venue, time, party size, payment link). Customer copies card, shares with group via WA. Concierge waits for payment links to be activated (individual payment events trigger confirmation). Once all group members have confirmed, booking locked.</p>
+    <p><strong>Edge cases:</strong> If one friend doesn't pay within 48h, concierge sends gentle reminder to that friend's payment link. If 1 person cancels before booking, recalculate party size and per-person price (may affect discounts). If full group cancels, offer rescheduling with extra incentive ("Rebook this month: 20% off").</p>
+</div>
+
+<div id="j5-slot" class="screen-box">
+    <h4>Flow 5.5: Slot Confusion Branch (schedule clarity, availability help)</h4>
+    <p><strong>Trigger:</strong> Customer saw slot grid on page but didn't select. OR explicitly says "confused about slots" / "when are you open?".</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Slot Confusion Flow</div>
+        <div class="msg-concierge">Picking a time can be confusing! Let me make it easy.
+What day are you thinking? (Today, this weekend, or next week?)</div>
+        <div class="msg-user">This Saturday</div>
+        <div class="msg-concierge">Got it. Saturday [Date]. Here are your options:
+
+Morning:
+• 7-8 AM (Rs 399, 4 spots left) ✓
+• 8-9 AM (Rs 399, FULL) ✗
+
+Afternoon:
+• 2-3 PM (Rs 499, 2 spots left) ✓
+• 3-4 PM (Rs 499, FULL) ✗
+
+Evening:
+• 5-6 PM (Rs 599, 3 spots left) ✓
+• 6-7 PM (Rs 599, 1 spot left) ✓
+
+Which time works for you?</div>
+        <div class="msg-user">5-6 PM</div>
+        <div class="msg-concierge">Perfect! 5-6 PM Saturday booked:
+Rs 599 | 3 spots available (not solo)
+Ready to confirm?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Simplify slot selection to text (not grid). Show time + price + availability status. Confirm before booking.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Availability data from backend (inventory, slot_state table). Concierge retrieves available slots for requested date, formats as text options with capacity status. Customer selects, system confirms.</p>
+    <p><strong>Edge cases:</strong> If requested date/time fully booked, suggest next available: "Saturday 5 PM is full. How about Sunday 5 PM or Saturday 6 PM?" If availability data has lag (real-time bookings), confirm with caveat: "This shows available now — I'll double-check when we submit."</p>
+</div>
+
+<div id="j5-safety" class="screen-box">
+    <h4>Flow 5.6: Safety/Trust Branch (safety cues, code of conduct, logistics)</h4>
+    <p><strong>Trigger:</strong> Customer showed dwell on safety-related sections. OR explicitly asks "is it safe?" / "what's the vibe?" / "women-safe?".</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Safety/Trust Flow - Women-Focused Example</div>
+        <div class="msg-concierge">Totally fair question. Here's the real answer:
+**Safety: [Venue] is in a well-lit, busy area. Lots of women come solo and in groups. Zero incidents reported (we track this).**
+
+**Vibe: Mostly relaxed, inclusive crowd. Zero tolerance for disrespect. Hosts are trained to intervene.**
+
+**Logistics: Parking available. Security on-site til 10 PM. Groups typically leave together.**
+
+Specific concerns?</div>
+        <div class="msg-user">Are most people experienced?</div>
+        <div class="msg-concierge">Mix of experienced + beginners. No judgment whatsoever. Many first-timers come, try, love it. No one's gonna mock you if you're new 🙂</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Address safety directly with specifics (location, incidents, training). Don't deflect. Offer follow-up on specific concerns.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Safety Branch templates pre-loaded for category (sports clubs often have women-safety questions; nightlife has safety questions; dining has food safety questions). Concierge selects relevant template, but allows for custom Q&A.</p>
+    <p><strong>Edge cases:</strong> If customer reports safety concern from past experience, escalate to manager (mark as "manager_review"). If customer is extremely anxious (5+ safety questions), offer: "Want to visit with a friend first (no booking), just to see the space?" If customer from under-served demographic (women, LGBTQ+, minority), pre-surface safety info proactively (no wait for asking).</p>
+</div>
+
+<div id="j5-reclassify" class="screen-box">
+    <h4>Flow 5.7: Mid-Conversation Re-Classification (4 pivot scenarios)</h4>
+    <p><strong>System Logic:</strong> Concierge persona hypothesis can shift mid-conversation. If customer reveals new intent that contradicts initial hypothesis, system re-classifies and pivots branches.</p>
+
+    <p><strong>Scenario 1: SOLO → GROUP ORGANIZER Pivot</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Initial Hypothesis: SOLO</div>
+        <div class="msg-concierge">Want to play pickleball solo? We've got [details about solo play]...</div>
+        <div class="msg-user">Actually, my friends want to come too. 4 of us.</div>
+        <div class="msg-label">System: Re-classify to GROUP_ORGANIZER (high confidence). Pivot conversation.</div>
+        <div class="msg-concierge">Even better! 4 people is perfect for a court + super fun. Want me to help coordinate everyone?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Smooth pivot: Acknowledge new info, shift to group-relevant details (coordination, group discount).</p>
+    </div>
+
+    <p><strong>Scenario 2: BEGINNER + Price-Sensitive → Trial Offer Pivot</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Initial: BEGINNER ("first time?"), later: PRICE-SENSITIVE ("Rs 599 is high")</div>
+        <div class="msg-concierge">Let me offer: First-time + off-peak = Rs 199. You try once, see if you love it, and come back for regular pricing.</div>
+        <div class="msg-user">Rs 199? That's reasonable</div>
+        <div class="msg-label">System: Recognize combo opportunity (beginner + price-sensitive = trial+discount is strongest lever). Accelerate to booking.</div>
+        <div class="msg-concierge">Perfect! When can you try? This week or next?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Combo recognition: Address both needs simultaneously (beginner anxiety + price concern) with unified offer.</p>
+    </div>
+
+    <p><strong>Scenario 3: REGULAR → Upsell Moment Recognition</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Initial: REGULAR (returning customer), during flow: mentions "need to bring 2 friends"</div>
+        <div class="msg-concierge">You're bringing friends? Perfect moment to try our pack (10 visits = 25% savings). Get yourself set up, friends try, then friends buy packs too.</div>
+        <div class="msg-user">Hmm, how much?</div>
+        <div class="msg-label">System: Recognize upsell window (regular + new friends = volume opportunity). Pitch strategically.</div>
+        <div class="msg-concierge">Your current rate: Rs 599/visit. Pack (10x): Rs 4,490 (Rs 449/visit). Pays for itself in 2 weeks if you come 2x/week.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Upsell recognition: Regular + group bring = higher lifetime value moment. Pitch math clearly.</p>
+    </div>
+
+    <p><strong>Scenario 4: CORPORATE → Custom Event Pivot</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Initial: CORPORATE (bulk size: 15), midway: customer mentions "team building" goal</div>
+        <div class="msg-concierge">Team building event? That changes the experience design. Want structured games, or more casual? How long?</div>
+        <div class="msg-user">2-3 hours, mix of both</div>
+        <div class="msg-label">System: Re-classify to CORPORATE_EVENTPLAN (custom subtype). Shift to experience design conversation.</div>
+        <div class="msg-concierge">Got it. I'll draft a 3-hour itinerary (warmup → tournament → social hour). Sending a custom quote + agenda. Manager will call to confirm details. Sound good?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Event design pivot: Bulk booking → custom itinerary based on goals. Escalate to manager for customization.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Concierge LLM has access to conversation history + initial persona_hypothesis. At each customer message, system re-evaluates persona confidence. If new message contradicts hypothesis (e.g., "bring friends" contradicts SOLO), update persona classification and prompt system to suggest pivot in next concierge message. Pivot should feel natural, not abrupt.</p>
+    <p><strong>Edge cases:</strong> If persona keeps changing (customer is genuinely undecided), don't over-pivot. Instead, ask clarifying question: "Help me understand — are you coming solo, with a group, or bringing a friend?" If re-classification increases complexity beyond concierge scope (e.g., CORPORATE event → needs full custom design), escalate to manager gracefully: "This is a great opportunity — let me get our events specialist involved."</p>
+</div>
+
+<div id="j5-closure" class="screen-box">
+    <h4>Flow 5.8: Closure — Booking Confirmation, What Happens Next</h4>
+    <p><strong>Trigger:</strong> Customer has selected time + confirmed price. Ready to finalize booking.</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Booking Closure Flow</div>
+        <div class="msg-concierge">Let me confirm everything:
+
+📅 Friday, March 30 at 6 PM
+🎾 Court 2, [Venue Name], [Address]
+👥 4 people
+💰 Rs 500/person (total Rs 2,000)
+✓ No hidden charges
+
+Sound right?</div>
+        <div class="msg-user">Yes, let's do it</div>
+        <div class="msg-concierge">Perfect! 🎉 Booking confirmed. Your ref number: TN20260330ABC123
+
+**What happens next:**
+• Check email for confirmation + directions
+• 24 hours before: You'll get a reminder
+• 4 hours before: Final check-in reminder
+• Bring: Water bottle, towel (rackets provided)
+• Arrive 10 min early for court orientation
+
+Any last questions?</div>
+        <div class="msg-user">Nope, all good!</div>
+        <div class="msg-concierge">Awesome! See you Friday 🎾 Have fun with your crew!
+(Need to reschedule? Reply CHANGE. Need help? Reply HELP.)</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Final confirmation (all details), what's next (email, reminders, prep), reassurance question, clear exit clauses (change, help).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Booking submitted to system. SMS + Email + WhatsApp confirmations sent simultaneously. Concierge state marked as "closed_to_booking". Future messages (CHANGE, HELP) routed to support queue or manager.</p>
+    <p><strong>Concierge System Prompt (Master Template):</strong></p>
+    <div class="prompt-box">
+# System Prompt: WhatsApp Concierge
+
+You are a helpful, non-salesy WhatsApp concierge for a venue booking platform.
+
+Your job: Help customers move from page → booking. Not to sell, but to clarify friction and close with confidence.
+
+## Core Rules
+1. **Helpful, not pushy.** If customer hesitates, ask "What would help?", don't pressure.
+2. **Structured where friction is known.** Use forms/pickers for date, time, pricing. Free text for questions/reassurance.
+3. **Persona-aware.** You have: persona_type, persona_confidence, friction_type from page context. Adapt tone/content accordingly.
+4. **Honest.** Never invent features, overstate reviews, or hide limitations. If something's not available, say it.
+5. **Boundary-aware.** Once booking is confirmed, close the conversation gracefully. Don't linger.
+
+## Conversation Pattern
+1. **Entry:** Persona-specific greeting + open-ended question
+2. **Clarification:** Ask 1-2 questions to diagnose friction (price? fit? coordination? logistics?)
+3. **Solution:** Offer 2-3 options tailored to friction + persona
+4. **Confirmation:** Confirm all details, get explicit yes
+5. **Closure:** Send ref number, next steps, exit clause (CHANGE, HELP)
+
+## Tone by Persona
+- BEGINNER: Warm, reassuring, de-emphasize complexity
+- REGULAR: Friendly, fast, recognize loyalty
+- GROUP: Energetic, focus on coordination + social payoff
+- SOLO: Reassuring + social, normalize solo attendance
+- CORPORATE: Professional, focus on logistics + custom options
+- PRICE_SENSITIVE: Transparent, show value, lead with discounts
+
+## Friction-Specific Responses
+- **Price Hesitation:** Show offer ladder (trial, discount, pack, time-based). No pressure if they choose not to.
+- **Fit Ambiguity:** Normalize concerns, provide proof (testimonials, instructor creds, vibe description).
+- **Group Coordination:** Provide pre-formatted invite card, manage payment split.
+- **Slot Confusion:** Simplify to text options, show capacity status, confirm selection.
+- **Safety/Trust:** Address directly with specifics. Don't deflect.
+- **Mid-conversation Persona Shift:** Update hypothesis, pivot topic naturally. Don't call it out.
+
+## Escalation Rules
+- If customer mentions safety concern → Manager review
+- If customer requests custom solution (3+ special requirements) → Escalate to owner/manager
+- If customer is abusive or harassing → Exit conversation, block option, escalate
+- If customer asks about venue logistics/policy beyond concierge scope → Connect to venue phone number
+
+## Output Format
+- Keep messages short (max 2-3 sentences) unless providing info dump (pricing, options).
+- Use emojis sparingly (1-2 per message, category-relevant).
+- No ALL CAPS unless celebrating ("🎉" equivalent).
+- Confirm explicit consent before submitting booking.
+    </div>
+    <p><strong>Edge cases:</strong> If customer disappears after confirmation (no reply for 24h), send reminder 24h before visit ("You're confirmed for [time]. See you tomorrow?"). If customer has 2nd thoughts after confirmation, allow change until 12h before visit (auto-process if same time/date available, escalate if custom request). If customer no-show, log for future marketing (3x no-shows = review).
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JOURNEY 6: POST-BOOKING + OWNER DASHBOARD
+     ═══════════════════════════════════════════════════════════════════ -->
+<h2>JOURNEY 6: POST-BOOKING + OWNER DASHBOARD</h2>
+<p>Customer receives reminders, checks in at venue, gets post-visit rebook offer. Owner receives weekly summary, content gap requests, page edit flow.</p>
+
+<div id="j6-confirmation" class="screen-box">
+    <h4>Screen 6.1: Booking Confirmation (customer) — Details, Directions, Prep</h4>
+    <p><strong>What the customer receives:</strong></p>
+    <p><strong>Email (transactional, immediate):</strong></p>
+    <ul>
+        <li>Subject: "✓ Your booking is confirmed [Ref: TN20260330ABC123]"</li>
+        <li>From: "[Venue Name] via Turnout"</li>
+        <li>Body:</li>
+        <ul>
+            <li>Confirmation header: "You're all set for [Venue], Friday March 30 at 6 PM"</li>
+            <li>Details table: Date, Time, Party Size, Booking Ref, Price (itemized)</li>
+            <li>"What to bring" section (category-specific, e.g., "Rackets provided, bring water bottle")</li>
+            <li>Venue address + embedded map link (Google Maps, can tap for directions)</li>
+            <li>Venue phone (clickable, opens phone app on mobile)</li>
+            <li>Parking info (if available)</li>
+            <li>Cancellation policy (clear, e.g., "Free cancel until 12h before")</li>
+            <li>Shareable confirmation card (PNG image, screenshot-friendly, shows all key details)</li>
+            <li>CTA buttons: "Add to Calendar" (iCal), "Share on WhatsApp", "Get Directions"</li>
+            <li>Footer: "Need to reschedule? Reply CHANGE. Questions? Reply HELP."</li>
+        </ul>
+    </ul>
+    <p><strong>SMS (immediate):</strong> "Confirmed: [Venue], Friday 6 PM. Ref: TN. Tap for details: [short URL to confirmation page]"</p>
+    <p><strong>WhatsApp (immediate):</strong> Similar to SMS, but with richer formatting (confirmation card thumbnail, buttons)</p>
+    <p><strong>Algorithm:</strong> Booking confirmation trigger fires after customer submits booking. System sends transactional messages (email, SMS, WA) via background job. Ref number generated (unique, memorable). Reminders scheduled: 24h before and 4h before visit.</p>
+    <p><strong>Edge cases:</strong> If customer booked for today (zero wait), send confirmation immediately but add "See you soon!" urgency. If venue's email domain is custom (e.g., "booking@venuename.com"), send from that domain (more credible). If customer requested special dietary, accessibility, or other note, include it in confirmation.</p>
+</div>
+
+<div id="j6-reminders" class="screen-box">
+    <h4>Screen 6.2: Reminder Messages (24h + 4h before, template per category)</h4>
+    <p><strong>24 Hours Before Reminder:</strong></p>
+    <ul>
+        <li><strong>SMS:</strong> "Reminder: [Venue] tomorrow at 6 PM. 4 people. Directions: [link]"</li>
+        <li><strong>Email:</strong> "See you tomorrow at [Venue]! 📅 Final details:"</li>
+        <ul>
+            <li>Quick summary: time, location, party size</li>
+            <li>Weather (if applicable, e.g., "It'll be 28°C tomorrow, bring sunscreen 😎")</li>
+            <li>Parking reminder (if applicable)</li>
+            <li>CTA: "Cancel or reschedule?" (link to edit booking)</li>
+        </ul>
+    </ul>
+    <p><strong>4 Hours Before Reminder:</strong></p>
+    <ul>
+        <li><strong>WhatsApp only (more personal, closer timing):</strong> "Hi [Name]! Almost time for [Venue] (6 PM, 4h from now). See you there! 🎉 Tap for directions: [link]"</li>
+        <li>Also includes: "Running late? Reply LATE"</li>
+    </ul>
+    <p><strong>Category-Specific Reminder Variations:</strong></p>
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>24h Reminder Emphasis</th>
+            <th>4h Reminder Emphasis</th>
+        </tr>
+        <tr>
+            <td>Sports/Fitness</td>
+            <td>"Bring water + towel. Energy up! 💪"</td>
+            <td>"See you soon! Dress comfortably."</td>
+        </tr>
+        <tr>
+            <td>Brunch/Cafe</td>
+            <td>"Table reserved 11 AM. Come hungry! 😋"</td>
+            <td>"Getting hungry? Head over now (it's good!)"</td>
+        </tr>
+        <tr>
+            <td>Wellness (yoga, massage)</td>
+            <td>"60-min session tomorrow. Arrive 10 min early for setup. 🧘"</td>
+            <td>"Time to unwind! See you at [Venue]. 🙏"</td>
+        </tr>
+        <tr>
+            <td>Events</td>
+            <td>"Your event is tomorrow. Last-minute questions? [Contact link]"</td>
+            <td>"You're in! Arrive early for check-in."</td>
+        </tr>
+    </table>
+    <p><strong>Algorithm:</strong> Reminders scheduled at booking creation time (UTC-based). Cron job executes reminders 24h and 4h before visit. Message template selected from category-specific library. Personalization: customer name, venue name, time, party size.</p>
+    <p><strong>Edge cases:</strong> If customer responds "LATE" to 4h reminder, concierge sends: "No problem! Table/slot held for 15 min. Let us know when you're 5 min away." If customer has marked as "Do Not Remind" in preferences, skip email but still send SMS + WA. If booking is cancelled before reminder fires, cancel scheduled reminders.</p>
+</div>
+
+<div id="j6-checkin" class="screen-box">
+    <h4>Screen 6.3: Check-in at Venue (QR scan or tap confirmation)</h4>
+    <p><strong>What happens at venue:</strong></p>
+    <ul>
+        <li><strong>QR Code Check-in (preferred):</strong></li>
+        <ul>
+            <li>At venue entrance or host stand, customer shows their booking confirmation (email/SMS) to staff</li>
+            <li>Staff scans QR code on confirmation (encodes ref_number)</li>
+            <li>System records check-in event (timestamp, venue_id, booking_id)</li>
+            <li>Staff confirms: "You're good to go! Court 2, 6 PM."</li>
+        </ul>
+        <li><strong>Manual Check-in (fallback):</strong> Customer gives ref number to staff ("TN20260330ABC123"), staff looks up and confirms</li>
+        <li><strong>Tap-to-Check-in (app version):</strong> Customer opens Turnout app, taps "I'm here" button on booking screen, system records check-in via GPS (venue geo-fence detection)</li>
+    </ul>
+    <p><strong>Post-Check-in (immediate):</strong></p>
+    <ul>
+        <li>System sends check-in confirmation to customer WhatsApp: "✓ You've checked in. Enjoy your session!"</li>
+        <li>Owner receives notification: "[Name] just checked in. Booking ref TN..."</li>
+        <li>Attribution logic triggered: Which page variant? Which concierge message? Which referrer source? Log for performance analysis.</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Check-in is operational proof that customer showed up. Used for:
+    <ul>
+        <li>Attribution: Which channel (IG, WA, direct?) converted to actual visit?</li>
+        <li>Repeat rate: If customer checks in 2x/month, they're becoming regular</li>
+        <li>No-show tracking: If booking not checked in by end-of-slot time, marked as "no-show" (used for discount/reliability scoring)</li>
+    </ul>
+    <p><strong>Edge cases:</strong> If customer doesn't check in but venue staff confirm they showed up (manual note), allow post-hoc check-in within 24h. If customer checks in late (after start time), still record but flag as "late check-in" (data for friction analysis). If customer checks in but immediately leaves (check-in + 5-min checkout), flag for owner review (potential issue?).</p>
+</div>
+
+<div id="j6-rebook" class="screen-box">
+    <h4>Screen 6.4: Post-Visit Rebook ("Book Next Week?") + Pack Upsell</h4>
+    <p><strong>Trigger:</strong> Booking checked in + session ended (estimated 60-120 min after check-in). OR customer explicitly rates/reviews experience.</p>
+    <p><strong>WhatsApp Message (4h after check-in, after session likely ended):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Post-Visit Rebook Message (REGULAR Persona)</div>
+        <div class="msg-concierge">How was [Venue]? 🎾 Hope you had a blast!
+
+Quick thing: Most people who come once come back. Want to lock in next Friday at the same time? (Same crew, same spot!)
+[BOOK NEXT FRIDAY button]
+
+Or try our 10-visit pack for regulars: Save 25%, never worry about booking. [SHOW PACK button]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Positive tone, quick re-engagement opportunity, upsell to pack (commitment + savings).</p>
+    </div>
+
+    <p><strong>WhatsApp Message (BEGINNER Persona):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Post-Visit Rebook Message (BEGINNER)</div>
+        <div class="msg-concierge">Hope that was fun! 🎾 Lot of beginners come back because it clicks on the 2nd try.
+
+Want to try again next week? (No pressure — just an option!)
+[BOOK AGAIN button]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Normalize learning curve, low-pressure, normalize repeat ("beginners do this").</p>
+    </div>
+
+    <p><strong>WhatsApp Message (GROUP_ORGANIZER Persona):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Post-Visit Rebook Message (GROUP_ORGANIZER)</div>
+        <div class="msg-concierge">Your crew loved it, right? 🎉 Group discount still applies!
+
+Next Friday, same time, same crew? [INVITE FRIENDS AGAIN button]
+Or bulk-book the whole month? [MONTHLY PASS button]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Celebrate social success, make rebooking group-centric, introduce membership angle.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Rebook message sent 4h after check-in (assumes 1h session, 3h buffer). Message template selected by persona (detected from booking/page context). CTA buttons ("BOOK NEXT FRIDAY", "SHOW PACK", "INVITE FRIENDS AGAIN") are dynamic (time = next week, price = current rate, crew size = actual group size from booking).</p>
+    <p><strong>Edge cases:</strong> If customer explicitly rated experience poorly (see Screen 6.5), skip rebook message. Instead, send: "We'd love to make it better — can you tell us what wasn't right?" If customer booked at off-peak time, rebook message suggests: "Next Friday was packed, but Wednesday 2 PM is available (20% off)." If customer is price-sensitive and didn't come with pack, lead with: "Rebook this month and save 15%."</p>
+</div>
+
+<div id="j6-owner-summary" class="screen-box">
+    <h4>Screen 6.5: Owner Weekly Summary (WhatsApp, WA Business API)</h4>
+    <p><strong>Delivery:</strong> Every Monday morning (8 AM owner's local time) via WhatsApp Business API</p>
+    <p><strong>Message 1 (Summary):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Owner Weekly Summary Message</div>
+        <div class="msg-concierge">Hey [Owner]! Here's your week at [Venue] 📊
+
+**Bookings:** 24 total | +15% vs last week 📈
+**Top Time:** Friday 6-7 PM (8 bookings)
+**Top Source:** Instagram (45% of bookings)
+**Revenue:** Rs 12,400 | +20% vs last week 🎉
+
+**Key Insight:** First-timers had 67% rebook rate (up from 54%). Your beginner experience is clicking!
+
+Want to see full analytics? [DASHBOARD link]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Lead with headline metrics (bookings, revenue, growth %). Include top-performing time/source. Highlight one learnable insight.</p>
+    </div>
+
+    <p><strong>Message 2 (Action Items, sent 1h later):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Owner Action Items</div>
+        <div class="msg-concierge">**Quick wins this week:**
+
+1. **Content gap:** You're missing photos of the lounge area. Adding 3 photos here could lift CTR by ~8%. [UPLOAD link]
+
+2. **Off-peak opportunity:** Wed-Thu evenings have 40% less demand. Try a "Weekday special: 20% off" offer? [ENABLE OFFER button]
+
+3. **Testimonials:** 6 customers rated your experience 5⭐ this week. Want to add quotes to your page? [COLLECT TESTIMONIALS button]
+
+Let me know if you want help with any of these!</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: 3 actionable recommendations, each with: problem, insight, CTA. Lead with highest-ROI opportunity (content gap).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Weekly Summary Generator (Skill 9). Inputs: booking data (count, timing, source, revenue), content data (media library gaps), customer feedback (ratings, sentiment). Outputs: 3-5 metrics + 2-3 action items + 1 celebration insight.</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: Weekly Owner Summary Generator
+You are creating a motivating, actionable weekly summary for a venue owner.
+
+Input:
+- Venue name: {{venue_name}}
+- Bookings this week: {{bookings_count}} (total, new, repeat)
+- Top time slot: {{top_slot}} (e.g., "Friday 6 PM")
+- Top source: {{top_source}} (e.g., "Instagram", "WhatsApp referral")
+- Revenue: {{revenue_total}} vs {{revenue_last_week}}
+- First-timer rebook rate: {{rebook_rate}} vs {{rebook_last_week}}
+- Content gaps: {{gaps}} (list of missing content types)
+- Customer sentiment: {{feedback}} (5⭐ count, any complaints)
+
+Task: Generate a 2-message sequence:
+1. Summary (metrics + 1 insight)
+2. Action items (3 recommendations, highest ROI first)
+
+Format: Warm, celebratory tone. Numbers are clear. Each action item has problem + solution + CTA.
+
+Rules:
+- Celebrate growth (even small wins)
+- Rank action items by estimated lift
+- If no growth vs last week, find silver lining ("Consistent week + your repeat rate grew 5%")
+- Don't be generic — use venue-specific facts
+    </div>
+    <p><strong>Edge cases:</strong> If no bookings this week, send encouraging message: "Quiet week, but let's activate your page. Try our 'New user first-time offer' offer?" If owner has zero customer feedback (no ratings), ask: "Want to request feedback from this week's customers?" If content gaps are severe (< 5 photos), mark as P1 priority and include CEO note: "Let's fix this together — book time with our team?"</p>
+</div>
+
+<div id="j6-content-gap" class="screen-box">
+    <h4>Screen 6.6: Owner Content Gap Request (what to upload, estimated lift)</h4>
+    <p><strong>Trigger:</strong> Weekly summary (automatic) OR manual review if content_readiness score < 60.</p>
+    <p><strong>WhatsApp Message:</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Content Gap Request</div>
+        <div class="msg-concierge">Your page is strong, but 3 photos of [specific zone] would help customers see the full vibe. 📸
+
+**Missing:** Lounge seating area + action shot of people + close-up of menu/drinks
+
+**Why:** Customers often ask "What's the seating like?" — seeing it reduces booking anxiety.
+
+**Estimated lift:** +8% CTR, +5% conversion (so ~12 more bookings/month if no other changes)
+
+**How:** Send 3-5 photos of the lounge (daytime + evening), and one candid photo of people enjoying the space.
+
+Have photos? [UPLOAD button]
+Or I can send a photo checklist? [GET CHECKLIST button]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Specific zone, reason (customer anxiety), estimated lift (quantified), clear ask (3-5 specific photos).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Content Gap Requester (Skill 7). Inputs: current media library, content_readiness score, customer inquiry patterns (from page analytics + WA concierge Q&A). Outputs: specific zone request + why + estimated lift.</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: Content Gap Request
+You are analyzing a venue's photo library and identifying the most impactful content gap.
+
+Input:
+- Current photos: {{photo_list}} (list of current photos + zones they show)
+- Customer inquiry patterns: {{inquiries}} (list of questions asked in WA, e.g., "What's the seating?", "Can I see the kitchen?")
+- Content_readiness score: {{score}}
+- CTR vs benchmark: {{current_ctr}} vs {{benchmark_ctr}}
+
+Task: Identify 1 zone/angle that, if photographed, would:
+1. Answer most common customer questions
+2. Lift CTR by 5-15%
+
+Output:
+{
+  "missing_zone": "Specific zone name",
+  "why": "Why customers ask about this",
+  "specific_photos_needed": ["photo 1 description", "photo 2 description", ...],
+  "estimated_lift": "8% CTR improvement based on similar venues",
+  "photo_checklist": "Text checklist owner can use"
+}
+
+Rules:
+- Lead with customer inquiry data (if 15% of questions are "what's the vibe?", prioritize vibe/atmosphere photos)
+- Be specific ("lounge seating" not "interior")
+- Include diversity in photo angle (wide shot, detail, action, candid)
+- Only request photos that are missing (don't repeat what's already in library)
+    </div>
+    <p><strong>Edge cases:</strong> If venue is new and has no bookings yet, don't request content gap (too early). If content_readiness is already 90+, no content gap request (they're good). If owner uploads photos but system detects they're low-quality (blurry, poor lighting), send: "Thanks for uploading! These need better lighting — try again in natural daylight?" with photo tips link.</p>
+</div>
+
+<div id="j6-owner-edit" class="screen-box">
+    <h4>Screen 6.7: Owner Page Approval/Edit Flow (preview, edit, approve)</h4>
+    <p><strong>Trigger:</strong> Owner edits page (after onboarding) OR receives feedback from customer tests (Journey 3).</p>
+    <p><strong>Edit Interface (in Turnout Dashboard):</strong></p>
+    <ul>
+        <li><strong>Left panel: Page Preview (live sync)</strong></li>
+        <ul>
+            <li>Mobile phone mockup showing current page</li>
+            <li>Scrollable, fully interactive</li>
+            <li>Updates in real-time as owner edits (right panel)</li>
+        </ul>
+        <li><strong>Right panel: Edit Form</strong></li>
+        <ul>
+            <li>Editable fields (by section):</li>
+            <ul>
+                <li>Hero: Upload new image OR select from gallery</li>
+                <li>Tagline: Text field (editable)</li>
+                <li>Vibe Tags: Chip selector (add/remove/reorder)</li>
+                <li>Pricing: Price input fields (base, add-ons)</li>
+                <li>Hours: Time pickers for open/close</li>
+                <li>Concierge tone/knowledge: Radio + text (as in Journey 2.5)</li>
+                <li>Testimonials: Select from real reviews or add custom</li>
+            </ul>
+        </ul>
+        <li><strong>Action buttons:</strong> "Save Draft" (local storage, not published) / "Preview on Phone" (full-screen phone preview) / "Publish Changes" (live update, versioned)</li>
+    </ul>
+    <p><strong>Edit Workflow:</strong></p>
+    <ol>
+        <li>Owner clicks "Edit Page"</li>
+        <li>System loads current page configuration into edit form</li>
+        <li>Owner makes changes (fields auto-save as "draft")</li>
+        <li>Owner clicks "Preview on Phone" (side panel shows new version)</li>
+        <li>Owner satisfied → "Publish Changes"</li>
+        <li>System creates new page version (v1.0 → v1.1). Tracks what changed.</li>
+        <li>Customer re-visiting page sees new version (transparent update)</li>
+    </ol>
+    <p><strong>Version History + Rollback:</strong></p>
+    <ul>
+        <li>Every published version saved with timestamp + owner notes</li>
+        <li>Owner can click "View Previous Version" to see v1.0, v1.1, etc.</li>
+        <li>"Rollback to V1.0" button available (rare case: accidental bad edit)</li>
+        <li>Analytics tied to versions (can compare v1.0 CTR vs v1.1 CTR)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Page configuration stored as JSON (templates + fields). Edit form is dynamic (fields generated from page schema). On publish, new version created, analytics event logged, old version retained.</p>
+    <p><strong>Edge cases:</strong> If owner tries to remove all hero images, warn: "Every page needs a hero image. Choose one to continue." If owner changes pricing 3x in 1 day, flag as "aggressive pricing testing — are you trying A/B testing? Consider our A/B testing tool instead." If owner publishes page with no pricing data, warn: "Pricing is required. Set it before publishing."</p>
+</div>
+
+
+
+</main>
+
+<footer style="text-align: center; padding: 40px; color: #666; font-size: 12px; margin-top: 80px; border-top: 1px solid #1a2a4a;">
+    <p><strong>TURNOUT BETA — FINAL UX SPECIFICATION (COMPLETE)</strong></p>
+    <p>This document supersedes:</p>
+    <ul style="list-style: none; padding: 0;">
+        <li>✓ Turnout Viral Aha UX Spec v3</li>
+        <li>✓ Turnout Algorithm × UX Contract v1</li>
+        <li>✓ Turnout Persona Concierge Deep Spec</li>
+        <li>✓ Turnout PRD v3 (AI Skill details)</li>
+    </ul>
+    <p style="margin-top: 16px;">Implementation-ready. All 6 journeys complete. AI prompts included for every generative section.</p>
+    <p style="margin-top: 8px; color: #888; font-size: 11px;">Final | March 30, 2026 | v4.0 | Consolidated by Claude Agent</p>
+</footer>
+
+</body>
+</html>

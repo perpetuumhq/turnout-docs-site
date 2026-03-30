@@ -1,0 +1,737 @@
+<!-- ═══════════════════════════════════════════════════════════════════
+     JOURNEY 5: WA CONCIERGE (per friction type × persona)
+     ═══════════════════════════════════════════════════════════════════ -->
+<h2>JOURNEY 5: WA CONCIERGE (per friction type × persona)</h2>
+<p>WhatsApp concierge detects persona + friction type from page context, enters tailored conversation branch, and closes to booking. Not a sales bot — a helpful assistant.</p>
+
+<div id="j5-entry" class="screen-box">
+    <h4>Flow 5.1: Entry Messages (6 first messages, same venue, different personas)</h4>
+    <p><strong>System Setup:</strong> When customer lands on page (screens 4.1-4.3), system detects persona_hypothesis. If friction detected OR customer scrolls past 90% of page without booking, WA handoff option surfaces. Customer taps "Chat with us on WhatsApp" → opens WA Web with pre-filled message.</p>
+    <p><strong>6 Entry Message Variants (for same Sports-Social venue, Pickleball court):</strong></p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 1: BEGINNER Persona</div>
+        <div class="msg-concierge">Hi! 👋 I see you're interested in [Venue Pickleball]. Great choice! Quick question — is this your first time playing?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Opens with reassurance-seeking question, not sales pitch. Acknowledges beginner concern.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 2: REGULAR Persona</div>
+        <div class="msg-concierge">Hey! Glad to see you back 😊 Looking to book Friday? I remember you like Court 2 in the evening.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Personalization (knows history), faster tone, assumes intent. Builds on familiarity.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 3: GROUP ORGANIZER Persona</div>
+        <div class="msg-concierge">Hey! 🏸 Planning something fun for your crew? I can help you book a court and sort out payment for everyone.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Immediately addresses group coordination (split payment), enthusiastic tone, assumes social intent.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 4: SOLO Persona</div>
+        <div class="msg-concierge">Hi! 👋 Want to play some pickleball solo? I can help you find a slot where you'll meet other players or play at your own pace.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Acknowledges solo intent, provides two options (social vs. solo), reassurance about acceptance.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 5: CORPORATE Persona</div>
+        <div class="msg-concierge">Hi! 👋 Planning a team event at [Venue]? I can help arrange bulk booking, invoicing, and any custom setup you need.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Business tone, immediately mentions admin requirements (bulk, invoice), signals flexibility.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">Message Variant 6: PRICE-SENSITIVE Persona</div>
+        <div class="msg-concierge">Hey! 👋 Interested in [Venue]? Let me tell you about our off-peak deals and what actually fits your budget.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Why this works: Leads with price, offers transparency, invitation to negotiate or choose budget option.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> WA Entry Classifier samples page context (persona_hypothesis, friction_type, booking_state) and selects appropriate entry message from 6-persona template library. System sends message via WhatsApp Business API (not manual).</p>
+    <p><strong>Edge cases:</strong> If persona_hypothesis confidence < 50%, use generic message ("Hi! What can I help with?"). If customer doesn't respond in 24h, send follow-up reminder (1x only). If customer appears suspicious (VPN, bot-like behavior), require human review before sending offers.</p>
+</div>
+
+<div id="j5-price" class="screen-box">
+    <h4>Flow 5.2: Price Hesitation Branch (offer ladder per persona)</h4>
+    <p><strong>Trigger:</strong> Customer viewed page >20s, scrolled past pricing, but didn't book. OR customer explicitly says "a bit pricey" / "out of budget".</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">BEGINNER Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">I totally get it — let me show you options:
+• First-time offer: Rs 199 (instead of 599)
+• No commitment — try once and see if you love it
+Sound better?</div>
+        <div class="msg-user">Yeah, Rs 199 works</div>
+        <div class="msg-concierge">Perfect! 🎉 When would you like to try? (Friday, Saturday, or next week?)</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Lead with trial pricing, emphasize "try first" low-commitment angle.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">REGULAR Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">You've been great! Here's what I can do:
+• Renew your pack today: Save 20% (vs. single visits)
+• Or try off-peak (Tue-Thu): 15% off
+Which works better?</div>
+        <div class="msg-user">Off-peak might work</div>
+        <div class="msg-concierge">Excellent! Tuesday 2 PM is available. Normally Rs 599, but with off-peak: Rs 509. Ready?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Use pack/loyalty as primary lever, offer time-based discount as secondary.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">GROUP ORGANIZER Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">For groups, we've got:
+• 4+ people: 15% off per person
+• Book 2+ courts: Extra 5% off
+• Off-peak group rate: 25% off Tue-Thu
+How many in your crew?</div>
+        <div class="msg-user">4 people, probably Friday</div>
+        <div class="msg-concierge">Friday is peak, but 15% group discount applies: Rs 510 per person instead of 599.
+Or Friday next week (off-peak): Rs 450/person (25% off).
+What works?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Show multiplying discounts (group + size + time), give clear per-person breakdown.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">SOLO Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">Solo players get:
+• Off-peak deal: Rs 299 (normally 599) Tue-Thu
+• Solo community rate: Rs 399 any time (meet other players too)
+Either appeal to you?</div>
+        <div class="msg-user">Off-peak is cheaper, but I work 9-5</div>
+        <div class="msg-concierge">Got it. Our solo community rate (Rs 399) includes group atmosphere if you want it, or go solo if you prefer. Free to choose when you arrive. Sound good?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Offer flexibility (off-peak + community rate both available), emphasize "your choice" autonomy.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">CORPORATE Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">For team events, pricing is flexible:
+• 20 people: Custom quote available
+• Package deal: 2 courts + catering + host = Rs [custom]
+• No hidden charges (transparent breakdown)
+Can I send you a detailed quote?</div>
+        <div class="msg-user">Yes, that would help</div>
+        <div class="msg-concierge">Sending a custom quote to your email. Also — want to discuss team-building goals? (Icebreaker, fitness, fun?) This helps us customize the experience.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Defer to custom quote (not fixed pricing), add context-building question.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">PRICE-SENSITIVE Persona - Price Hesitation Flow</div>
+        <div class="msg-concierge">Rs 599 seems high? Here's reality:
+• Off-peak (Tue-Thu): Rs 239 (60% off) 🔥
+• Student discount: Additional 15% (show ID)
+• Refer a friend: Both get Rs 100 credit
+Best option for you?</div>
+        <div class="msg-user">Off-peak works</div>
+        <div class="msg-concierge">Rs 239 Tuesday 4 PM available. Book now and send this to a friend for Rs 100 credit (stacks with future bookings).</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Lead with aggressive off-peak pricing, add stacking incentives (student + referral).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> offer_ladder() function returns persona-specific pricing options ranked by relevance. Concierge presents top 2-3 options, waits for customer signal, then confirms booking.</p>
+    <p><strong>Edge cases:</strong> If customer still hesitates after 2-3 offer variations, concierge pivots: "What would make this work for you?" (open-ended, building rapport). If price absolutely non-negotiable, offer: "Want to try once at our discounted rate, see if you love it?" If customer suggests alternative price, concierge escalates to manager review.</p>
+</div>
+
+<div id="j5-fit" class="screen-box">
+    <h4>Flow 5.3: Fit Ambiguity Branch (beginner reassurance, vibe confirmation, level check)</h4>
+    <p><strong>Trigger:</strong> Customer saw page but showed unclear intent. OR explicitly says "not sure if this is for me" / "is this for beginners?".</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">BEGINNER Persona - Fit Ambiguity Flow</div>
+        <div class="msg-concierge">First time doing this? Totally normal to wonder if you're ready 😊
+Let me be honest: **This class is beginner-friendly.** Here's why:
+• Instructor trained specifically for first-timers
+• Max 8 people (very personal, no judgment)
+• 60% of our regulars started exactly where you are</div>
+        <div class="msg-user">OK, but what if I'm really unfit?</div>
+        <div class="msg-concierge">Good news: It's not about fitness level. It's about showing up and trying. 90% of beginners tell us they underestimated themselves. You'll be fine 💪</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Normalize anxiety, provide concrete proof (small class, trained instructor), redirect from ability to mindset.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">SOLO Persona - Fit Ambiguity Flow</div>
+        <div class="msg-concierge">Thinking about coming solo? **Good move.** Here's what to expect:
+• Half our solos come alone, half meet friends there
+• No awkward "singles" section — you'll blend in naturally
+• Fastest way to make friends in [city] for this hobby 🤝</div>
+        <div class="msg-user">Will I actually meet people?</div>
+        <div class="msg-concierge">Yes. On open-play nights (Wed/Fri), we rotate partners. You'll play with 8-10 different people. People are genuinely friendly here. Proof: 40% of our solos become regulars who come with friends.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Normalize solo attendance, emphasize social mechanism (partner rotation), provide conversion proof.</p>
+    </div>
+
+    <div class="wa-chat">
+        <div class="msg-label">GROUP ORGANIZER Persona - Fit Ambiguity Flow</div>
+        <div class="msg-concierge">Not sure if [Activity] is the vibe for your crew? Let me help think it through:
+• What's your crew's vibe? (Casual fun, competitive, team-building?)
+• First-timers in the group or mostly experienced?
+• Indoor or outdoor preference?
+Answer these and I can tell you if this is perfect for you.</div>
+        <div class="msg-user">We're mostly casual, first-timers mixed with experienced</div>
+        <div class="msg-concierge">**Perfect fit.** Casual + mixed experience is exactly what [Venue] caters to. We level-group on the fly (beginners don't get demolished 😅). You'll have a blast.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Ask clarifying questions to build rapport, then pattern-match to venue vibe, provide reassurance on friction points (beginner mixing).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Fit Ambiguity trigger detected from page dwell patterns or explicit customer message containing uncertainty words ("not sure", "for me?", "beginner", "safe?", "solo?"). Concierge branches to persona-specific fit confirmation flow.</p>
+    <p><strong>Edge cases:</strong> If customer says "This definitely isn't for me" (high confidence rejection), concierge asks "Can I ask why?" (builds data). If reason is addressable (e.g., "too expensive" → price branch), pivot. If reason is fundamental mismatch (e.g., "I don't like sports"), respect the rejection and offer alternative: "Totally fair. Want a referral to a similar spot that might be better?"</p>
+</div>
+
+<div id="j5-group" class="screen-box">
+    <h4>Flow 5.4: Group Coordination Branch (invite link, split-pay, scheduling)</h4>
+    <p><strong>Trigger:</strong> Party size > 1 AND customer explicitly mentions coordinating with others. OR detected as GROUP_ORGANIZER persona.</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Group Coordination Flow</div>
+        <div class="msg-concierge">So you're thinking Friday with 4 people? I can make this super easy:
+1. You pick the time
+2. I send invite links to your friends
+3. They confirm + pay their share via the link
+4. You're all set (no messy back-and-forth)</div>
+        <div class="msg-user">That's cool. We were thinking Friday 6 PM</div>
+        <div class="msg-concierge">Perfect. Here's the invite (copy & paste to WhatsApp group):
+
+---
+Shreya invited you to [Venue] Friday 6 PM
+Party size: 4 | Budget: Rs 500/person
+Payment link: [link]
+Your turn: Pay here → Shreya gets notified
+---
+
+Send this to your group. Once everyone confirms, I'll lock in your booking.</div>
+        <div class="msg-user">[after 30 mins] Ok everyone said yes</div>
+        <div class="msg-concierge">🎉 Awesome! Your booking is locked:
+📅 Friday, March 30 at 6 PM
+👥 4 people confirmed
+💰 Rs 500/person (total Rs 2,000)
+📍 Court 2, [Venue Address]
+What to bring: Rackets provided, bring water bottle
+See you Friday! 🎾</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Structured flow (pick time → send invite → wait for confirmation → lock booking). Reduce friction with pre-formatted invite card.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> group_coordinator() function generates shareable invite card (pre-filled with venue, time, party size, payment link). Customer copies card, shares with group via WA. Concierge waits for payment links to be activated (individual payment events trigger confirmation). Once all group members have confirmed, booking locked.</p>
+    <p><strong>Edge cases:</strong> If one friend doesn't pay within 48h, concierge sends gentle reminder to that friend's payment link. If 1 person cancels before booking, recalculate party size and per-person price (may affect discounts). If full group cancels, offer rescheduling with extra incentive ("Rebook this month: 20% off").</p>
+</div>
+
+<div id="j5-slot" class="screen-box">
+    <h4>Flow 5.5: Slot Confusion Branch (schedule clarity, availability help)</h4>
+    <p><strong>Trigger:</strong> Customer saw slot grid on page but didn't select. OR explicitly says "confused about slots" / "when are you open?".</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Slot Confusion Flow</div>
+        <div class="msg-concierge">Picking a time can be confusing! Let me make it easy.
+What day are you thinking? (Today, this weekend, or next week?)</div>
+        <div class="msg-user">This Saturday</div>
+        <div class="msg-concierge">Got it. Saturday [Date]. Here are your options:
+
+Morning:
+• 7-8 AM (Rs 399, 4 spots left) ✓
+• 8-9 AM (Rs 399, FULL) ✗
+
+Afternoon:
+• 2-3 PM (Rs 499, 2 spots left) ✓
+• 3-4 PM (Rs 499, FULL) ✗
+
+Evening:
+• 5-6 PM (Rs 599, 3 spots left) ✓
+• 6-7 PM (Rs 599, 1 spot left) ✓
+
+Which time works for you?</div>
+        <div class="msg-user">5-6 PM</div>
+        <div class="msg-concierge">Perfect! 5-6 PM Saturday booked:
+Rs 599 | 3 spots available (not solo)
+Ready to confirm?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Simplify slot selection to text (not grid). Show time + price + availability status. Confirm before booking.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Availability data from backend (inventory, slot_state table). Concierge retrieves available slots for requested date, formats as text options with capacity status. Customer selects, system confirms.</p>
+    <p><strong>Edge cases:</strong> If requested date/time fully booked, suggest next available: "Saturday 5 PM is full. How about Sunday 5 PM or Saturday 6 PM?" If availability data has lag (real-time bookings), confirm with caveat: "This shows available now — I'll double-check when we submit."</p>
+</div>
+
+<div id="j5-safety" class="screen-box">
+    <h4>Flow 5.6: Safety/Trust Branch (safety cues, code of conduct, logistics)</h4>
+    <p><strong>Trigger:</strong> Customer showed dwell on safety-related sections. OR explicitly asks "is it safe?" / "what's the vibe?" / "women-safe?".</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Safety/Trust Flow - Women-Focused Example</div>
+        <div class="msg-concierge">Totally fair question. Here's the real answer:
+**Safety: [Venue] is in a well-lit, busy area. Lots of women come solo and in groups. Zero incidents reported (we track this).**
+
+**Vibe: Mostly relaxed, inclusive crowd. Zero tolerance for disrespect. Hosts are trained to intervene.**
+
+**Logistics: Parking available. Security on-site til 10 PM. Groups typically leave together.**
+
+Specific concerns?</div>
+        <div class="msg-user">Are most people experienced?</div>
+        <div class="msg-concierge">Mix of experienced + beginners. No judgment whatsoever. Many first-timers come, try, love it. No one's gonna mock you if you're new 🙂</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Address safety directly with specifics (location, incidents, training). Don't deflect. Offer follow-up on specific concerns.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Safety Branch templates pre-loaded for category (sports clubs often have women-safety questions; nightlife has safety questions; dining has food safety questions). Concierge selects relevant template, but allows for custom Q&A.</p>
+    <p><strong>Edge cases:</strong> If customer reports safety concern from past experience, escalate to manager (mark as "manager_review"). If customer is extremely anxious (5+ safety questions), offer: "Want to visit with a friend first (no booking), just to see the space?" If customer from under-served demographic (women, LGBTQ+, minority), pre-surface safety info proactively (no wait for asking).</p>
+</div>
+
+<div id="j5-reclassify" class="screen-box">
+    <h4>Flow 5.7: Mid-Conversation Re-Classification (4 pivot scenarios)</h4>
+    <p><strong>System Logic:</strong> Concierge persona hypothesis can shift mid-conversation. If customer reveals new intent that contradicts initial hypothesis, system re-classifies and pivots branches.</p>
+
+    <p><strong>Scenario 1: SOLO → GROUP ORGANIZER Pivot</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Initial Hypothesis: SOLO</div>
+        <div class="msg-concierge">Want to play pickleball solo? We've got [details about solo play]...</div>
+        <div class="msg-user">Actually, my friends want to come too. 4 of us.</div>
+        <div class="msg-label">System: Re-classify to GROUP_ORGANIZER (high confidence). Pivot conversation.</div>
+        <div class="msg-concierge">Even better! 4 people is perfect for a court + super fun. Want me to help coordinate everyone?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Smooth pivot: Acknowledge new info, shift to group-relevant details (coordination, group discount).</p>
+    </div>
+
+    <p><strong>Scenario 2: BEGINNER + Price-Sensitive → Trial Offer Pivot</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Initial: BEGINNER ("first time?"), later: PRICE-SENSITIVE ("Rs 599 is high")</div>
+        <div class="msg-concierge">Let me offer: First-time + off-peak = Rs 199. You try once, see if you love it, and come back for regular pricing.</div>
+        <div class="msg-user">Rs 199? That's reasonable</div>
+        <div class="msg-label">System: Recognize combo opportunity (beginner + price-sensitive = trial+discount is strongest lever). Accelerate to booking.</div>
+        <div class="msg-concierge">Perfect! When can you try? This week or next?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Combo recognition: Address both needs simultaneously (beginner anxiety + price concern) with unified offer.</p>
+    </div>
+
+    <p><strong>Scenario 3: REGULAR → Upsell Moment Recognition</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Initial: REGULAR (returning customer), during flow: mentions "need to bring 2 friends"</div>
+        <div class="msg-concierge">You're bringing friends? Perfect moment to try our pack (10 visits = 25% savings). Get yourself set up, friends try, then friends buy packs too.</div>
+        <div class="msg-user">Hmm, how much?</div>
+        <div class="msg-label">System: Recognize upsell window (regular + new friends = volume opportunity). Pitch strategically.</div>
+        <div class="msg-concierge">Your current rate: Rs 599/visit. Pack (10x): Rs 4,490 (Rs 449/visit). Pays for itself in 2 weeks if you come 2x/week.</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Upsell recognition: Regular + group bring = higher lifetime value moment. Pitch math clearly.</p>
+    </div>
+
+    <p><strong>Scenario 4: CORPORATE → Custom Event Pivot</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Initial: CORPORATE (bulk size: 15), midway: customer mentions "team building" goal</div>
+        <div class="msg-concierge">Team building event? That changes the experience design. Want structured games, or more casual? How long?</div>
+        <div class="msg-user">2-3 hours, mix of both</div>
+        <div class="msg-label">System: Re-classify to CORPORATE_EVENTPLAN (custom subtype). Shift to experience design conversation.</div>
+        <div class="msg-concierge">Got it. I'll draft a 3-hour itinerary (warmup → tournament → social hour). Sending a custom quote + agenda. Manager will call to confirm details. Sound good?</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Event design pivot: Bulk booking → custom itinerary based on goals. Escalate to manager for customization.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Concierge LLM has access to conversation history + initial persona_hypothesis. At each customer message, system re-evaluates persona confidence. If new message contradicts hypothesis (e.g., "bring friends" contradicts SOLO), update persona classification and prompt system to suggest pivot in next concierge message. Pivot should feel natural, not abrupt.</p>
+    <p><strong>Edge cases:</strong> If persona keeps changing (customer is genuinely undecided), don't over-pivot. Instead, ask clarifying question: "Help me understand — are you coming solo, with a group, or bringing a friend?" If re-classification increases complexity beyond concierge scope (e.g., CORPORATE event → needs full custom design), escalate to manager gracefully: "This is a great opportunity — let me get our events specialist involved."</p>
+</div>
+
+<div id="j5-closure" class="screen-box">
+    <h4>Flow 5.8: Closure — Booking Confirmation, What Happens Next</h4>
+    <p><strong>Trigger:</strong> Customer has selected time + confirmed price. Ready to finalize booking.</p>
+
+    <div class="wa-chat">
+        <div class="msg-label">Booking Closure Flow</div>
+        <div class="msg-concierge">Let me confirm everything:
+
+📅 Friday, March 30 at 6 PM
+🎾 Court 2, [Venue Name], [Address]
+👥 4 people
+💰 Rs 500/person (total Rs 2,000)
+✓ No hidden charges
+
+Sound right?</div>
+        <div class="msg-user">Yes, let's do it</div>
+        <div class="msg-concierge">Perfect! 🎉 Booking confirmed. Your ref number: TN20260330ABC123
+
+**What happens next:**
+• Check email for confirmation + directions
+• 24 hours before: You'll get a reminder
+• 4 hours before: Final check-in reminder
+• Bring: Water bottle, towel (rackets provided)
+• Arrive 10 min early for court orientation
+
+Any last questions?</div>
+        <div class="msg-user">Nope, all good!</div>
+        <div class="msg-concierge">Awesome! See you Friday 🎾 Have fun with your crew!
+(Need to reschedule? Reply CHANGE. Need help? Reply HELP.)</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Final confirmation (all details), what's next (email, reminders, prep), reassurance question, clear exit clauses (change, help).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Booking submitted to system. SMS + Email + WhatsApp confirmations sent simultaneously. Concierge state marked as "closed_to_booking". Future messages (CHANGE, HELP) routed to support queue or manager.</p>
+    <p><strong>Concierge System Prompt (Master Template):</strong></p>
+    <div class="prompt-box">
+# System Prompt: WhatsApp Concierge
+
+You are a helpful, non-salesy WhatsApp concierge for a venue booking platform.
+
+Your job: Help customers move from page → booking. Not to sell, but to clarify friction and close with confidence.
+
+## Core Rules
+1. **Helpful, not pushy.** If customer hesitates, ask "What would help?", don't pressure.
+2. **Structured where friction is known.** Use forms/pickers for date, time, pricing. Free text for questions/reassurance.
+3. **Persona-aware.** You have: persona_type, persona_confidence, friction_type from page context. Adapt tone/content accordingly.
+4. **Honest.** Never invent features, overstate reviews, or hide limitations. If something's not available, say it.
+5. **Boundary-aware.** Once booking is confirmed, close the conversation gracefully. Don't linger.
+
+## Conversation Pattern
+1. **Entry:** Persona-specific greeting + open-ended question
+2. **Clarification:** Ask 1-2 questions to diagnose friction (price? fit? coordination? logistics?)
+3. **Solution:** Offer 2-3 options tailored to friction + persona
+4. **Confirmation:** Confirm all details, get explicit yes
+5. **Closure:** Send ref number, next steps, exit clause (CHANGE, HELP)
+
+## Tone by Persona
+- BEGINNER: Warm, reassuring, de-emphasize complexity
+- REGULAR: Friendly, fast, recognize loyalty
+- GROUP: Energetic, focus on coordination + social payoff
+- SOLO: Reassuring + social, normalize solo attendance
+- CORPORATE: Professional, focus on logistics + custom options
+- PRICE_SENSITIVE: Transparent, show value, lead with discounts
+
+## Friction-Specific Responses
+- **Price Hesitation:** Show offer ladder (trial, discount, pack, time-based). No pressure if they choose not to.
+- **Fit Ambiguity:** Normalize concerns, provide proof (testimonials, instructor creds, vibe description).
+- **Group Coordination:** Provide pre-formatted invite card, manage payment split.
+- **Slot Confusion:** Simplify to text options, show capacity status, confirm selection.
+- **Safety/Trust:** Address directly with specifics. Don't deflect.
+- **Mid-conversation Persona Shift:** Update hypothesis, pivot topic naturally. Don't call it out.
+
+## Escalation Rules
+- If customer mentions safety concern → Manager review
+- If customer requests custom solution (3+ special requirements) → Escalate to owner/manager
+- If customer is abusive or harassing → Exit conversation, block option, escalate
+- If customer asks about venue logistics/policy beyond concierge scope → Connect to venue phone number
+
+## Output Format
+- Keep messages short (max 2-3 sentences) unless providing info dump (pricing, options).
+- Use emojis sparingly (1-2 per message, category-relevant).
+- No ALL CAPS unless celebrating ("🎉" equivalent).
+- Confirm explicit consent before submitting booking.
+    </div>
+    <p><strong>Edge cases:</strong> If customer disappears after confirmation (no reply for 24h), send reminder 24h before visit ("You're confirmed for [time]. See you tomorrow?"). If customer has 2nd thoughts after confirmation, allow change until 12h before visit (auto-process if same time/date available, escalate if custom request). If customer no-show, log for future marketing (3x no-shows = review).
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JOURNEY 6: POST-BOOKING + OWNER DASHBOARD
+     ═══════════════════════════════════════════════════════════════════ -->
+<h2>JOURNEY 6: POST-BOOKING + OWNER DASHBOARD</h2>
+<p>Customer receives reminders, checks in at venue, gets post-visit rebook offer. Owner receives weekly summary, content gap requests, page edit flow.</p>
+
+<div id="j6-confirmation" class="screen-box">
+    <h4>Screen 6.1: Booking Confirmation (customer) — Details, Directions, Prep</h4>
+    <p><strong>What the customer receives:</strong></p>
+    <p><strong>Email (transactional, immediate):</strong></p>
+    <ul>
+        <li>Subject: "✓ Your booking is confirmed [Ref: TN20260330ABC123]"</li>
+        <li>From: "[Venue Name] via Turnout"</li>
+        <li>Body:</li>
+        <ul>
+            <li>Confirmation header: "You're all set for [Venue], Friday March 30 at 6 PM"</li>
+            <li>Details table: Date, Time, Party Size, Booking Ref, Price (itemized)</li>
+            <li>"What to bring" section (category-specific, e.g., "Rackets provided, bring water bottle")</li>
+            <li>Venue address + embedded map link (Google Maps, can tap for directions)</li>
+            <li>Venue phone (clickable, opens phone app on mobile)</li>
+            <li>Parking info (if available)</li>
+            <li>Cancellation policy (clear, e.g., "Free cancel until 12h before")</li>
+            <li>Shareable confirmation card (PNG image, screenshot-friendly, shows all key details)</li>
+            <li>CTA buttons: "Add to Calendar" (iCal), "Share on WhatsApp", "Get Directions"</li>
+            <li>Footer: "Need to reschedule? Reply CHANGE. Questions? Reply HELP."</li>
+        </ul>
+    </ul>
+    <p><strong>SMS (immediate):</strong> "Confirmed: [Venue], Friday 6 PM. Ref: TN. Tap for details: [short URL to confirmation page]"</p>
+    <p><strong>WhatsApp (immediate):</strong> Similar to SMS, but with richer formatting (confirmation card thumbnail, buttons)</p>
+    <p><strong>Algorithm:</strong> Booking confirmation trigger fires after customer submits booking. System sends transactional messages (email, SMS, WA) via background job. Ref number generated (unique, memorable). Reminders scheduled: 24h before and 4h before visit.</p>
+    <p><strong>Edge cases:</strong> If customer booked for today (zero wait), send confirmation immediately but add "See you soon!" urgency. If venue's email domain is custom (e.g., "booking@venuename.com"), send from that domain (more credible). If customer requested special dietary, accessibility, or other note, include it in confirmation.</p>
+</div>
+
+<div id="j6-reminders" class="screen-box">
+    <h4>Screen 6.2: Reminder Messages (24h + 4h before, template per category)</h4>
+    <p><strong>24 Hours Before Reminder:</strong></p>
+    <ul>
+        <li><strong>SMS:</strong> "Reminder: [Venue] tomorrow at 6 PM. 4 people. Directions: [link]"</li>
+        <li><strong>Email:</strong> "See you tomorrow at [Venue]! 📅 Final details:"</li>
+        <ul>
+            <li>Quick summary: time, location, party size</li>
+            <li>Weather (if applicable, e.g., "It'll be 28°C tomorrow, bring sunscreen 😎")</li>
+            <li>Parking reminder (if applicable)</li>
+            <li>CTA: "Cancel or reschedule?" (link to edit booking)</li>
+        </ul>
+    </ul>
+    <p><strong>4 Hours Before Reminder:</strong></p>
+    <ul>
+        <li><strong>WhatsApp only (more personal, closer timing):</strong> "Hi [Name]! Almost time for [Venue] (6 PM, 4h from now). See you there! 🎉 Tap for directions: [link]"</li>
+        <li>Also includes: "Running late? Reply LATE"</li>
+    </ul>
+    <p><strong>Category-Specific Reminder Variations:</strong></p>
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>24h Reminder Emphasis</th>
+            <th>4h Reminder Emphasis</th>
+        </tr>
+        <tr>
+            <td>Sports/Fitness</td>
+            <td>"Bring water + towel. Energy up! 💪"</td>
+            <td>"See you soon! Dress comfortably."</td>
+        </tr>
+        <tr>
+            <td>Brunch/Cafe</td>
+            <td>"Table reserved 11 AM. Come hungry! 😋"</td>
+            <td>"Getting hungry? Head over now (it's good!)"</td>
+        </tr>
+        <tr>
+            <td>Wellness (yoga, massage)</td>
+            <td>"60-min session tomorrow. Arrive 10 min early for setup. 🧘"</td>
+            <td>"Time to unwind! See you at [Venue]. 🙏"</td>
+        </tr>
+        <tr>
+            <td>Events</td>
+            <td>"Your event is tomorrow. Last-minute questions? [Contact link]"</td>
+            <td>"You're in! Arrive early for check-in."</td>
+        </tr>
+    </table>
+    <p><strong>Algorithm:</strong> Reminders scheduled at booking creation time (UTC-based). Cron job executes reminders 24h and 4h before visit. Message template selected from category-specific library. Personalization: customer name, venue name, time, party size.</p>
+    <p><strong>Edge cases:</strong> If customer responds "LATE" to 4h reminder, concierge sends: "No problem! Table/slot held for 15 min. Let us know when you're 5 min away." If customer has marked as "Do Not Remind" in preferences, skip email but still send SMS + WA. If booking is cancelled before reminder fires, cancel scheduled reminders.</p>
+</div>
+
+<div id="j6-checkin" class="screen-box">
+    <h4>Screen 6.3: Check-in at Venue (QR scan or tap confirmation)</h4>
+    <p><strong>What happens at venue:</strong></p>
+    <ul>
+        <li><strong>QR Code Check-in (preferred):</strong></li>
+        <ul>
+            <li>At venue entrance or host stand, customer shows their booking confirmation (email/SMS) to staff</li>
+            <li>Staff scans QR code on confirmation (encodes ref_number)</li>
+            <li>System records check-in event (timestamp, venue_id, booking_id)</li>
+            <li>Staff confirms: "You're good to go! Court 2, 6 PM."</li>
+        </ul>
+        <li><strong>Manual Check-in (fallback):</strong> Customer gives ref number to staff ("TN20260330ABC123"), staff looks up and confirms</li>
+        <li><strong>Tap-to-Check-in (app version):</strong> Customer opens Turnout app, taps "I'm here" button on booking screen, system records check-in via GPS (venue geo-fence detection)</li>
+    </ul>
+    <p><strong>Post-Check-in (immediate):</strong></p>
+    <ul>
+        <li>System sends check-in confirmation to customer WhatsApp: "✓ You've checked in. Enjoy your session!"</li>
+        <li>Owner receives notification: "[Name] just checked in. Booking ref TN..."</li>
+        <li>Attribution logic triggered: Which page variant? Which concierge message? Which referrer source? Log for performance analysis.</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Check-in is operational proof that customer showed up. Used for:
+    <ul>
+        <li>Attribution: Which channel (IG, WA, direct?) converted to actual visit?</li>
+        <li>Repeat rate: If customer checks in 2x/month, they're becoming regular</li>
+        <li>No-show tracking: If booking not checked in by end-of-slot time, marked as "no-show" (used for discount/reliability scoring)</li>
+    </ul>
+    <p><strong>Edge cases:</strong> If customer doesn't check in but venue staff confirm they showed up (manual note), allow post-hoc check-in within 24h. If customer checks in late (after start time), still record but flag as "late check-in" (data for friction analysis). If customer checks in but immediately leaves (check-in + 5-min checkout), flag for owner review (potential issue?).</p>
+</div>
+
+<div id="j6-rebook" class="screen-box">
+    <h4>Screen 6.4: Post-Visit Rebook ("Book Next Week?") + Pack Upsell</h4>
+    <p><strong>Trigger:</strong> Booking checked in + session ended (estimated 60-120 min after check-in). OR customer explicitly rates/reviews experience.</p>
+    <p><strong>WhatsApp Message (4h after check-in, after session likely ended):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Post-Visit Rebook Message (REGULAR Persona)</div>
+        <div class="msg-concierge">How was [Venue]? 🎾 Hope you had a blast!
+
+Quick thing: Most people who come once come back. Want to lock in next Friday at the same time? (Same crew, same spot!)
+[BOOK NEXT FRIDAY button]
+
+Or try our 10-visit pack for regulars: Save 25%, never worry about booking. [SHOW PACK button]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Positive tone, quick re-engagement opportunity, upsell to pack (commitment + savings).</p>
+    </div>
+
+    <p><strong>WhatsApp Message (BEGINNER Persona):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Post-Visit Rebook Message (BEGINNER)</div>
+        <div class="msg-concierge">Hope that was fun! 🎾 Lot of beginners come back because it clicks on the 2nd try.
+
+Want to try again next week? (No pressure — just an option!)
+[BOOK AGAIN button]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Normalize learning curve, low-pressure, normalize repeat ("beginners do this").</p>
+    </div>
+
+    <p><strong>WhatsApp Message (GROUP_ORGANIZER Persona):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Post-Visit Rebook Message (GROUP_ORGANIZER)</div>
+        <div class="msg-concierge">Your crew loved it, right? 🎉 Group discount still applies!
+
+Next Friday, same time, same crew? [INVITE FRIENDS AGAIN button]
+Or bulk-book the whole month? [MONTHLY PASS button]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Celebrate social success, make rebooking group-centric, introduce membership angle.</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Rebook message sent 4h after check-in (assumes 1h session, 3h buffer). Message template selected by persona (detected from booking/page context). CTA buttons ("BOOK NEXT FRIDAY", "SHOW PACK", "INVITE FRIENDS AGAIN") are dynamic (time = next week, price = current rate, crew size = actual group size from booking).</p>
+    <p><strong>Edge cases:</strong> If customer explicitly rated experience poorly (see Screen 6.5), skip rebook message. Instead, send: "We'd love to make it better — can you tell us what wasn't right?" If customer booked at off-peak time, rebook message suggests: "Next Friday was packed, but Wednesday 2 PM is available (20% off)." If customer is price-sensitive and didn't come with pack, lead with: "Rebook this month and save 15%."</p>
+</div>
+
+<div id="j6-owner-summary" class="screen-box">
+    <h4>Screen 6.5: Owner Weekly Summary (WhatsApp, WA Business API)</h4>
+    <p><strong>Delivery:</strong> Every Monday morning (8 AM owner's local time) via WhatsApp Business API</p>
+    <p><strong>Message 1 (Summary):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Owner Weekly Summary Message</div>
+        <div class="msg-concierge">Hey [Owner]! Here's your week at [Venue] 📊
+
+**Bookings:** 24 total | +15% vs last week 📈
+**Top Time:** Friday 6-7 PM (8 bookings)
+**Top Source:** Instagram (45% of bookings)
+**Revenue:** Rs 12,400 | +20% vs last week 🎉
+
+**Key Insight:** First-timers had 67% rebook rate (up from 54%). Your beginner experience is clicking!
+
+Want to see full analytics? [DASHBOARD link]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Lead with headline metrics (bookings, revenue, growth %). Include top-performing time/source. Highlight one learnable insight.</p>
+    </div>
+
+    <p><strong>Message 2 (Action Items, sent 1h later):</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Owner Action Items</div>
+        <div class="msg-concierge">**Quick wins this week:**
+
+1. **Content gap:** You're missing photos of the lounge area. Adding 3 photos here could lift CTR by ~8%. [UPLOAD link]
+
+2. **Off-peak opportunity:** Wed-Thu evenings have 40% less demand. Try a "Weekday special: 20% off" offer? [ENABLE OFFER button]
+
+3. **Testimonials:** 6 customers rated your experience 5⭐ this week. Want to add quotes to your page? [COLLECT TESTIMONIALS button]
+
+Let me know if you want help with any of these!</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: 3 actionable recommendations, each with: problem, insight, CTA. Lead with highest-ROI opportunity (content gap).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Weekly Summary Generator (Skill 9). Inputs: booking data (count, timing, source, revenue), content data (media library gaps), customer feedback (ratings, sentiment). Outputs: 3-5 metrics + 2-3 action items + 1 celebration insight.</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: Weekly Owner Summary Generator
+You are creating a motivating, actionable weekly summary for a venue owner.
+
+Input:
+- Venue name: {{venue_name}}
+- Bookings this week: {{bookings_count}} (total, new, repeat)
+- Top time slot: {{top_slot}} (e.g., "Friday 6 PM")
+- Top source: {{top_source}} (e.g., "Instagram", "WhatsApp referral")
+- Revenue: {{revenue_total}} vs {{revenue_last_week}}
+- First-timer rebook rate: {{rebook_rate}} vs {{rebook_last_week}}
+- Content gaps: {{gaps}} (list of missing content types)
+- Customer sentiment: {{feedback}} (5⭐ count, any complaints)
+
+Task: Generate a 2-message sequence:
+1. Summary (metrics + 1 insight)
+2. Action items (3 recommendations, highest ROI first)
+
+Format: Warm, celebratory tone. Numbers are clear. Each action item has problem + solution + CTA.
+
+Rules:
+- Celebrate growth (even small wins)
+- Rank action items by estimated lift
+- If no growth vs last week, find silver lining ("Consistent week + your repeat rate grew 5%")
+- Don't be generic — use venue-specific facts
+    </div>
+    <p><strong>Edge cases:</strong> If no bookings this week, send encouraging message: "Quiet week, but let's activate your page. Try our 'New user first-time offer' offer?" If owner has zero customer feedback (no ratings), ask: "Want to request feedback from this week's customers?" If content gaps are severe (< 5 photos), mark as P1 priority and include CEO note: "Let's fix this together — book time with our team?"</p>
+</div>
+
+<div id="j6-content-gap" class="screen-box">
+    <h4>Screen 6.6: Owner Content Gap Request (what to upload, estimated lift)</h4>
+    <p><strong>Trigger:</strong> Weekly summary (automatic) OR manual review if content_readiness score < 60.</p>
+    <p><strong>WhatsApp Message:</strong></p>
+    <div class="wa-chat">
+        <div class="msg-label">Content Gap Request</div>
+        <div class="msg-concierge">Your page is strong, but 3 photos of [specific zone] would help customers see the full vibe. 📸
+
+**Missing:** Lounge seating area + action shot of people + close-up of menu/drinks
+
+**Why:** Customers often ask "What's the seating like?" — seeing it reduces booking anxiety.
+
+**Estimated lift:** +8% CTR, +5% conversion (so ~12 more bookings/month if no other changes)
+
+**How:** Send 3-5 photos of the lounge (daytime + evening), and one candid photo of people enjoying the space.
+
+Have photos? [UPLOAD button]
+Or I can send a photo checklist? [GET CHECKLIST button]</div>
+        <p style="color: #666; font-size: 12px; margin-top: 8px; font-style: italic;">Key: Specific zone, reason (customer anxiety), estimated lift (quantified), clear ask (3-5 specific photos).</p>
+    </div>
+
+    <p><strong>Algorithm:</strong> Content Gap Requester (Skill 7). Inputs: current media library, content_readiness score, customer inquiry patterns (from page analytics + WA concierge Q&A). Outputs: specific zone request + why + estimated lift.</p>
+    <p><strong>Prompts:</strong></p>
+    <div class="prompt-box">
+# System: Content Gap Request
+You are analyzing a venue's photo library and identifying the most impactful content gap.
+
+Input:
+- Current photos: {{photo_list}} (list of current photos + zones they show)
+- Customer inquiry patterns: {{inquiries}} (list of questions asked in WA, e.g., "What's the seating?", "Can I see the kitchen?")
+- Content_readiness score: {{score}}
+- CTR vs benchmark: {{current_ctr}} vs {{benchmark_ctr}}
+
+Task: Identify 1 zone/angle that, if photographed, would:
+1. Answer most common customer questions
+2. Lift CTR by 5-15%
+
+Output:
+{
+  "missing_zone": "Specific zone name",
+  "why": "Why customers ask about this",
+  "specific_photos_needed": ["photo 1 description", "photo 2 description", ...],
+  "estimated_lift": "8% CTR improvement based on similar venues",
+  "photo_checklist": "Text checklist owner can use"
+}
+
+Rules:
+- Lead with customer inquiry data (if 15% of questions are "what's the vibe?", prioritize vibe/atmosphere photos)
+- Be specific ("lounge seating" not "interior")
+- Include diversity in photo angle (wide shot, detail, action, candid)
+- Only request photos that are missing (don't repeat what's already in library)
+    </div>
+    <p><strong>Edge cases:</strong> If venue is new and has no bookings yet, don't request content gap (too early). If content_readiness is already 90+, no content gap request (they're good). If owner uploads photos but system detects they're low-quality (blurry, poor lighting), send: "Thanks for uploading! These need better lighting — try again in natural daylight?" with photo tips link.</p>
+</div>
+
+<div id="j6-owner-edit" class="screen-box">
+    <h4>Screen 6.7: Owner Page Approval/Edit Flow (preview, edit, approve)</h4>
+    <p><strong>Trigger:</strong> Owner edits page (after onboarding) OR receives feedback from customer tests (Journey 3).</p>
+    <p><strong>Edit Interface (in Turnout Dashboard):</strong></p>
+    <ul>
+        <li><strong>Left panel: Page Preview (live sync)</strong></li>
+        <ul>
+            <li>Mobile phone mockup showing current page</li>
+            <li>Scrollable, fully interactive</li>
+            <li>Updates in real-time as owner edits (right panel)</li>
+        </ul>
+        <li><strong>Right panel: Edit Form</strong></li>
+        <ul>
+            <li>Editable fields (by section):</li>
+            <ul>
+                <li>Hero: Upload new image OR select from gallery</li>
+                <li>Tagline: Text field (editable)</li>
+                <li>Vibe Tags: Chip selector (add/remove/reorder)</li>
+                <li>Pricing: Price input fields (base, add-ons)</li>
+                <li>Hours: Time pickers for open/close</li>
+                <li>Concierge tone/knowledge: Radio + text (as in Journey 2.5)</li>
+                <li>Testimonials: Select from real reviews or add custom</li>
+            </ul>
+        </ul>
+        <li><strong>Action buttons:</strong> "Save Draft" (local storage, not published) / "Preview on Phone" (full-screen phone preview) / "Publish Changes" (live update, versioned)</li>
+    </ul>
+    <p><strong>Edit Workflow:</strong></p>
+    <ol>
+        <li>Owner clicks "Edit Page"</li>
+        <li>System loads current page configuration into edit form</li>
+        <li>Owner makes changes (fields auto-save as "draft")</li>
+        <li>Owner clicks "Preview on Phone" (side panel shows new version)</li>
+        <li>Owner satisfied → "Publish Changes"</li>
+        <li>System creates new page version (v1.0 → v1.1). Tracks what changed.</li>
+        <li>Customer re-visiting page sees new version (transparent update)</li>
+    </ol>
+    <p><strong>Version History + Rollback:</strong></p>
+    <ul>
+        <li>Every published version saved with timestamp + owner notes</li>
+        <li>Owner can click "View Previous Version" to see v1.0, v1.1, etc.</li>
+        <li>"Rollback to V1.0" button available (rare case: accidental bad edit)</li>
+        <li>Analytics tied to versions (can compare v1.0 CTR vs v1.1 CTR)</li>
+    </ul>
+    <p><strong>Algorithm:</strong> Page configuration stored as JSON (templates + fields). Edit form is dynamic (fields generated from page schema). On publish, new version created, analytics event logged, old version retained.</p>
+    <p><strong>Edge cases:</strong> If owner tries to remove all hero images, warn: "Every page needs a hero image. Choose one to continue." If owner changes pricing 3x in 1 day, flag as "aggressive pricing testing — are you trying A/B testing? Consider our A/B testing tool instead." If owner publishes page with no pricing data, warn: "Pricing is required. Set it before publishing."</p>
+</div>
+
+</main>
+
+<footer style="text-align: center; padding: 40px; color: #666; font-size: 12px; margin-top: 80px; border-top: 1px solid #1a2a4a;">
+    <p><strong>TURNOUT BETA — FINAL UX SPECIFICATION (COMPLETE)</strong></p>
+    <p>This document supersedes:</p>
+    <ul style="list-style: none; padding: 0;">
+        <li>✓ Turnout Viral Aha UX Spec v3</li>
+        <li>✓ Turnout Algorithm × UX Contract v1</li>
+        <li>✓ Turnout Persona Concierge Deep Spec</li>
+        <li>✓ Turnout PRD v3 (AI Skill details)</li>
+    </ul>
+    <p style="margin-top: 16px;">Implementation-ready. All 6 journeys complete. AI prompts included for every generative section.</p>
+    <p style="margin-top: 8px; color: #888; font-size: 11px;">Final | March 30, 2026 | v4.0 | Consolidated by Claude Agent</p>
+</footer>
+
+</body>
+</html>

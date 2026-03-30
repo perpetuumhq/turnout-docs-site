@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnout Beta — Final PRD v4.0</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0e27;
+            color: #e0e0e0;
+            line-height: 1.8;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            background-color: #0f1433;
+            border-right: 1px solid #1a1f3a;
+            padding: 2rem 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar h3 {
+            color: #FF6B35;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            letter-spacing: 1px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: #a0a0a0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-left: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .sidebar a:hover {
+            color: #FF6B35;
+            border-left-color: #FF6B35;
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+        .main {
+            margin-left: 280px;
+            flex: 1;
+        }
+        header {
+            background: linear-gradient(135deg, #0a0e27 0%, #0f1433 100%);
+            border-bottom: 2px solid #FF6B35;
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header h1 {
+            color: #FF6B35;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .meta {
+            color: #14B8A6;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+        }
+        h2 {
+            color: #FF6B35;
+            font-size: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #14B8A6;
+            padding-bottom: 0.8rem;
+        }
+        h3 {
+            color: #14B8A6;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        h4 {
+            color: #25D366;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        p {
+            margin-bottom: 1rem;
+            opacity: 0.95;
+        }
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.8rem;
+            opacity: 0.9;
+        }
+        strong { color: #FF6B35; }
+        em { color: #14B8A6; font-style: italic; }
+        .highlight {
+            background-color: rgba(255, 107, 53, 0.1);
+            padding: 0 4px;
+            border-radius: 2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background-color: #0f1433;
+            border: 1px solid #1a1f3a;
+        }
+        table th {
+            background-color: #14B8A6;
+            color: #0a0e27;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #1a1f3a;
+        }
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        table tr:hover {
+            background-color: rgba(20, 184, 166, 0.05);
+        }
+        code {
+            background-color: #0f1433;
+            color: #25D366;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        pre {
+            background-color: #0f1433;
+            border-left: 3px solid #FF6B35;
+            padding: 1.5rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        pre code {
+            background: none;
+            color: #14B8A6;
+            padding: 0;
+            font-size: inherit;
+        }
+        .box {
+            background-color: #0f1433;
+            border-left: 4px solid #14B8A6;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        .box.warning {
+            border-left-color: #FF6B35;
+        }
+        .box.success {
+            border-left-color: #25D366;
+        }
+        .section-intro {
+            font-size: 1.1rem;
+            color: #14B8A6;
+            margin: 2rem 0 1.5rem 0;
+            font-style: italic;
+        }
+        footer {
+            background-color: #0f1433;
+            border-top: 1px solid #1a1f3a;
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .toc {
+            background-color: #0f1433;
+            padding: 2rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+        .toc h3 {
+            margin-top: 0;
+        }
+        .toc ol {
+            columns: 2;
+            column-gap: 3rem;
+        }
+        .matrix {
+            margin: 1.5rem 0;
+        }
+        .metric-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .metric-card {
+            background-color: #0f1433;
+            padding: 1.5rem;
+            border-radius: 4px;
+            border: 1px solid #1a1f3a;
+        }
+        .metric-card h4 {
+            color: #FF6B35;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h3>Navigation</h3>
+            <a href="#doctrine">Product Doctrine</a>
+            <a href="#moat">Moat Thesis</a>
+            <a href="#truthful">Truthful Creative</a>
+            <a href="#trust-taste">Trust × Taste Graph</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#composition">Composition Engine</a>
+            <a href="#persona">Persona Multiplexing</a>
+            <a href="#friction">Friction Detection</a>
+            <a href="#ai-strategy">AI Model Strategy</a>
+            <a href="#skills">AI Skills</a>
+            <a href="#primitives">Commercial Primitives</a>
+            <a href="#learning">Learning Engine</a>
+            <a href="#evaluation">Evaluation Framework</a>
+            <a href="#gap-closure">Gap Closure</a>
+        </div>
+
+        <div class="main">
+            <header>
+                <h1>TURNOUT BETA — Product Requirements Document</h1>
+                <div class="meta">Final | March 30, 2026 | v4.0 | Supersedes PRD v3, Algorithm Contract v1, Persona Deep Spec, Product Review</div>
+            </header>
+
+            <div class="content">
+
+<!-- SECTION 1: PRODUCT DOCTRINE -->
+<h2 id="doctrine">1. Product Doctrine</h2>
+<p class="section-intro">What Turnout is, what it is not, and the conviction thesis that drives every decision.</p>
+
+<h3>Strategic Reframe: Venue Demand Operating System</h3>
+<p>Turnout should not be built as an <strong>AI ad generator</strong>. It should be built as an <strong>AI venue demand operating system</strong>, where ad generation is the sharpest weapon in the stack.</p>
+<p>That distinction matters because an ad generator is easy to compare. A venue demand OS is hard to replace.</p>
+
+<h3>What Turnout Is</h3>
+<p>Turnout is the system that helps a venue answer one brutal question every week:</p>
+<p class="highlight"><em>"What should we say, to whom, in which format, for which daypart, with which offer, on which channel, to fill this space profitably?"</em></p>
+<p>The product is not one tool. It is six linked capabilities:</p>
+<ul>
+    <li><strong>Venue understanding</strong> — who you are, what you sell, who comes, what times matter</li>
+    <li><strong>Campaign planning</strong> — what to run this week, why, and for whom</li>
+    <li><strong>Creative generation</strong> — truthful, format-native ads from real venue assets</li>
+    <li><strong>WhatsApp conversion</strong> — inquiry to reservation in a single stateful thread</li>
+    <li><strong>Attribution and learning</strong> — which ad caused which walk-in, and what to do next</li>
+    <li><strong>Commercial primitives</strong> — proper booking, deposit, pack, and coordination infrastructure for each category</li>
+</ul>
+
+<h3>What Turnout Is Not</h3>
+<ul>
+    <li>A Canva clone for venue owners</li>
+    <li>A generic creative studio</li>
+    <li>A listing card with AI frosting</li>
+    <li>A horizontal discovery layer without commercial conviction</li>
+    <li>A dashboard-heavy SaaS that asks operators to learn marketing</li>
+</ul>
+
+<h3>Product Definition (One Line)</h3>
+<p><strong>Existing venue photos become Instagram ads, leads go to WhatsApp, every walk-in is attributed back to the ad, and closure happens through properly designed commercial primitives suited to the category.</strong></p>
+
+<h3>The Conviction Thesis</h3>
+<p>India's go-out economy is shifting from <strong>posting-led behavior to presence-led behavior</strong>. People increasingly want experiences that feel real, social, and worth the effort.</p>
+<p>Turnout's job is not to show every option; it is to <strong>manufacture conviction to leave the couch and show up</strong>.</p>
+<p>This is not a listing product. This is a <strong>conviction product</strong>.</p>
+
+<!-- SECTION 2: MOAT THESIS -->
+<h2 id="moat">2. Moat Thesis: The 5-Layer Closed-Loop Venue Demand Graph</h2>
+<p class="section-intro">The competitive advantage: a venue knowledge system that gets stronger with every outcome.</p>
+
+<h3>Layer 1: Venue Knowledge Graph</h3>
+<p>Ingest venue reality across 8 dimensions:</p>
+<ul>
+    <li>Visual DNA (photos, color, spatial layout, visual motifs)</li>
+    <li>Category signals (primary, secondary, implicit themes)</li>
+    <li>Audience hypotheses (who actually comes, peak times, segment patterns)</li>
+    <li>Vibe tags (social, intense, casual, premium, etc.)</li>
+    <li>Operating schedule and daypart structure</li>
+    <li>Pricing and commercial structure</li>
+    <li>Social signals (IG engagement, review sentiment, follower quality)</li>
+    <li>Competitive context (nearby venues, benchmarks, market saturation)</li>
+</ul>
+
+<h3>Layer 2: Creative Genome</h3>
+<p>Every piece of content generated is tagged with:</p>
+<ul>
+    <li>Format DNA (static/carousel/reel/story/collection)</li>
+    <li>Visual motif (which venue assets, which color palette, which props)</li>
+    <li>Narrative hook (what story it tells: social proof, FOMO, community, skill, discovery)</li>
+    <li>Audience target (who this is for, based on visitor persona)</li>
+    <li>Truthfulness tier (T1 real, T2 real+assisted, T3 conceptual)</li>
+    <li>Engagement signal (CTR, completion rate, share rate)</li>
+</ul>
+
+<h3>Layer 3: Conversion Graph</h3>
+<p>Track every inquiry → conversation → booking → show-up → repeat:</p>
+<ul>
+    <li>Which ad drove the inquiry</li>
+    <li>What friction was detected in the landing page</li>
+    <li>Which concierge persona handled it</li>
+    <li>What offer closed it</li>
+    <li>Whether the user showed up</li>
+    <li>Whether they came back</li>
+</ul>
+
+<h3>Layer 4: Benchmark Graph</h3>
+<p>Performance comparison across:</p>
+<ul>
+    <li>Same venue, last week (trend)</li>
+    <li>Peer venues in same city (relative performance)</li>
+    <li>Theme-wide benchmarks (what good looks like for sports-social)</li>
+    <li>Time-of-week patterns (should this daypart get more spend?)</li>
+    <li>Price elasticity signals (can we charge more?)</li>
+</ul>
+
+<h3>Layer 5: Operator Memory</h3>
+<p>Long-term learning about what works for this specific venue:</p>
+<ul>
+    <li>Which audiences convert best (and why)</li>
+    <li>Which offers close highest (and at what elasticity)</li>
+    <li>Which narratives resonate (based on creative performance)</li>
+    <li>Which channels work (Instagram vs. referral vs. organic)</li>
+    <li>Which times are weak vs. strong (and seasonal patterns)</li>
+</ul>
+
+<!-- SECTION 3: TRUTHFUL CREATIVE PRINCIPLE -->
+<h2 id="truthful">3. Truthful Creative Principle: 3 Tiers</h2>
+<p class="section-intro">What we create, and the permission structure for different truthfulness levels.</p>
+
+<h3>Tier 1: Real (T1)</h3>
+<p><strong>Definition:</strong> Unmodified photos and videos of the venue, products, people, and experiences.</p>
+<p><strong>What's allowed:</strong></p>
+<ul>
+    <li>Existing venue photos (cropped, color-corrected, but not AI-altered)</li>
+    <li>Real video of real events/customers/staff</li>
+    <li>Honest captions about real offerings</li>
+    <li>Real testimonials from real customers</li>
+</ul>
+<p><strong>What's forbidden:</strong></p>
+<ul>
+    <li>AI-generated faces or bodies</li>
+    <li>Photoshopped people or objects</li>
+    <li>False claims about availability, pricing, or service</li>
+    <li>AI-upsampled images presented as photography</li>
+</ul>
+<p><strong>Badge:</strong> Verified checkmark. High trust, slower to produce.</p>
+
+<h3>Tier 2: Real + Assisted (T2)</h3>
+<p><strong>Definition:</strong> Real venue assets enhanced with AI assistance (upsampling, composition, style transfer), clearly marked as AI-assisted.</p>
+<p><strong>What's allowed:</strong></p>
+<ul>
+    <li>Real photos AI-upsampled or color-enhanced</li>
+    <li>Real objects composited into realistic scenes (e.g., real dish on a styled table)</li>
+    <li>Real venue sections recombined with AI for variety</li>
+    <li>Style transfer on real photos (e.g., warm filter applied consistently)</li>
+    <li>Missing elements added with AI (e.g., fill a dark corner with light realism)</li>
+</ul>
+<p><strong>What's forbidden:</strong></p>
+<ul>
+    <li>AI-generated people, crowds, or faces</li>
+    <li>Realistic objects that don't exist in the venue</li>
+    <li>False claims about what's available or real</li>
+    <li>Hiding the AI-assisted tag</li>
+</ul>
+<p><strong>Badge:</strong> "AI-Assisted by Turnout" watermark. Faster, good trust.</p>
+
+<h3>Tier 3: Conceptual (T3)</h3>
+<p><strong>Definition:</strong> Fully AI-generated creative, based on venue knowledge and brief, for ideation only.</p>
+<p><strong>When used:</strong></p>
+<ul>
+    <li>Exploring creative directions before shooting</li>
+    <li>Visualizing event concepts for approval</li>
+    <li>Filling content gaps during cold start</li>
+    <li>Never as primary customer-facing asset without venue approval</li>
+</ul>
+<p><strong>Badge:</strong> "Generated by AI" watermark. Lower trust, but speeds experimentation.</p>
+
+<!-- SECTION 4: TRUST × TASTE GRAPH -->
+<h2 id="trust-taste">4. Trust × Taste Graph: Venue-Level Scoring & Template Recommendation</h2>
+<p class="section-intro">The core algorithm that drives template recommendation. Scores every venue on trust (data quality) and taste (audience fit), then recommends the optimal page template.</p>
+
+<h3>Axis 1: Trust Score (T1-T6)</h3>
+<p>How much real venue data do we have? 6 components:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Component</th>
+            <th>Signal</th>
+            <th>Scoring</th>
+            <th>Weight</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>T1: Content Readiness</strong></td>
+            <td>IG photo count + quality + Google gallery + menu availability</td>
+            <td>0-25 (threshold: 12+ for launch)</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td><strong>T2: Commercial Clarity</strong></td>
+            <td>Pricing on website + booking system + Zomato data + menu structure</td>
+            <td>0-25 (threshold: 15+ for launch)</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td><strong>T3: Category Confidence</strong></td>
+            <td>IG captions + reviews + owner answers + category clarity</td>
+            <td>0-15 (is this sports-social or dining or wellness?)</td>
+            <td>15%</td>
+        </tr>
+        <tr>
+            <td><strong>T4: Audience Signal</strong></td>
+            <td>IG audience quality + review patterns + traffic signals + owner answers</td>
+            <td>0-15 (do we know who comes here?)</td>
+            <td>15%</td>
+        </tr>
+        <tr>
+            <td><strong>T5: Trend Signal</strong></td>
+            <td>IG engagement trend + Google review recency + footfall trend</td>
+            <td>0-15 (is this venue growing or declining?)</td>
+            <td>15%</td>
+        </tr>
+        <tr>
+            <td><strong>T6: Data Consent</strong></td>
+            <td>Did owner provide IG handle, website, Zomato/District access?</td>
+            <td>0-5 (binary: full consent = 5)</td>
+            <td>5%</td>
+        </tr>
+    </tbody>
+</table>
+
+<p><strong>Trust Score Range: 0-100</strong></p>
+<ul>
+    <li>T-HIGH: 70+ (full data richness, confident recommendations)</li>
+    <li>T-MED: 40-69 (some data gaps, conservative recommendations)</li>
+    <li>T-LOW: 0-39 (data-poor, content-driven recommendations only)</li>
+</ul>
+
+<h3>Axis 2: Taste Vector</h3>
+<p>Which themes does this venue actually embody? Multi-label classification across 10 themes:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Theme</th>
+            <th>Signals Used</th>
+            <th>Scoring Range</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Sports-Social</td>
+            <td>IG #hashtags, category keywords, audience age, court/slot mention, group coordination signals</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Brunch/Premium Cafe</td>
+            <td>Hours (Sat/Sun focus), menu type, dwell mentions, social ritual indicators, reservation patterns</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Interactive Dining</td>
+            <td>Chef/kitchen mentions, participatory language, experience-first focus, tasting menu signals</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Fitness & Wellness</td>
+            <td>Class/session language, equipment mentions, instructor posts, transformation content</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Wellness Social</td>
+            <td>Group wellness, community focus, mental health mentions, inclusivity language</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Nightlife</td>
+            <td>Evening/night focus, music mentions, DJ/event language, crowd size signals</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Community Fitness</td>
+            <td>Budget/affordable language, beginner focus, inclusivity, local community mentions</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Premium Fine Dining</td>
+            <td>Price signals, luxury language, special occasion markers, reservation-only</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Kids/Family</td>
+            <td>Family language, activity/entertainment focus, safety mentions, kid-friendly signals</td>
+            <td>0-100</td>
+        </tr>
+        <tr>
+            <td>Music/Live Events</td>
+            <td>Event language, artist mentions, performance capacity, ticketing signals</td>
+            <td>0-100</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Template Recommendation Algorithm</h3>
+<p>Pseudo-code for <code>recommend_template(venue_profile)</code>:</p>
+
+<pre><code>
+function recommend_template(venue_data):
+    trust_score = calculate_trust(venue_data)
+    taste_vector = classify_themes(venue_data)
+
+    primary_theme = taste_vector.argmax()
+    theme_confidence = taste_vector[primary_theme] / 100
+
+    secondary_themes = taste_vector.top_k(2)[1:]  # themes 2-3
+
+    IF trust_score >= 70:
+        confidence = "HIGH"
+        recommendation_basis = "Rich data"
+    ELSE IF trust_score >= 40:
+        confidence = "MEDIUM"
+        recommendation_basis = "Partial data, conservative choice"
+    ELSE:
+        confidence = "LOW"
+        recommendation_basis = "Content-driven only"
+
+    template = TEMPLATE_MAP[primary_theme]
+    overrides = []
+
+    // Theme blending: if confidence in primary < 70% and secondary exists
+    IF theme_confidence < 0.70 AND secondary_themes[0] > 50:
+        overrides.append("blend_secondary_hero")
+        overrides.append("dual_CTA_zones")
+
+    // Content adaptation: if trust is LOW, request more assets
+    IF trust_score < 40:
+        overrides.append("request_content_first")
+        overrides.append("use_default_hero_placeholder")
+
+    // City overlay always applied
+    city_overlay = CITY_OVERLAYS[venue_data.city]
+
+    return {
+        template: template,
+        confidence: confidence,
+        basis: recommendation_basis,
+        overrides: overrides,
+        city_overlay: city_overlay,
+        theme_blend: secondary_themes,
+        trust_score: trust_score,
+        taste_vector: taste_vector
+    }
+</code></pre>
+
+<!-- SECTION 5: PRODUCT ARCHITECTURE -->
+<h2 id="architecture">5. Product Architecture: 8 Layers + LaunchPad Runtime</h2>
+<p class="section-intro">The full system architecture, from venue ingestion through owner operations and consumer outcome.</p>
+
+<h3>LaunchPad Runtime Loop (5 Steps)</h3>
+<p>Every page generation and concierge interaction follows this cycle:</p>
+
+<ol>
+    <li><strong>Consented Input:</strong> Owner provides Instagram handle, website, Zomato/District access (pre-launch)</li>
+    <li><strong>AI Page Composition:</strong> System generates landing page from venue profile + campaign brief</li>
+    <li><strong>Friction Detection:</strong> Page is instrumented; user behavior is scanned for decision friction</li>
+    <li><strong>WA Concierge Handoff:</strong> If friction detected, WhatsApp persona-aware concierge is triggered</li>
+    <li><strong>Closure & Proof:</strong> Booking made, reservation tracked, walk-in attributed, learning captured</li>
+</ol>
+
+<h3>8-Layer Architecture</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Layer</th>
+            <th>Responsibility</th>
+            <th>Input</th>
+            <th>Output</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Layer 0: Venue Ingestion</strong></td>
+            <td>Ingest venue reality (photos, reviews, pricing, schedule, IG, website, Zomato)</td>
+            <td>IG handle, website URL, Zomato link, owner answers</td>
+            <td>Venue knowledge graph (70 signals)</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 1: Campaign Planning</strong></td>
+            <td>Weekly recommendations: what to say, to whom, with which offer</td>
+            <td>Venue profile, daypart inventory, benchmarks, owner preference</td>
+            <td>Campaign brief (audience, objective, offer, narrative)</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 2: Creative Generation</strong></td>
+            <td>Generate format-native ads (static, carousel, reel, story, collection) at T1/T2/T3</td>
+            <td>Venue assets, campaign brief, audience target, format</td>
+            <td>5 ad formats, all tiers, all personas</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 3: Page Composition</strong></td>
+            <td>Compose landing page from template, campaign, creative, primitives</td>
+            <td>Template, campaign brief, creative assets, city overlay</td>
+            <td>Mobile landing page (hero to CTA)</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 4: Friction Detection</strong></td>
+            <td>Instrument page, monitor user behavior, detect decision friction</td>
+            <td>User events (scroll, click, time-on-page, form abandon), page state</td>
+            <td>Friction signal (type, severity, user segment, confidence)</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 5: WA Concierge</strong></td>
+            <td>Persona-aware conversational closure, offer adaptation, objection handling</td>
+            <td>Friction signal, page context, persona hypothesis, user message</td>
+            <td>Booking, reservation, or learning signal</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 6: Attribution</strong></td>
+            <td>Track chain: ad impression → page visit → WA inquiry → booking → show-up</td>
+            <td>Ad ID, page visit, inquiry, booking, attendance</td>
+            <td>Attribution chain (which ad caused the walk-in)</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 7: Learning & Benchmarking</strong></td>
+            <td>Feed outcomes back; update venue memory, theme benchmarks, model weights</td>
+            <td>Attribution chains, conversion data, performance metrics</td>
+            <td>Updated venue memory, benchmarks, model improvements</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- SECTION 6: COMPOSITION ENGINE -->
+<h2 id="composition">6. Page Composition Engine: Algorithm & Rules</h2>
+<p class="section-intro">How the system generates a landing page from template, campaign, creative, and city context. This is where the system becomes a product.</p>
+
+<h3>Content Slot Architecture</h3>
+<p>Every page is composed of named slots:</p>
+
+<ul>
+    <li><code>hero_image</code> — Primary hero (1200×600px, optimized for theme + audience)</li>
+    <li><code>hero_headline</code> — Primary message (theme-native copy)</li>
+    <li><code>hero_subheadline</code> — Secondary message (urgency or benefit)</li>
+    <li><code>trust_block</code> — Social proof + verification (reviews, attendance, credentials)</li>
+    <li><code>category_section</code> — What this venue is (with adaptive badges: Sports-Social, Beginner-Friendly, etc.)</li>
+    <li><code>primary_offer</code> — Lead offer (price, package, incentive)</li>
+    <li><code>secondary_offers</code> — Alternative offers (bundles, packs, discounts)</li>
+    <li><code>pricing_section</code> — Full pricing transparency (base, off-peak, packages)</li>
+    <li><code>adaptive_content_zones</code> — Persona-specific content (auto-hidden/shown based on page detection)</li>
+    <li><code>media_gallery</code> — Real venue photos (T1/T2 tagged)</li>
+    <li><code>faq_zone</code> — Friction-specific FAQs (auto-populated based on venue theme + owner answers)</li>
+    <li><code>cta_button</code> — "Message on WhatsApp" with WA pre-fill</li>
+    <li><code>trust_badge</code> — Truthful Creative tier indicator (T1/T2/T3)</li>
+    <li><code>creator_attribution</code> — Photo credits, creator links</li>
+    <li><code>share_card</code> — Open Graph meta (for IG, WA sharing)</li>
+</ul>
+
+<h3>Composition Algorithm: compose_page()</h3>
+<p>Pseudo-code:</p>
+
+<pre><code>
+function compose_page(venue_id, campaign_brief, template_id, city):
+    // Step 1: Load base template
+    template = TEMPLATES[template_id]  // e.g., "sports-social"
+
+    // Step 2: Load venue profile & campaign context
+    venue = VENUE_DB[venue_id]
+    campaign = campaign_brief
+    city_overlay = CITY_OVERLAYS[city]
+
+    // Step 3: Inject primitives (booking, pricing, offers)
+    primitive_bundle = TEMPLATE_PRIMITIVE_BUNDLES[template_id]
+    // Determines which primitives to use (slots, reservations, split-pay, etc.)
+
+    // Step 4: Select creative assets
+    hero_image = select_hero(venue.assets, campaign.audience, template)
+    creative_variants = generate_or_fetch_ads(
+        venue=venue,
+        campaign=campaign,
+        formats=["static"],  // for page hero
+        tier=campaign.creative_tier  // T1/T2/T3
+    )
+    hero_headline = creative_variants[0].headline
+    hero_subheadline = creative_variants[0].cta_copy
+
+    // Step 5: Apply campaign overrides
+    primary_offer = campaign.recommended_offer
+    secondary_offers = campaign.alternative_offers
+    pricing = apply_offer_to_pricing(venue.pricing, primary_offer)
+
+    // Step 6: Apply city character overlay
+    tone = city_overlay.tone  // e.g., "abundance" for Delhi
+    layout_hints = city_overlay.layout_hints
+
+    // Step 7: Build adaptive content zones
+    adaptive_zones = {}
+    FOR each persona in PERSONAS_FOR_TEMPLATE[template]:
+        adaptive_zones[persona] = {
+            headline_variant: variant_for_persona(persona, hero_headline),
+            offer_variant: variant_for_persona(persona, primary_offer),
+            faq_items: faq_for_persona(persona, venue),
+            cta_text: cta_for_persona(persona, template)
+        }
+
+    // Step 8: Populate slots
+    page.hero_image = hero_image
+    page.hero_headline = hero_headline
+    page.hero_subheadline = hero_subheadline
+    page.trust_block = build_trust_block(venue, template)
+    page.category_section = build_category_section(venue, template)
+    page.primary_offer = primary_offer
+    page.secondary_offers = secondary_offers
+    page.pricing_section = pricing
+    page.adaptive_content_zones = adaptive_zones
+    page.media_gallery = venue.assets.photos[0:9]
+    page.faq_zone = faq_for_template(template, venue)
+    page.cta_button = build_wa_cta(venue)
+    page.trust_badge = build_tier_badge(campaign.creative_tier)
+    page.creator_attribution = venue.assets.credits
+    page.share_card = build_og_meta(venue, template, hero_image)
+
+    // Step 9: Add instrumentation for friction detection
+    page = add_instrumentation(page, {
+        track_scroll: true,
+        track_clicks: true,
+        track_form_abandon: true,
+        friction_events: ["pricing_scroll", "offer_hesitation", "faq_view", "group_confusion"]
+    })
+
+    // Step 10: Add learning variant marker (for A/B testing)
+    page.variant_id = generate_variant_id(venue_id, campaign.id, template, city)
+    page.learning_signals = ["ctr", "page_time", "scroll_depth", "friction_trigger", "wa_conversion"]
+
+    return page
+
+function select_hero(assets, audience, template):
+    // Rank assets by: relevance to audience + alignment with template + T1 quality
+    candidates = assets.filter(a => a.tier == "T1" OR a.tier == "T2")
+    ranked = candidates.sort_by([
+        relevance_to_audience,
+        template_affinity,
+        aesthetic_quality,
+        freshness
+    ])
+    return ranked[0]
+
+function build_trust_block(venue, template):
+    return {
+        google_rating: venue.rating,
+        review_count: venue.review_count,
+        attendance_signal: venue.monthly_visitors,
+        social_proof: venue.instagram_followers,
+        verified_badge: venue.trust_score > 70,
+        audience_testimonial: random_real_review(venue),
+        recurring_customer_count: venue.repeat_rate_pct
+    }
+
+function build_category_section(venue, template):
+    badges = []
+    IF template == "sports-social":
+        badges.append("Court Booking")
+        badges.append("Equipment Available")
+        IF venue.beginner_friendly: badges.append("Beginner-Friendly")
+    ELSE IF template == "brunch-cafe":
+        badges.append("Reservations")
+        badges.append("Groups Welcome")
+        badges.append("Open Weekends")
+
+    return {
+        primary_label: venue.primary_category,
+        secondary_labels: venue.secondary_categories,
+        badges: badges,
+        description: venue.about_snippet
+    }
+</code></pre>
+
+<h3>Fallback Logic</h3>
+<ul>
+    <li>If hero image is T-LOW quality → use placeholder with clear badge "This space is waiting for photos"</li>
+    <li>If pricing data is missing → show "Contact on WhatsApp for pricing"</li>
+    <li>If reviews are sparse → emphasize "New venue, verified booking"</li>
+    <li>If campaign brief conflicts with venue data → campaign brief wins (owner override)</li>
+</ul>
+
+</div>
+</div>
+    </div>
+    
+<!-- SECTION 7: PERSONA MULTIPLEXING SYSTEM -->
+<h2 id="persona">7. Persona Multiplexing System: Two-Layer Detection</h2>
+<p class="section-intro">One landing page serves 4-7 distinct personas. The system detects which persona is visiting at two layers: on the page (before WA) and in the first WA message (to confirm/correct).</p>
+
+<h3>The Problem: Why 1:1 Template → Concierge Fails</h3>
+<p>A Sports-Social page doesn't just serve "Group Coordinators." It serves:</p>
+<ul>
+    <li><strong>Beginners</strong> — need reassurance, gear info, low-commitment entry</li>
+    <li><strong>Regulars</strong> — need fast rebooking, pack purchase, schedule visibility</li>
+    <li><strong>Solo Players</strong> — need open-play discovery and social matching</li>
+    <li><strong>Corporate Event Planners</strong> — need bulk booking, invoicing, team coordination</li>
+    <li><strong>Parents with Kids</strong> — need age-appropriate sessions, safety info, family pricing</li>
+    <li><strong>Price-Sensitive Students</strong> — need off-peak deals, discounts, trial offers</li>
+</ul>
+<p>A one-size-fits-all concierge would mishandle 5 of these 6. <strong>Every template generates 4-7 distinct visitor personas. Shipping without detecting this is a one-size-fits-none experience.</strong></p>
+
+<h3>Two-Layer Persona Detection Architecture</h3>
+
+<pre><code>
+LAYER 1: PAGE-LEVEL DETECTION (before WA)
+Signals: referrer, time-of-day, device, scroll behavior, section dwell,
+         CTA interactions, booking flow choices, group-intent signals
+↓
+Output: persona_hypothesis {type, confidence, signals_used[]}
+↓
+Page adapts: Surfaces persona-relevant content (adaptive zones),
+             adjusts CTA language, primes WA handoff context
+
+LAYER 2: WA ENTRY CLASSIFICATION (first 1-2 messages)
+Input: persona_hypothesis from page + user's first message
+↓
+Classifier: Pattern match on first message + page context
+↓
+Output: persona_confirmed {type, confidence, override_from_page?}
+↓
+Concierge branches: Selects persona-specific conversation tree,
+                    tone, knowledge depth, closure strategy
+
+LAYER 2.5: MID-CONVERSATION RE-CLASSIFICATION
+Trigger: User reveals new intent mid-conversation
+(e.g., starts as beginner question, pivots to group booking)
+↓
+Concierge re-classifies and pivots gracefully
+</code></pre>
+
+<h3>Persona Universe: All Templates</h3>
+
+<h4>Sports-Social (Pickleball, Padel, Courts) — 6 Personas</h4>
+<table>
+    <thead>
+        <tr>
+            <th>Persona</th>
+            <th>Who</th>
+            <th>Page Needs</th>
+            <th>WA Concierge Flavor</th>
+            <th>Frequency</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Group Organizer</td>
+            <td>Coordinates 3-5 friends, books and collects money</td>
+            <td>Court availability, split pay, invite links, scheduling</td>
+            <td>Coordinator (logistics-focused, multi-person flow)</td>
+            <td>35%</td>
+        </tr>
+        <tr>
+            <td>First-Timer/Beginner</td>
+            <td>Never played, anxious about skill level</td>
+            <td>Beginner badge, "What to Expect," gear rental, low-commitment entry</td>
+            <td>Reassurer (confidence-building, basics)</td>
+            <td>20%</td>
+        </tr>
+        <tr>
+            <td>Regular Player</td>
+            <td>Plays monthly, knows the game</td>
+            <td>Fast rebooking, pack/credit purchase, schedule visibility</td>
+            <td>Transactional (quick, efficient, no hand-holding)</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td>Solo Player</td>
+            <td>No group, wants to join strangers</td>
+            <td>Open play discovery, skill-matched pairing, social matching</td>
+            <td>Connector (social-focused, pairing logic)</td>
+            <td>15%</td>
+        </tr>
+        <tr>
+            <td>Corporate Event Planner</td>
+            <td>Organizing team event, needs invoicing</td>
+            <td>Bulk booking, team coordination, invoice/payment terms</td>
+            <td>B2B Coordinator (pricing, contracts, team logistics)</td>
+            <td>3%</td>
+        </tr>
+        <tr>
+            <td>Parent with Child</td>
+            <td>Kid wants to learn pickleball</td>
+            <td>Kids sessions, beginner-specific, safety, family pricing</td>
+            <td>Parent Advisor (safety, age-appropriateness, family deals)</td>
+            <td>2%</td>
+        </tr>
+    </tbody>
+</table>
+
+<h4>Brunch/Premium Cafe — 5 Personas</h4>
+<table>
+    <thead>
+        <tr>
+            <th>Persona</th>
+            <th>Page Needs</th>
+            <th>WA Flavor</th>
+            <th>Frequency</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Solo Diner / Remote Worker</td>
+            <td>Wifi, outlets, quiet corners, extended dwell</td>
+            <td>Workspace-friendly, ambiance, recommendations</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td>Group/Date Celebration</td>
+            <td>Group space, private corners, photo ops, group discounts</td>
+            <td>Group logistics, photos, celebration specials</td>
+            <td>35%</td>
+        </tr>
+        <tr>
+            <td>Time-Sensitive Bruncher</td>
+            <td>Reservation availability, wait times, fast service</td>
+            <td>Real-time availability, priority slot, quick booking</td>
+            <td>20%</td>
+        </tr>
+        <tr>
+            <td>Dietary-Specific</td>
+            <td>Vegan/gluten-free/keto menu, customization</td>
+            <td>Menu details, customization options, ingredient lists</td>
+            <td>12%</td>
+        </tr>
+        <tr>
+            <td>Price-Sensitive Student</td>
+            <td>Affordable pricing, student discount, happy hour</td>
+            <td>Discount finder, off-peak pricing, student deals</td>
+            <td>8%</td>
+        </tr>
+    </tbody>
+</table>
+
+<h4>Fitness & Wellness — 5 Personas</h4>
+<table>
+    <thead>
+        <tr>
+            <th>Persona</th>
+            <th>Page Needs</th>
+            <th>WA Flavor</th>
+            <th>Frequency</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Goal-Oriented Transformer</td>
+            <td>Before/after stories, measurable progress, personalization</td>
+            <td>Progress tracker, coach, accountability</td>
+            <td>28%</td>
+        </tr>
+        <tr>
+            <td>Busy Professional</td>
+            <td>Flexible timing, short classes, no long-term commitment</td>
+            <td>Flexibility advisor, time-finder, quick booking</td>
+            <td>32%</td>
+        </tr>
+        <tr>
+            <td>Community Seeker</td>
+            <td>Group energy, friend-making, social aspect emphasized</td>
+            <td>Community connector, friend finder, group scheduling</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td>First-Time Anxious</td>
+            <td>Beginner programs, zero judgment, safe environment</td>
+            <td>Reassurer, beginner guide, judgment-free messaging</td>
+            <td>10%</td>
+        </tr>
+        <tr>
+            <td>Recovery/Injury Prevention</td>
+            <td>Therapeutic focus, instructor qualification, modifications</td>
+            <td>Specialist matcher, medical-friendly messaging</td>
+            <td>5%</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Page-Level Persona Signals</h3>
+<p>The page detects persona before WA using:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Signal Type</th>
+            <th>Examples</th>
+            <th>Persona Implications</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Referrer</strong></td>
+            <td>LinkedIn (corporate) vs. IG (individual) vs. friend referral</td>
+            <td>Corporate planner vs. social discovery vs. trusted peer</td>
+        </tr>
+        <tr>
+            <td><strong>Time of Day</strong></td>
+            <td>Weekend morning (leisure) vs. weekday evening (time-poor)</td>
+            <td>Committed participant vs. flexible casual</td>
+        </tr>
+        <tr>
+            <td><strong>Device</strong></td>
+            <td>Mobile vs. desktop (laptop = research-mode)</td>
+            <td>Impulse vs. deliberate purchase</td>
+        </tr>
+        <tr>
+            <td><strong>Scroll Behavior</strong></td>
+            <td>Fast (price-conscious, impatient) vs. slow (researching)</td>
+            <td>Deal-seeker vs. quality-seeker</td>
+        </tr>
+        <tr>
+            <td><strong>Section Dwell</strong></td>
+            <td>Spends 3s on group-coordination → group organizer hypothesis</td>
+            <td>Section engagement = priority signal</td>
+        </tr>
+        <tr>
+            <td><strong>CTA Interaction</strong></td>
+            <td>Clicks "bulk booking" CTA vs. "solo player" CTA</td>
+            <td>Direct persona signal</td>
+        </tr>
+        <tr>
+            <td><strong>Form Behavior</strong></td>
+            <td>Enters "4 people" in party size → group</td>
+            <td>Explicit intent signal</td>
+        </tr>
+        <tr>
+            <td><strong>Age/Interest Signals</strong></td>
+            <td>IG account age, engagement type (sports vs. wellness)</td>
+            <td>Age cohort + interest alignment</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>WA Entry Classifier</h3>
+<p>Pseudo-code for <code>classify_wa_persona(page_hypothesis, first_message)</code>:</p>
+
+<pre><code>
+function classify_wa_persona(page_hypothesis, user_first_message):
+    // Input: persona_hypothesis from page + first WA message from user
+    
+    persona_prior = page_hypothesis.type
+    prior_confidence = page_hypothesis.confidence
+    
+    // Parse first message
+    message_patterns = {
+        "group": ["me and my friends", "how many", "can we get", "organize", "group"],
+        "beginner": ["first time", "never", "new to", "scared", "is it hard", "what do i need"],
+        "regular": ["again", "another session", "pack", "credits", "when next"],
+        "solo": ["by myself", "alone", "meet people", "solo players", "no group"],
+        "corporate": ["team", "company", "event", "invoice", "how many people"],
+        "parent": ["kid", "child", "son", "daughter", "family", "age", "safe"]
+    }
+    
+    message_signals = []
+    FOR pattern_type, keywords IN message_patterns:
+        IF any(keyword IN user_first_message.lower() FOR keyword IN keywords):
+            message_signals.append(pattern_type)
+    
+    // Confidence scoring
+    IF len(message_signals) > 0:
+        detected_persona = message_signals[0]
+        message_confidence = 0.9
+        override = (detected_persona != persona_prior)
+    ELSE:
+        // No clear pattern, use prior
+        detected_persona = persona_prior
+        message_confidence = prior_confidence * 0.8  // Slight discount for no signal
+        override = false
+    
+    IF override AND prior_confidence > 0.75:
+        // Strong page signal contradicted; ask for clarification
+        return {
+            persona: detected_persona,
+            confidence: message_confidence,
+            ask_confirmation: true,
+            confirmation_prompt: "Just to confirm — are you looking to {intention}?"
+        }
+    ELSE:
+        return {
+            persona: detected_persona,
+            confidence: message_confidence,
+            ask_confirmation: false,
+            override: override
+        }
+
+function build_concierge_flavor(confirmed_persona, venue, template):
+    // Maps confirmed persona to concierge tone, knowledge base, and flow
+    
+    flavor_map = {
+        "group_organizer": {
+            tone: "logistics-focused, helpful scheduler",
+            knowledge: ["split payment", "invite links", "availability checker", "group size"],
+            flow: "Ask group size → availability → offer group discount → send invite link",
+            offer_variant: "group_package"
+        },
+        "beginner": {
+            tone: "reassuring, educational, judgment-free",
+            knowledge: ["what to bring", "beginner tips", "no-experience guarantee", "lesson options"],
+            flow: "Reassure → explain basics → offer beginner special → book first session",
+            offer_variant: "beginner_trial"
+        },
+        "regular": {
+            tone: "efficient, quick, no-nonsense",
+            knowledge: ["existing bookings", "pack status", "loyalty rewards", "quick booking"],
+            flow: "Which session? → Confirm → Done. Total interaction <2 messages",
+            offer_variant: "loyalty_pack"
+        },
+        "solo": {
+            tone: "connector, social, enthusiastic",
+            knowledge: ["open play times", "skill matching", "friend finder", "community events"],
+            flow: "When do you want to play? → Match with others → community vibe → book",
+            offer_variant: "social_trial"
+        },
+        "corporate": {
+            tone: "professional, B2B, thorough",
+            knowledge: ["team size quotes", "invoicing", "group logistics", "custom packages"],
+            flow: "Team size? → Availability → Pricing with invoice option → Contract",
+            offer_variant: "corporate_rate"
+        },
+        "parent": {
+            tone: "safety-first, reassuring, family-friendly",
+            knowledge: ["kids programs", "age-appropriate", "safety info", "family pricing"],
+            flow: "Kid's age? → Appropriate session → Safety details → Family booking",
+            offer_variant: "family_package"
+        }
+    }
+    
+    return flavor_map.get(confirmed_persona)
+
+function detect_persona_mid_conversation(conversation_history, latest_message):
+    // Trigger: User reveals new intent mid-conversation
+    
+    original_persona = conversation_history.confirmed_persona
+    new_signals = extract_intent_signals(latest_message)
+    
+    IF new_signals indicate different persona:
+        new_persona = new_signals.top_persona
+        confidence = new_signals.confidence
+        
+        // Pivot gracefully
+        return {
+            persona_changed: true,
+            from_persona: original_persona,
+            to_persona: new_persona,
+            confidence: confidence,
+            pivot_message: "Ah I see! Looks like you're looking to {new_intent}. Let me help with that instead..."
+        }
+    ELSE:
+        return {
+            persona_changed: false,
+            confirmed_persona: original_persona
+        }
+</code></pre>
+
+<h3>Adaptive Content Zones on Page</h3>
+<p>Every page has hidden/shown zones based on persona_hypothesis:</p>
+
+<pre><code>
+// Page markup with persona-conditional rendering
+
+IF persona_hypothesis == "group_organizer":
+    SHOW: "Bring 3-5 friends" messaging
+    SHOW: "Split payment" breakdown example
+    SHOW: "Invite link generator" (if available)
+    HIDE: "Solo player welcome" messaging
+
+ELSE IF persona_hypothesis == "beginner":
+    SHOW: "Beginner badge" prominently
+    SHOW: "What to expect" video or guide
+    SHOW: "First-timer special offer" (e.g., 50% off trial)
+    SHOW: "No experience required" reassurance
+    HIDE: Advanced/competitive language
+
+ELSE IF persona_hypothesis == "regular":
+    SHOW: "Quick rebooking CTA" (e.g., "Book your next session")
+    SHOW: "Pack/credit status" (if returning user)
+    SHOW: "Member exclusive offers"
+    HIDE: Beginner-focused content
+
+ELSE IF persona_hypothesis == "corporate":
+    SHOW: "Team event" messaging
+    SHOW: "Bulk booking calculator"
+    SHOW: "Corporate packages" section
+    SHOW: "Invoice/payment terms" info
+    HIDE: Individual pricing
+
+// All zones have default (neutral) state for cold starts
+</code></pre>
+
+<!-- SECTION 8: FRICTION DETECTION ENGINE -->
+<h2 id="friction">8. Friction Detection Engine: Signals, Types, & Concierge Routing</h2>
+<p class="section-intro">How the page detects when a user is hesitating and triggers the WhatsApp concierge to close the gap.</p>
+
+<h3>Page Instrumentation Schema (12 Event Types)</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Event Type</th>
+            <th>Triggers</th>
+            <th>Signal Captured</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>page_load</code></td>
+            <td>User lands on page</td>
+            <td>Referrer, timestamp, device, user agent</td>
+        </tr>
+        <tr>
+            <td><code>hero_view</code></td>
+            <td>Hero section comes into viewport</td>
+            <td>Dwell time, scroll direction</td>
+        </tr>
+        <tr>
+            <td><code>scroll_event</code></td>
+            <td>User scrolls</td>
+            <td>Scroll speed, scroll depth, sections traversed</td>
+        </tr>
+        <tr>
+            <td><code>section_dwell</code></td>
+            <td>User spends >3s in a section</td>
+            <td>Section ID, dwell seconds, repetition count</td>
+        </tr>
+        <tr>
+            <td><code>cta_click</code></td>
+            <td>User clicks CTA</td>
+            <td>CTA text, page section, timing</td>
+        </tr>
+        <tr>
+            <td><code>form_start</code></td>
+            <td>User begins form entry</td>
+            <td>Form ID, fields viewed</td>
+        </tr>
+        <tr>
+            <td><code>form_abandon</code></td>
+            <td>User exits form mid-entry</td>
+            <td>Last field entered, % completion, abandon time</td>
+        </tr>
+        <tr>
+            <td><code>form_submit</code></td>
+            <td>User submits form</td>
+            <td>All form data, submit time</td>
+        </tr>
+        <tr>
+            <td><code>offer_view</code></td>
+            <td>Offer section enters viewport</td>
+            <td>Offer type, offer tier, dwell time</td>
+        </tr>
+        <tr>
+            <td><code>offer_hesitation</code></td>
+            <td>Viewed offer, scrolled past without clicking</td>
+            <td>Offer ID, scroll pattern, hesitation signal</td>
+        </tr>
+        <tr>
+            <td><code>faq_view</code></td>
+            <td>User opens FAQ accordion</td>
+            <td>FAQ topic, frequency of views</td>
+        </tr>
+        <tr>
+            <td><code>page_abandon</code></td>
+            <td>User leaves page without CTA or form</td>
+            <td>Time on page, last section viewed, exit reason</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>5 Friction Types & Detection Logic</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Friction Type</th>
+            <th>Detection Logic</th>
+            <th>Signal Combination</th>
+            <th>Concierge Branch</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Price Hesitation</strong></td>
+            <td>User views pricing section, scrolls past without interaction</td>
+            <td>offer_view + offer_hesitation + scroll_away</td>
+            <td>Price advisor (offers alternatives, payment plans, value prop)</td>
+        </tr>
+        <tr>
+            <td><strong>Fit Ambiguity</strong></td>
+            <td>User repeatedly views FAQ or category section</td>
+            <td>faq_view (repeat) + section_dwell + slow_scroll</td>
+            <td>Clarifier (addresses "is this for me?" concerns)</td>
+        </tr>
+        <tr>
+            <td><strong>Group Coordination</strong></td>
+            <td>User views group pricing, doesn't fill form</td>
+            <td>group_section_dwell + form_abandon (at group size)</td>
+            <td>Group coordinator (helps organize, provides tools)</td>
+        </tr>
+        <tr>
+            <td><strong>Slot Confusion</strong></td>
+            <td>User dwells on schedule section, exits without booking</td>
+            <td>schedule_dwell + slow_click_rate + faq_on_timing</td>
+            <td>Scheduler (clarifies availability, finds slot, holds it)</td>
+        </tr>
+        <tr>
+            <td><strong>Safety/Trust Concerns</strong></td>
+            <td>User views trust block repeatedly, checks reviews, hesitates CTA</td>
+            <td>trust_block_view + trust_badge_view + cta_delay</td>
+            <td>Trust builder (verification, testimonials, guarantees)</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Friction Detection Algorithm</h3>
+<p>Pseudo-code for <code>classify_friction(page_events, user_context)</code>:</p>
+
+<pre><code>
+function classify_friction(page_events, user_context):
+    // Compile event stream into friction signals
+    
+    friction_signals = {}
+    
+    // Signal 1: Offer hesitation
+    offer_events = page_events.filter(e => e.type IN ["offer_view", "offer_hesitation"])
+    IF len(offer_events) >= 2 AND has_hesitation(offer_events):
+        friction_signals["price_hesitation"] = {
+            severity: "high",
+            confidence: 0.85,
+            offer_viewed: offer_events[-1].offer_id,
+            hesitation_time: offer_events[-1].dwell_seconds
+        }
+    
+    // Signal 2: Fit ambiguity (repeated FAQ views)
+    faq_events = page_events.filter(e => e.type == "faq_view")
+    IF len(faq_events) >= 3:
+        friction_signals["fit_ambiguity"] = {
+            severity: "medium",
+            confidence: 0.75,
+            topics_viewed: [e.topic FOR e IN faq_events],
+            most_common_topic: most_frequent([e.topic FOR e IN faq_events])
+        }
+    
+    // Signal 3: Group coordination friction
+    IF "group_organizer" in page_events AND has_form_abandon(page_events, "group_size"):
+        friction_signals["group_coordination"] = {
+            severity: "high",
+            confidence: 0.8,
+            abandoned_at_field: "group_size"
+        }
+    
+    // Signal 4: Slot confusion
+    schedule_dwell = sum([e.dwell FOR e IN page_events IF e.type == "section_dwell" AND e.section == "schedule"])
+    IF schedule_dwell > 15 AND has_form_abandon(page_events):
+        friction_signals["slot_confusion"] = {
+            severity: "medium",
+            confidence: 0.7,
+            schedule_dwell_seconds: schedule_dwell
+        }
+    
+    // Signal 5: Safety/trust concerns
+    trust_views = page_events.filter(e => e.type IN ["trust_block_view", "trust_badge_view"])
+    IF len(trust_views) >= 2 AND has_cta_delay(page_events, delay_threshold=30):
+        friction_signals["trust_concern"] = {
+            severity: "medium",
+            confidence: 0.65,
+            trust_checks: len(trust_views)
+        }
+    
+    // Aggregate: return dominant friction type
+    IF len(friction_signals) == 0:
+        return {
+            friction_detected: false,
+            confidence: 0.0,
+            reason: "No friction signals"
+        }
+    
+    dominant_friction = max(friction_signals.items(), key=lambda x: x[1].severity)
+    
+    return {
+        friction_detected: true,
+        primary_friction: dominant_friction[0],
+        signals: friction_signals,
+        severity: dominant_friction[1].severity,
+        confidence: dominant_friction[1].confidence,
+        concierge_branch: FRICTION_CONCIERGE_MAP[dominant_friction[0]]
+    }
+
+function has_hesitation(offer_events):
+    // Check if user viewed offer, then scrolled away without clicking
+    FOR event IN offer_events:
+        IF event.type == "offer_view" AND event.next_event.type == "scroll_away":
+            return true
+    return false
+
+function has_form_abandon(events, specific_field=null):
+    form_events = events.filter(e => e.type IN ["form_start", "form_abandon"])
+    IF len(form_events) == 0: return false
+    
+    abandon_event = form_events[-1]
+    IF abandon_event.type == "form_abandon":
+        IF specific_field: return abandon_event.last_field == specific_field
+        return true
+    return false
+
+function has_cta_delay(events, delay_threshold=30):
+    // CTA delay = time between page_load and first CTA click
+    load_time = events[0].timestamp  // Assume first event is page_load
+    cta_event = events.find(e => e.type == "cta_click")
+    
+    IF cta_event:
+        delay = cta_event.timestamp - load_time
+        return delay > delay_threshold
+    return true  // No CTA click = delay
+</code></pre>
+
+<h3>WA Handoff State Contract v2 (Persona-Aware)</h3>
+<p>When friction is detected, the page passes this state object to WhatsApp:</p>
+
+<pre><code>
+state_object = {
+    page_url: string,
+    variant_id: string,
+    venue_id: string,
+    user_session_id: string,
+    timestamp: ISO8601,
+    
+    // Page context
+    template: string,  // "sports-social", "brunch", etc.
+    campaign_id: string,
+    
+    // User context
+    persona_hypothesis: {
+        type: string,  // "group_organizer", "beginner", etc.
+        confidence: float,
+        signals_used: [string]
+    },
+    
+    // Friction signal
+    friction: {
+        detected: boolean,
+        primary_type: string,  // "price_hesitation", etc.
+        severity: "high" | "medium" | "low",
+        confidence: float,
+        data: object  // type-specific data
+    },
+    
+    // Page behavior
+    metrics: {
+        time_on_page: seconds,
+        scroll_depth: percent,
+        scroll_speed: "fast" | "normal" | "slow",
+        cta_clicks: integer,
+        form_attempts: integer,
+        form_completion_percent: integer
+    },
+    
+    // Pre-filled context for concierge
+    user_info: {
+        likely_group_size: integer | null,
+        likely_schedule_preference: string | null,
+        viewed_offer_id: string | null,
+        faq_topics_viewed: [string],
+        trust_checks: integer
+    },
+    
+    // Device & referrer
+    device: {
+        type: "mobile" | "tablet" | "desktop",
+        os: string,
+        user_agent: string
+    },
+    referrer: string,
+    utm_params: object
+}
+
+// Example WA handoff:
+// User clicks "Message on WhatsApp"
+// → state_object is encoded in URL: turnout.so/wa?state=<JWT>
+// → WhatsApp concierge bot decodes state and starts conversation
+// → Concierge loads persona + friction context
+// → Concierge greets with friction-specific opening
+</code></pre>
+
+<h3>Friction → Concierge Branch Routing</h3>
+
+<pre><code>
+IF friction.primary_type == "price_hesitation":
+    concierge_branch = PRICE_ADVISOR_FLOW
+    greeting = "I see you were looking at our pricing. Let me find the right option for you — what's your budget?"
+    offers_to_surface = [
+        campaign.primary_offer (standard),
+        campaign.alternative_offers (lower price tier),
+        venue.payment_plans (installment option),
+        time_based_pricing (off-peak discount)
+    ]
+
+ELSE IF friction.primary_type == "fit_ambiguity":
+    concierge_branch = CLARIFIER_FLOW
+    most_common_topic = friction.data.most_common_topic
+    greeting = "I noticed you had questions about {most_common_topic}. Let me help clarify!"
+    faq_to_surface = FAQ_FOR_TOPIC[most_common_topic]
+
+ELSE IF friction.primary_type == "group_coordination":
+    concierge_branch = GROUP_COORDINATOR_FLOW
+    greeting = "Bringing friends? Let me help you organize and book together."
+    tools_to_surface = ["group_size_calculator", "split_payment_builder", "invite_link_generator"]
+
+ELSE IF friction.primary_type == "slot_confusion":
+    concierge_branch = SCHEDULER_FLOW
+    greeting = "I can help you find the perfect time slot. What day works best?"
+    tools_to_surface = ["availability_checker", "slot_hold_option", "calendar_integration"]
+
+ELSE IF friction.primary_type == "trust_concern":
+    concierge_branch = TRUST_BUILDER_FLOW
+    greeting = "Great question — here's why {venue_name} is trusted by {num_customers} customers."
+    assets_to_surface = ["recent_reviews", "video_testimonial", "verification_badges", "satisfaction_guarantee"]
+
+ELSE:
+    // No friction
+    concierge_branch = STANDARD_BOOKING_FLOW
+    greeting = "Thanks for interest in {venue_name}. Ready to book?"
+</code></pre>
+
+<!-- SECTION 9: AI MODEL STRATEGY -->
+<h2 id="ai-strategy">9. AI Model Strategy: LLM & Vision Selection</h2>
+<p class="section-intro">Specific models for different tasks in the system.</p>
+
+<h3>LLM Tier Selection</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Model</th>
+            <th>Reason</th>
+            <th>Latency Target</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>WA Concierge (real-time)</td>
+            <td>Gemini 2.5 Pro or GPT-4o mini</td>
+            <td>Fast inference, good reasoning, <300ms latency requirement</td>
+            <td>&lt; 300ms</td>
+        </tr>
+        <tr>
+            <td>Campaign Brain (batch)</td>
+            <td>GPT-4o or Claude Opus</td>
+            <td>Best reasoning for weekly recommendations, can tolerate 2-5s latency</td>
+            <td>2-5s</td>
+        </tr>
+        <tr>
+            <td>Creative OS (batch)</td>
+            <td>GPT-4o or Claude Opus (for copy), image generation separately</td>
+            <td>Strong copywriting, brand voice consistency</td>
+            <td>5-15s per creative</td>
+        </tr>
+        <tr>
+            <td>Venue Profiler (once per venue)</td>
+            <td>Gemini 2.0 or Claude Opus</td>
+            <td>Strong multimodal, can ingest photos + text + structured data</td>
+            <td>30-60s one-time cost</td>
+        </tr>
+        <tr>
+            <td>Attribution Joiner (batch)</td>
+            <td>Gemini 2.5 Pro (reasoning) + structured output</td>
+            <td>Complex chain logic, structured input/output</td>
+            <td>2-5s per chain</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Vision Models</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Model</th>
+            <th>Use Case</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Photo Quality Scoring</td>
+            <td>GPT-4o or Claude Opus</td>
+            <td>Score venue photos on: focus, lighting, composition, brand alignment</td>
+        </tr>
+        <tr>
+            <td>Crowd Estimation</td>
+            <td>GPT-4o Vision (or fine-tuned detection model)</td>
+            <td>Estimate how crowded a venue is from photos (social proof signal)</td>
+        </tr>
+        <tr>
+            <td>Content Verification</td>
+            <td>GPT-4o Vision</td>
+            <td>Confirm photo matches venue (not stolen/fake)</td>
+        </tr>
+        <tr>
+            <td>Vibe Tag Extraction</td>
+            <td>Claude Opus (multimodal) or fine-tuned classifier</td>
+            <td>Label photos with vibe tags: social, intimate, casual, premium, etc.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Embedding Models</h3>
+<p><strong>OpenAI text-embedding-3-large</strong> for venue similarity search. Embed venue profiles and creative assets, then find similar venues for benchmarking.</p>
+
+<!-- SECTION 10: AI SKILL SPECIFICATIONS -->
+<h2 id="skills">10. Nine AI Skill Specifications</h2>
+<p class="section-intro">Each skill is a micro-service with defined inputs, outputs, and eval targets. All skills feed into the composition engine and persona system.</p>
+
+<h4>Skill 1: Venue Profiler</h4>
+<div class="box">
+    <p><strong>Input:</strong> Instagram handle, website URL, Zomato/District link, owner journey answers (5-8 questions)</p>
+    <p><strong>Process:</strong> Scrape IG (photos, captions, followers, engagement), website (menu, pricing, photos, hours), Zomato (sales range, repeat rate, reviews), run Trust × Taste analysis</p>
+    <p><strong>Output:</strong> Venue knowledge graph (70 signals: category, vibe tags, audience hypotheses, visual motifs, pricing structure, social signals, competitive context)</p>
+    <p><strong>Eval Targets:</strong> Template recommendation accuracy (does suggested template match venue reality after 2 weeks?), user approval rate</p>
+</div>
+
+<h4>Skill 2: Campaign Brain</h4>
+<div class="box">
+    <p><strong>Input:</strong> Venue profile, inventory state (which dayparts are weak), benchmarks (peer performance, theme benchmarks), owner preferences</p>
+    <p><strong>Process:</strong> Identify weak inventory slots, recommend audience target (who should we pull this week?), suggest offer elasticity, recommend narrative hook</p>
+    <p><strong>Output:</strong> Weekly campaign brief: {objective, audience_target, offer_recommendation, budget_allocation, narrative_hook_families}</p>
+    <p><strong>Eval Targets:</strong> Walk-in lift vs. control week, offer take rate, audience alignment</p>
+</div>
+
+<h4>Skill 3: Creative OS</h4>
+<div class="box">
+    <p><strong>Input:</strong> Venue assets (photos), campaign brief, primitive type, audience target, creative tier (T1/T2/T3)</p>
+    <p><strong>Process:</strong> Select or generate 5 format variants (static, carousel, reel, story, collection). For T1: select real photos only. For T2: enhance with AI assistance. For T3: generate fully conceptual</p>
+    <p><strong>Output:</strong> 5 ad formats (static, carousel, reel, story, collection) × 3 tiers × audience variations</p>
+    <p><strong>Eval Targets:</strong> CTR per format, completion rate, share rate, audience match accuracy</p>
+</div>
+
+<h4>Skill 4: Offer Engine</h4>
+<div class="box">
+    <p><strong>Input:</strong> Venue type, daypart, audience, weak inventory state, historical offer performance</p>
+    <p><strong>Process:</strong> Analyze price elasticity, recommend offer structure (discount vs. bundle vs. pack vs. trial), estimate take rate</p>
+    <p><strong>Output:</strong> Primary offer + 2-3 alternative offers, with estimated take rates and margin impact</p>
+    <p><strong>Eval Targets:</strong> Actual take rate vs. predicted, conversion lift, margin preservation</p>
+</div>
+
+<h4>Skill 5: WA Concierge (Persona-Aware)</h4>
+<div class="box">
+    <p><strong>Input:</strong> Friction signal, page context, persona confirmation, user message, booking state</p>
+    <p><strong>Process:</strong> Load persona-specific conversation flow, detect objections, adapt offer, guide to booking or escalate</p>
+    <p><strong>Output:</strong> Concierge message, next action (book, offer alternative, transfer to owner)</p>
+    <p><strong>Eval Targets:</strong> Booking rate, conversation turns, user satisfaction, correct persona detection rate</p>
+</div>
+
+<h4>Skill 6: Attribution Joiner</h4>
+<div class="box">
+    <p><strong>Input:</strong> Event stream (ad impression, page visit, WA conversation, booking, show-up)</p>
+    <p><strong>Process:</strong> Join events through user session ID, infer causality (did ad cause walk-in?), handle multi-touch attribution</p>
+    <p><strong>Output:</strong> Attribution chain: {ad_id → page_visit → inquiry → booking → show_up}</p>
+    <p><strong>Eval Targets:</strong> Attribution accuracy (via control test), venue trust in attribution data</p>
+</div>
+
+<h4>Skill 7: Content Gap Requester</h4>
+<div class="box">
+    <p><strong>Input:</strong> Venue profile, Trust × Taste score, current content library, template requirements</p>
+    <p><strong>Process:</strong> Identify missing content (specific photo types, angles, lifestyle shots), recommend shoot list</p>
+    <p><strong>Output:</strong> Actionable shoot list: {shot_type, quantity, priority, reason}</p>
+    <p><strong>Eval Targets:</strong> Owner follow-through rate, quality of content collected</p>
+</div>
+
+<h4>Skill 8: Benchmark Scorer</h4>
+<div class="box">
+    <p><strong>Input:</strong> Venue performance metrics (walk-ins, CTR, conversion, revenue), peer benchmarks, theme benchmarks</p>
+    <p><strong>Process:</strong> Score venue against: last week (trend), peers (percentile), theme (relative performance), time-of-week (day-part intelligence)</p>
+    <p><strong>Output:</strong> Weekly scorecard: {metric, score, percentile, trend, recommendations}</p>
+    <p><strong>Eval Targets:</strong> Actionability (does owner use scorecard recommendations?), accuracy of peer matching</p>
+</div>
+
+<h4>Skill 9: Weekly Owner Summary</h4>
+<div class="box">
+    <p><strong>Input:</strong> Week's performance data (walk-ins, revenue, conversions, top-performing creatives), attribution chains, benchmark scores</p>
+    <p><strong>Process:</strong> Synthesize week into 1-page narrative: what worked, why, what to do next. Highlight top-performing ad and top-converting persona</p>
+    <p><strong>Output:</strong> Beautiful 1-page summary email/in-app card with: top metrics, story of the week, next week's recommendation</p>
+    <p><strong>Eval Targets:</strong> Owner engagement (do they open/read?), do recommendations lead to behavior change?</p>
+</div>
+
+<!-- SECTION 11: COMMERCIAL PRIMITIVES -->
+<h2 id="primitives">11. Commercial Primitive Architecture: Booking × Pricing × Offers</h2>
+<p class="section-intro">40+ primitives across 7 layers, mapped to 10 templates. This is what gets composed onto the page.</p>
+
+<h3>3 Booking Primitives</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Primitive</th>
+            <th>Use Case</th>
+            <th>State Tracking</th>
+            <th>Concierge Integration</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Slot Booking</strong></td>
+            <td>Time-based inventory (courts, classes, sessions)</td>
+            <td>Slot available/unavailable, hold duration</td>
+            <td>Scheduler concierge finds next open slot</td>
+        </tr>
+        <tr>
+            <td><strong>Reservation</strong></td>
+            <td>Table/space reservation (dining, workspace)</td>
+            <td>Party size, time, special requests, confirmation</td>
+            <td>Coordinator concierge handles party size/timing</td>
+        </tr>
+        <tr>
+            <td><strong>Open Registration</strong></td>
+            <td>Drop-in / pay-on-arrival (group fitness, events)</td>
+            <td>Capacity remaining, first-come-first-served</td>
+            <td>Transactional concierge just confirms attendance</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>7 Commercial Layers × 40+ Primitives (Excerpt)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Layer</th>
+            <th>Primitives</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Layer 1: Base Pricing</strong></td>
+            <td>Fixed price, dynamic price, tiered pricing, variable price (pay what you want)</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 2: Off-Peak/Peak</strong></td>
+            <td>Peak surcharge, off-peak discount, daypart pricing, happy hour, surge pricing</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 3: Group/Bulk</strong></td>
+            <td>Group discount (2+, 5+, 10+), corporate rate, bulk package, split pay, group credit</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 4: Recurring/Loyalty</strong></td>
+            <td>Pack pricing (5-pack, 10-pack), subscription, monthly pass, loyalty points, referral credit</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 5: Deposit/Payment Terms</strong></td>
+            <td>Full upfront, 50% deposit, installment, invoice (B2B), buy-now-pay-later</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 6: Temporality</strong></td>
+            <td>Limited-time offer (24h, 7d), flash sale, seasonal pricing, early-bird discount</td>
+        </tr>
+        <tr>
+            <td><strong>Layer 7: Channel/Attribution</strong></td>
+            <td>First-time discount (new visitor), friend referral, organic discovery, creator code, WA-exclusive</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Template → Primitive Bundle Mapping (10 Templates)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Template</th>
+            <th>Booking Primitive</th>
+            <th>Pricing Layers Used</th>
+            <th>Typical Offer Strategy</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Sports-Social</strong></td>
+            <td>Slot booking</td>
+            <td>Base, group, pack, split pay</td>
+            <td>Group discount + split pay (20% off 4+ players)</td>
+        </tr>
+        <tr>
+            <td><strong>Brunch/Cafe</strong></td>
+            <td>Reservation</td>
+            <td>Base, daypart (peak weekend), group, loyalty</td>
+            <td>Lunch discount (off-peak) + group bundling</td>
+        </tr>
+        <tr>
+            <td><strong>Interactive Dining</strong></td>
+            <td>Reservation + deposit</td>
+            <td>Base, deposit, special occasion</td>
+            <td>First-time discount (20% off) + deposit waive</td>
+        </tr>
+        <tr>
+            <td><strong>Fitness & Wellness</strong></td>
+            <td>Slot + subscription</td>
+            <td>Base, pack, subscription, referral</td>
+            <td>Trial class (50% off) + pack discount</td>
+        </tr>
+        <tr>
+            <td><strong>Wellness Social</strong></td>
+            <td>Slot + community pass</td>
+            <td>Base, group, community, referral</td>
+            <td>Friend referral (both get credit) + group rate</td>
+        </tr>
+        <tr>
+            <td><strong>Nightlife</strong></td>
+            <td>Registration + cover charge</td>
+            <td>Base, peak, group, early-bird</td>
+            <td>Early-bird discount (arrive before 11pm) + group cover</td>
+        </tr>
+        <tr>
+            <td><strong>Community Fitness</strong></td>
+            <td>Open registration + monthly pass</td>
+            <td>Base, pack, affordability, referral</td>
+            <td>Buddy referral (50% discount for both) + monthly pass</td>
+        </tr>
+        <tr>
+            <td><strong>Premium Fine Dining</strong></td>
+            <td>Reservation + full payment</td>
+            <td>Base, special occasion, chef table</td>
+            <td>Pre-fixe tasting (fixed price, no negotiation)</td>
+        </tr>
+        <tr>
+            <td><strong>Kids/Family</strong></td>
+            <td>Slot + family pass</td>
+            <td>Base, family bundle, kid discount</td>
+            <td>Family bundle (50% off second child) + sibling discount</td>
+        </tr>
+        <tr>
+            <td><strong>Music/Live Events</strong></td>
+            <td>Ticketing + table reservation</td>
+            <td>Base, early bird, group, vip tier</td>
+            <td>Early-bird discount (48h before) + group VIP package</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- SECTION 12: LEARNING ENGINE -->
+<h2 id="learning">12. Learning Engine & Feedback Loops</h2>
+<p class="section-intro">How the system gets smarter with every outcome, feeding back into campaigns, creative, and page composition.</p>
+
+<h3>Page Variant System</h3>
+<p>Every composed page is assigned a <code>variant_id</code>. This allows tracking of which page version performed best:</p>
+
+<pre><code>
+variant_id = hash({
+    venue_id,
+    campaign_id,
+    template_id,
+    creative_set_id,
+    primary_offer_id,
+    city,
+    timestamp
+})
+
+// Track metrics per variant:
+• CTR (ad → page)
+• Page time
+• Scroll depth
+• Friction trigger rate
+• WA conversion rate
+• Booking rate
+• Show-up rate
+</code></pre>
+
+<h3>Consumer-Side Learning</h3>
+<p>Which page variants convert best? Feed back to creative OS and composition engine:</p>
+
+<ul>
+    <li><strong>Hero image ranking:</strong> Track which hero images produce highest CTR. Rank assets by performance, surface top performers first.</li>
+    <li><strong>Copy testing:</strong> Different headlines per variant. Track which headline copy converts best. Update creative brain templates.</li>
+    <li><strong>Offer ranking:</strong> Which offers close best? Track by audience persona (beginners prefer trials, regulars prefer packs). Rank offers by take rate.</li>
+    <li><strong>City character:</strong> Which city overlays resonate? Delhi vs. Bengaluru show different patterns. Update city overlay personalization.</li>
+</ul>
+
+<h3>Owner-Side Learning</h3>
+<p>Weekly Owner Summary surfaces what worked:</p>
+
+<ul>
+    <li><strong>Top-performing creative:</strong> "Your reel of the open court got 12% CTR — 2x your average"</li>
+    <li><strong>Top-converting persona:</strong> "Groups are 3x more likely to book than solos this week"</li>
+    <li><strong>Best daypart:</strong> "Thursday 6-8pm is now your strongest slot. Maybe post more Thursday content?"</li>
+    <li><strong>Attribution insight:</strong> "Instagram referrals convert at 2x the rate of organic. Should we spend more there?"</li>
+</ul>
+
+<h3>Feedback Loop: Learning → Composition</h3>
+
+<pre><code>
+// Pseudo-code: Update composition rules based on learning
+function update_composition_rules(week_performance_data):
+    // Learn best hero image across all venues in theme
+    best_hero_by_theme = {}
+    FOR theme IN THEMES:
+        variants_in_theme = performance_data.filter(v => v.template == theme)
+        best_hero_by_theme[theme] = max(variants_in_theme, key=lambda v: v.ctr).hero_image_asset_id
+
+    // Update composition rule: prefer high-performing hero assets
+    COMPOSITION_RULES["hero_selection"].priority_assets = best_hero_by_theme
+
+    // Learn best offers by audience + daypart
+    best_offer_by_persona_daypart = {}
+    FOR persona, daypart IN cartesian_product(PERSONAS, DAYPARTS):
+        matching_conversions = performance_data.filter(
+            v => v.persona == persona AND v.daypart == daypart AND v.booked == true
+        )
+        best_offer = mode(matching_conversions.offer_id)
+        best_offer_by_persona_daypart[(persona, daypart)] = best_offer
+
+    // Update composition rule: surface persona-specific offers
+    COMPOSITION_RULES["offer_selection"].persona_specific = best_offer_by_persona_daypart
+
+    // Learn city character effectiveness
+    best_city_overlay = {}
+    FOR city IN CITIES:
+        city_variants = performance_data.filter(v => v.city == city)
+        best_overlay = max(city_variants, key=lambda v: v.conversion_rate).city_overlay
+        best_city_overlay[city] = best_overlay
+
+    COMPOSITION_RULES["city_overlay"].effectiveness = best_city_overlay
+
+    // Push updated rules to composition service
+    COMPOSITION_SERVICE.update_rules(COMPOSITION_RULES)
+</code></pre>
+
+<!-- SECTION 13: EVALUATION FRAMEWORK -->
+<h2 id="evaluation">13. Evaluation Framework & Success Metrics</h2>
+<p class="section-intro">How we measure product success, per skill and system-wide.</p>
+
+<h3>System-Wide KPIs</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>KPI</th>
+            <th>Baseline</th>
+            <th>Target (6mo)</th>
+            <th>Measurement</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Walk-In Lift (Test vs. Control)</td>
+            <td>0%</td>
+            <td>+25%</td>
+            <td>Test: Turnout page + concierge. Control: organic (no active campaign)</td>
+        </tr>
+        <tr>
+            <td>Page → WA Conversion</td>
+            <td>5%</td>
+            <td>12%</td>
+            <td>Page visitors who message on WhatsApp</td>
+        </tr>
+        <tr>
+            <td>WA → Booking Conversion</td>
+            <td>15%</td>
+            <td>40%</td>
+            <td>Concierge conversations that result in reservation/booking</td>
+        </tr>
+        <tr>
+            <td>Booking → Show-Up</td>
+            <td>60%</td>
+            <td>75%</td>
+            <td>Actual attendance vs. booked (via venue manual entry or check-in tech)</td>
+        </tr>
+        <tr>
+            <td>Attribution Accuracy</td>
+            <td>N/A</td>
+            <td>&gt;85%</td>
+            <td>Venue trust score: "Does Turnout correctly attribute walk-ins?" (survey 5-point)</td>
+        </tr>
+        <tr>
+            <td>Repeat Rate (Week 2+)</td>
+            <td>10%</td>
+            <td>20%</td>
+            <td>Proportion of walk-ins who come back within 30 days</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Skill-Level Eval Targets</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Skill</th>
+            <th>Primary Metric</th>
+            <th>Secondary Metrics</th>
+            <th>Threshold</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Venue Profiler</strong></td>
+            <td>Template recommendation accuracy</td>
+            <td>Data completeness, owner approval</td>
+            <td>&gt;80% match to true venue category</td>
+        </tr>
+        <tr>
+            <td><strong>Campaign Brain</strong></td>
+            <td>Walk-in lift vs. control</td>
+            <td>Offer take rate, audience match</td>
+            <td>&gt;+20% walk-in lift</td>
+        </tr>
+        <tr>
+            <td><strong>Creative OS</strong></td>
+            <td>Ad CTR per format</td>
+            <td>Engagement rate, completion rate</td>
+            <td>&gt;1.2% CTR for static, &gt;2% for reels</td>
+        </tr>
+        <tr>
+            <td><strong>Offer Engine</strong></td>
+            <td>Take rate accuracy</td>
+            <td>Margin preservation, elasticity</td>
+            <td>&gt;±10% accuracy vs. actual</td>
+        </tr>
+        <tr>
+            <td><strong>WA Concierge</strong></td>
+            <td>Booking rate per message</td>
+            <td>Persona detection accuracy, turns to close</td>
+            <td>&gt;40% of conversations → booking</td>
+        </tr>
+        <tr>
+            <td><strong>Attribution Joiner</strong></td>
+            <td>Chain accuracy</td>
+            <td>Multi-touch handling, false positives</td>
+            <td>&gt;90% of chains correctly attributed</td>
+        </tr>
+        <tr>
+            <td><strong>Content Gap Requester</strong></td>
+            <td>Owner follow-through rate</td>
+            <td>Quality of content collected, usage</td>
+            <td>&gt;40% of requests actioned</td>
+        </tr>
+        <tr>
+            <td><strong>Benchmark Scorer</strong></td>
+            <td>Owner confidence in score</td>
+            <td>Actionability, trend accuracy</td>
+            <td>&gt;4/5 owner satisfaction</td>
+        </tr>
+        <tr>
+            <td><strong>Weekly Owner Summary</strong></td>
+            <td>Open rate, read time</td>
+            <td>Recommendation adoption, engagement</td>
+            <td>&gt;40% open rate, &gt;20% recommendation adoption</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- SECTION 14: GAP CLOSURE VERIFICATION -->
+<h2 id="gap-closure">14. Gap Closure Verification: All 7 Gaps Now Addressed</h2>
+<p class="section-intro">The Product Algorithm Review identified 7 critical gaps between PRD and UX. This section confirms all are closed in this integrated document.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Gap</th>
+            <th>Original Problem</th>
+            <th>Solution in This PRD</th>
+            <th>Section</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Gap 1: Venue Profiler → Template</strong></td>
+            <td>No mapping from Venue Profiler output to template selection. Assumed someone (or something) already decided template.</td>
+            <td>Trust × Taste Graph (Section 4) provides complete algorithm: trust score (T1-T6) + taste vector (multi-label). recommend_template() pseudo-code specifies exact decision tree.</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td><strong>Gap 2: Campaign Brain → Page Content</strong></td>
+            <td>Campaign Brain produces weekly recommendations, but no spec for how those feed into page composition.</td>
+            <td>Composition Engine (Section 6) explicitly shows how campaign brief inputs (audience, offer, narrative) flow through compose_page() algorithm into page slots (hero_headline, primary_offer, etc.).</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td><strong>Gap 3: Creative OS → Page Assets</strong></td>
+            <td>Creative OS generates ad creative (5 formats), but unclear if/how these become page assets. No asset pipeline spec.</td>
+            <td>Composition Engine Section 6, Step 4: "Select creative assets" explicitly calls generate_or_fetch_ads() and maps output to page slots (hero_image, hero_headline).</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td><strong>Gap 4: Friction Detection → Concierge</strong></td>
+            <td>Friction types listed in UX Spec, but no detection mechanism spec, no state contract, no concierge integration.</td>
+            <td>Friction Detection Engine (Section 8) includes: 12 instrumentation event types, 5 friction classification algorithm with pseudo-code, WA handoff state contract v2 (persona-aware), friction→concierge branch routing with specific opening messages.</td>
+            <td>8</td>
+        </tr>
+        <tr>
+            <td><strong>Gap 5: Offer Engine → Pricing UX</strong></td>
+            <td>Offer Engine recommends, Commercial Primitives define display format, but decision tree between them is missing.</td>
+            <td>Section 11 provides complete primitive bundle mapping: 10 templates, each mapped to specific booking primitives, pricing layers, typical offer strategy. Offer Engine directly outputs primitives to activate.</td>
+            <td>11</td>
+        </tr>
+        <tr>
+            <td><strong>Gap 6: Learning Engine → UX Evolution</strong></td>
+            <td>Learning Engine described, but zero UX surface for consumer-side learning. Pages treated as static, not evolving.</td>
+            <td>Learning Engine (Section 12) specifies: page variant system, consumer-side learning (hero image ranking, copy testing, offer ranking), feedback loop that updates composition rules. Every page generation pulls latest-learned best practices.</td>
+            <td>12</td>
+        </tr>
+        <tr>
+            <td><strong>Gap 7: Composition Rules (No Algorithm)</strong></td>
+            <td>10 themes × 9 cities × 40+ primitives. How do they combine? No composition algorithm.</td>
+            <td>Composition Engine (Section 6) fully specifies compose_page() algorithm: 10 steps from template load through page slot population, including city overlay application, primitive bundle activation, adaptive content zone generation.</td>
+            <td>6</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Verification Summary</h3>
+<ul>
+    <li><strong>Gap 1 (Profiler → Template):</strong> ✓ Closed. recommend_template() algorithm in Trust × Taste Graph section.</li>
+    <li><strong>Gap 2 (Campaign → Page):</strong> ✓ Closed. Campaign brief explicitly flows through compose_page() with pseudo-code.</li>
+    <li><strong>Gap 3 (Creative → Assets):</strong> ✓ Closed. Creative generation step in compose_page() maps ad formats to page slots.</li>
+    <li><strong>Gap 4 (Friction → Concierge):</strong> ✓ Closed. Full friction detection algorithm, state contract, and routing logic specified.</li>
+    <li><strong>Gap 5 (Offer → Pricing):</strong> ✓ Closed. Primitive bundles explicitly map to templates with offer strategies.</li>
+    <li><strong>Gap 6 (Learning → UX):</strong> ✓ Closed. Page variant system, consumer learning, and feedback loop specified.</li>
+    <li><strong>Gap 7 (Composition Rules):</strong> ✓ Closed. compose_page() algorithm operationalizes all combinations (themes × cities × primitives).</li>
+</ul>
+
+<h3>What This Means for Engineering</h3>
+<p>This document is now a <strong>complete, implementable specification</strong>. Every gap that blocked engineering handoff has been closed:</p>
+
+<ul>
+    <li>Template recommendation is deterministic (trust × taste scoring)</li>
+    <li>Page composition is algorithmic (10-step compose_page with pseudo-code)</li>
+    <li>Friction detection is instrumented (12 event types, 5-type classifier)</li>
+    <li>Concierge branching is state-driven (persona + friction → flow choice)</li>
+    <li>Learning is tracked (per-variant metrics, feedback loop)</li>
+    <li>All 9 AI skills are specified with inputs, outputs, eval targets</li>
+    <li>All 40+ primitives are mapped to templates and offer strategies</li>
+</ul>
+
+</div>
+</div>
+    </div>
+    <footer>
+        <p>This document supersedes PRD v3, Algorithm × UX Contract v1, Persona Concierge Deep Spec, and Product Algorithm Review.</p>
+        <p>TURNOUT BETA | Final | March 30, 2026 | v4.0</p>
+    </footer>
+</body>
+</html>
+
+<footer>
+        <p>This document supersedes PRD v3, Algorithm × UX Contract v1, Persona Concierge Deep Spec, and Product Algorithm Review.</p>
+        <p>TURNOUT BETA | Final | March 30, 2026 | v4.0</p>
+    </footer>
+</body>
+</html>

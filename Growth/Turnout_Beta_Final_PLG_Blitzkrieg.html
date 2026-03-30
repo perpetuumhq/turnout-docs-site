@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnout Beta - Final PLG Blitzkrieg & Growth Playbook</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #0a0e27;
+            color: #e8e8e8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #0a0e27;
+            border-bottom: 3px solid #FF6B35;
+            padding: 1.5rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        header h1 {
+            font-size: 18px;
+            color: #FF6B35;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        header .meta {
+            font-size: 11px;
+            color: #666;
+            text-align: right;
+        }
+
+        .container {
+            margin-top: 80px;
+            margin-left: 280px;
+            padding: 3rem 3rem 4rem;
+            max-width: 1000px;
+        }
+
+        nav.sidebar {
+            position: fixed;
+            left: 0;
+            top: 80px;
+            width: 280px;
+            height: calc(100vh - 80px);
+            background: #080c22;
+            border-right: 1px solid #1a2a4a;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+        }
+
+        nav.sidebar a {
+            display: block;
+            color: #888;
+            text-decoration: none;
+            padding: 0.6rem 0.8rem;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            font-size: 13px;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        nav.sidebar a:hover {
+            background: #0f1a35;
+            color: #FF6B35;
+            border-left-color: #FF6B35;
+        }
+
+        nav.sidebar a.active {
+            color: #FF6B35;
+            background: rgba(255, 107, 53, 0.1);
+            border-left-color: #FF6B35;
+        }
+
+        nav.sidebar .nav-group {
+            color: #FF6B35;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 2rem;
+            margin-bottom: 0.8rem;
+            padding-left: 0.8rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: #FF6B35;
+            font-size: 2.2rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #14B8A6;
+            padding-bottom: 0.8rem;
+        }
+
+        h3 {
+            color: #14B8A6;
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        h4 {
+            color: #25D366;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            line-height: 1.8;
+        }
+
+        strong { color: #FF6B35; }
+        em { color: #14B8A6; font-style: italic; }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        li {
+            margin-bottom: 0.7rem;
+            line-height: 1.7;
+        }
+
+        .highlight-box {
+            background-color: rgba(255, 107, 53, 0.08);
+            border-left: 4px solid #FF6B35;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .metric-box {
+            background-color: #0f1a35;
+            border: 1px solid #1a2a4a;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+            border-left: 4px solid #14B8A6;
+        }
+
+        .metric-box h4 {
+            color: #14B8A6;
+            margin-top: 0;
+        }
+
+        .critical-box {
+            background-color: #1a0f0f;
+            border: 1px solid #4a1a1a;
+            border-left: 4px solid #e74c3c;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .critical-box h4 {
+            color: #e74c3c;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background-color: #0f1a35;
+            border: 1px solid #1a2a4a;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #1a2a4a;
+            color: #14B8A6;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #FF6B35;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #1a2a4a;
+        }
+
+        tr:hover { background-color: #141f3a; }
+
+        .timeline {
+            margin: 2rem 0;
+        }
+
+        .timeline-item {
+            background: #0f1a35;
+            border: 1px solid #1a2a4a;
+            border-left: 4px solid #FF6B35;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .timeline-item .label {
+            font-size: 11px;
+            color: #FF6B35;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .grid-item {
+            background: #0f1a35;
+            border: 1px solid #1a2a4a;
+            padding: 1.5rem;
+            border-radius: 6px;
+        }
+
+        .grid-item h4 {
+            color: #FF6B35;
+            margin-top: 0;
+        }
+
+        .stat {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FF6B35;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #1a2a4a;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .formula-block {
+            background: #050810;
+            border: 1px solid #1a2a4a;
+            padding: 1.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #14B8A6;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .risk-item {
+            background: #0f1a35;
+            border: 1px solid #1a2a4a;
+            border-left: 4px solid #F59E0B;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .success-gate {
+            background: rgba(37, 211, 102, 0.08);
+            border: 1px solid rgba(37, 211, 102, 0.3);
+            border-left: 4px solid #25D366;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .success-gate h4 {
+            color: #25D366;
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            nav.sidebar { width: 200px; }
+            .container { margin-left: 200px; padding: 2rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+            header { flex-direction: column; }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-p0 { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        .badge-p1 { background: rgba(255, 107, 53, 0.2); color: #FF6B35; }
+        .badge-wave1 { background: rgba(20, 184, 166, 0.2); color: #14B8A6; }
+        .badge-assumption { background: rgba(37, 211, 102, 0.2); color: #25D366; }
+
+        .code-list {
+            background: #050810;
+            border: 1px solid #1a2a4a;
+            padding: 1.5rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #14B8A6;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .section-intro {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1a2a4a;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TURNOUT BETA — PLG Blitzkrieg & Growth Playbook (FINAL)</h1>
+    <div class="meta">
+        <div>Final | March 30, 2026 | v4.0</div>
+        <div>Supercedes Growth Stack v2 & Blitzkrieg Calendar v2</div>
+    </div>
+</header>
+
+<nav class="sidebar">
+    <div class="nav-group">Thesis & Strategy</div>
+    <a href="#beta-thesis">Beta Launch Thesis</a>
+    <a href="#core-bet">Core Bet</a>
+    <a href="#success-definition">60-Day Success</a>
+
+    <div class="nav-group">Pre-Launch (Week -2 to 0)</div>
+    <a href="#prelaunch-pipeline">Pre-Launch Pipeline</a>
+    <a href="#ig-content">IG Content Strategy</a>
+    <a href="#qualification-engine">Qualification Engine</a>
+    <a href="#og-program">OG Venue Program</a>
+
+    <div class="nav-group">Cold Start & Launch</div>
+    <a href="#cold-start">Cold Start Synthesis</a>
+    <a href="#first-10-venues">First 10 Venues</a>
+
+    <div class="nav-group">PLG Mechanics</div>
+    <a href="#plg-engine">PLG Growth Engine</a>
+    <a href="#4-patterns">4 PLG Patterns</a>
+    <a href="#growth-loops">Growth Loops Detailed</a>
+
+    <div class="nav-group">Go-to-Market</div>
+    <a href="#gtm-waves">3-Wave GTM</a>
+    <a href="#city-deep-dive">City Deep Dives</a>
+    <a href="#wave1-plan">Wave 1 Execution</a>
+
+    <div class="nav-group">Commercial</div>
+    <a href="#commercial-packaging">Packaging & Pricing</a>
+    <a href="#pricing-strategy">Pricing for Beta</a>
+
+    <div class="nav-group">Validation & Tracking</div>
+    <a href="#validation-tracker">52 Core Assumptions</a>
+    <a href="#success-gates">Beta Success Gates</a>
+
+    <div class="nav-group">Execution</div>
+    <a href="#blitzkrieg-calendar">17-Day Calendar</a>
+    <a href="#daily-milestones">Key Milestones</a>
+    <a href="#success-metrics">Success Metrics</a>
+
+    <div class="nav-group">Risks & Contingency</div>
+    <a href="#risk-register">Risk Register</a>
+    <a href="#guardrails">Guardrails</a>
+</nav>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════════════════════
+     1. BETA LAUNCH THESIS
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="beta-thesis">1. Beta Launch Thesis</h2>
+<div class="section-intro">Why now, what we're proving, what success looks like. The bet: venue-through-content activations via mobile pages + WhatsApp concierge.</div>
+
+<h3>The Strategic Opportunity (Now)</h3>
+<p>India's go-out economy is shifting from posting-led behavior to presence-led behavior. Consumers increasingly want experiences that feel real, social, and shareable. Simultaneously, venue owners are trapped in aggregator dependency (Zomato takes 20-25% commission) with zero first-party consumer data or owned channels.</p>
+
+<p>Turnout's wedge: <strong>venues want to shift from aggregator dependency to owned channels, and we can create that channel in 60 seconds with AI.</strong></p>
+
+<h3 id="core-bet">The Core Bet</h3>
+
+<div class="highlight-box">
+    <strong>Venue-Through-Content Activations:</strong> Instead of hunting consumers, hunt content creators. Creators share venue pages naturally because they get attributed bookings. Every page share becomes a referral loop. Every venue activation surfaces content proof that attracts other venue owners.
+    <br><br>
+    <strong>Mobile Pages + WhatsApp Concierge:</strong> Venues don't want dashboards. They want a landing page that their customers can access (no app install, no friction), and a WhatsApp companion that handles edge-case friction (group splits, price questions, timing issues, reassurance). Page converts intent; WhatsApp converts hesitation.
+</div>
+
+<h3 id="success-definition">What Success Looks Like in 60 Days</h3>
+
+<div class="grid-2">
+    <div class="grid-item">
+        <h4>Venue Metrics (By Day 60)</h4>
+        <ul>
+            <li><strong>50-75 venues onboarded</strong> across Delhi, Bangalore, Mumbai</li>
+            <li><strong>45+ pages live</strong> (approval rate 90%+)</li>
+            <li><strong>Time-to-live: &lt;2 hours</strong> from onboarding to page in market</li>
+            <li><strong>Page adoption:</strong> 80%+ of onboarded venues actively using pages</li>
+            <li><strong>Theme representation:</strong> 3+ venues per theme (sports-social, brunch, wellness)</li>
+        </ul>
+    </div>
+    <div class="grid-item">
+        <h4>Consumer & Attribution Metrics (By Day 60)</h4>
+        <ul>
+            <li><strong>2,000+ unique page visits</strong></li>
+            <li><strong>15%+ booking conversion</strong> (page view → WA handoff)</li>
+            <li><strong>200+ attributed bookings</strong> (page → reservation → show-up)</li>
+            <li><strong>5%+ secondary activation</strong> (invited friends become independent bookers)</li>
+            <li><strong>90%+ WA handoff-to-confirmation</strong> rate</li>
+        </ul>
+    </div>
+</div>
+
+<div class="metric-box">
+    <h4>Unit Economics Success Criterion</h4>
+    <p><strong>CAC (Cost to Acquire Venue):</strong> Rs 0 for first 50 (proof gathering). Growth CAC target: Rs 500-1,000 per venue by Wave 2.</p>
+    <p><strong>LTV (Venue Lifetime Value):</strong> Rs 5,000-15,000 in Year 1 (campaign spend, attribution confidence, retention premium). Target 3:1 LTV:CAC by Month 3.</p>
+    <p><strong>Learning Velocity:</strong> 3+ template variations tested per venue category. Success rate improvement 2-4% week-on-week through optimization.</p>
+</div>
+
+<h3>The Validation Thesis</h3>
+<p>Beta is not about scale. <strong>Beta is about proving three things:</strong></p>
+<ol>
+    <li><strong>Venue pain is real:</strong> Venues genuinely want owned channels and are willing to activate if setup is &lt;5 minutes.</li>
+    <li><strong>Pages work:</strong> AI-generated pages from venue IG + website data drive measurable bookings with attribution accuracy ≥80%.</li>
+    <li><strong>Loops compound:</strong> First 10 venues → proof → 20 more venues via word-of-mouth (K-factor ≥0.4). Content creators share pages, creating organic acquisition flywheel.</li>
+</ol>
+
+<!-- ══════════════════════════════════════════════════════════════
+     2. PRE-LAUNCH PIPELINE (Week -2 to 0)
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="prelaunch-pipeline">2. Pre-Launch Pipeline (Week -2 to 0)</h2>
+<div class="section-intro">From awareness to onboarding. Four-stage funnel: awareness → pre-order + consent → qualification → OG content shoot.</div>
+
+<h3>The Pre-Launch Funnel</h3>
+
+<div class="code-list">
+STAGE A: AWARENESS (Off-Product)
+  turnout.club (IG) publishes growth content showing:
+  • Similar venues being onboarded → real pages driving real walk-ins
+  • Concierge working with venues and customers
+  • Value prop: "A fully functional landing page + concierge that works for you"
+
+STAGE B: PRE-ORDER + CONSENT (turnout.so brand site)
+  Owner lands on turnout.so
+  • Sees pre-auth content (sample pages, proof-of-outcome stories)
+  • Pre-orders access to launch cohort
+  • Gives CONSENT for automated enrichment:
+    - Instagram handle (scrape posts, follower count, engagement)
+    - Website URL (extract menu, photos, hours, vibe)
+    - Zomato District / Dineout dashboard (pull revenue signals)
+
+STAGE C: QUALIFICATION + OG STATUS
+  System scores venue automatically (see Qualification Engine below)
+  • Owner answers 5-8 journey questions
+  • If qualified (score ≥55) → enter launch pipeline
+  • If score ≥70 → "Turnout OG" status (community hero badge, priority access)
+
+STAGE D: ORGANIC CONTENT SHOOT (Pre-Launch)
+  For OG venues only:
+  • Turnout offers content shoot (photos, short video)
+  • Content feeds into page generation (real assets, trust)
+  • Establishes relationship before product onboarding
+  • Creates proof content for turnout.club IG (flywheel)
+</div>
+
+<h3 id="ig-content">IG Content Strategy: turnout.club</h3>
+
+<div class="metric-box">
+    <h4>Posting Schedule & Reach Model</h4>
+    <p><strong>Target: 30 posts by end of Week 2</strong></p>
+    <ul>
+        <li><strong>Format mix:</strong> 60% Carousel (behind-the-scenes, before/after pages), 30% Reels (venue owner testimonials, page walkthrough), 10% Stories (daily activation updates)</li>
+        <li><strong>Frequency:</strong> 3 posts/week minimum; 1-2 Reels/week (Reels get 1.36x more reach)</li>
+        <li><strong>Reach assumption:</strong> 2,700 avg reach per post × 30 posts = 81,000 own-content reach by Week 2</li>
+        <li><strong>Engagement:</strong> Target 3-5% save rate per post (proof quality). Saves → bookmarks → revisits.</li>
+    </ul>
+</div>
+
+<p><strong>Content Pillars (Weekly Rotation):</strong></p>
+<ol>
+    <li><strong>Venue Proof:</strong> Photos of actual venues being onboarded, their pages live, concierge in action</li>
+    <li><strong>Owner Testimonials:</strong> 15-30s video of venue owner describing the problem (Zomato spend, no owned channel) and the solution (free page in 60 seconds)</li>
+    <li><strong>Consumer Aha:</strong> Screenshots of real consumer WA conversations with concierge (redacted names), booking flows, split-pay, group coordination</li>
+    <li><strong>Metrics & Proof:</strong> Weekly dashboard showing activations, pages live, booking attribution, creator collaboration counts</li>
+    <li><strong>Creator Collabs:</strong> Reels featuring creators sharing Turnout pages, venues they discovered, bookings they made</li>
+</ol>
+
+<h3 id="qualification-engine">Automated Qualification Engine</h3>
+
+<div class="metric-box">
+    <h4>Data Sources (4-Source Scoring)</h4>
+    <table>
+        <tr>
+            <th>Source</th>
+            <th>Signals Extracted</th>
+            <th>Weight</th>
+        </tr>
+        <tr>
+            <td><strong>Instagram</strong></td>
+            <td>Follower count, engagement rate, posting frequency, content quality, vibe tags from captions, hashtag patterns</td>
+            <td>30%</td>
+        </tr>
+        <tr>
+            <td><strong>Website / Google Places</strong></td>
+            <td>Hours, address, category, menu availability, photo gallery quality, Google rating, review sentiment</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td><strong>Zomato / District Dashboard</strong></td>
+            <td>Revenue range, footfall trends, peak/off-peak ratio, average order value, repeat rate</td>
+            <td>25%</td>
+        </tr>
+        <tr>
+            <td><strong>Owner Journey Answers</strong></td>
+            <td>Venue age, primary challenge (footfall? off-peak? awareness?), marketing spend, willingness to experiment, team size</td>
+            <td>20%</td>
+        </tr>
+    </table>
+</div>
+
+<div class="metric-box">
+    <h4>Qualification Score Output (0-100)</h4>
+    <ul>
+        <li><strong>Content Readiness (0-25):</strong> Real visual assets available? IG photo count + quality + menu photos. Threshold: 12+ for launch.</li>
+        <li><strong>Commercial Readiness (0-25):</strong> Clear booking primitives? Menu/pricing + booking system + Zomato data. Threshold: 15+.</li>
+        <li><strong>Growth Signal (0-25):</strong> Growth trajectory or stuck? IG engagement trend + recent reviews + owner challenge. Threshold: 10+.</li>
+        <li><strong>Theme-City Fit (0-25):</strong> Venue type matches Wave 1 themes in Wave 1 cities? Category + location priority. Threshold: 15+.</li>
+        <li><strong style="color: #14B8A6;"><u>Launch Cohort Threshold: 55/100.</u></strong> Below 55: system suggests actions to improve (e.g., "Add 5 more photos to IG"). 70+: OG status.</li>
+    </ul>
+</div>
+
+<h3 id="og-program">OG Venue Program (Pre-Launch)</h3>
+
+<div class="highlight-box">
+    <strong>Criteria for OG Status:</strong> Qualification score ≥70 + demonstrated responsiveness + venue willingness to be featured.
+    <br><br>
+    <strong>OG Benefits:</strong>
+    <ul>
+        <li>Community hero badge on page (social proof, authenticity)</li>
+        <li>Professional content shoot before launch (1-2 hrs, 20+ photos, 1 short video)</li>
+        <li>Priority page generation + approval</li>
+        <li>First access to new features</li>
+        <li>Featured on turnout.club IG (organic promotion to 5K+ followers by launch)</li>
+        <li>Invitation to launch day event (venue activation celebration, media coverage)</li>
+    </ul>
+</div>
+
+<p><strong>Target: 8-10 OG venues by Day 0</strong> across Delhi (3), Bangalore (3), Mumbai (2).</p>
+
+<p><strong>Expected Pre-Launch Pipeline Outcome:</strong> 30-50 venues pre-ordered before product launch. Of those, 50+ qualified and ready to activate in Wave 1.</p>
+
+<!-- ══════════════════════════════════════════════════════════════
+     3. COLD START SYNTHESIS
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="cold-start">3. Cold Start Synthesis: First 10 Venues, First 100 Bookings</h2>
+<div class="section-intro">How to get from zero to initial traction. Key: proof gathering, not optimization.</div>
+
+<h3 id="first-10-venues">The First 10 Venues (Days 1-7)</h3>
+
+<p><strong>Selection Criteria:</strong></p>
+<ul>
+    <li><strong>Hand-picked from pre-orders:</strong> Venues that scored ≥70 (OG status) or demonstrated highest willingness in conversations</li>
+    <li><strong>Geographic cluster:</strong> 4 Bangalore (Koramangala/Indiranagar), 3 Delhi (Hauz Khas/Karol Bagh), 3 Mumbai (Bandra/Fort)</li>
+    <li><strong>Category diversity:</strong> 3 sports-social (pickleball courts), 3 brunch/cafe, 2 fitness, 2 experience dining</li>
+    <li><strong>Engagement willingness:</strong> Owner explicitly agreed to co-create content, share page with customers, provide attribution feedback</li>
+</ul>
+
+<div class="code-list">
+ACTIVATION SEQUENCE (Per Venue):
+
+Day N: Owner Onboarding (30 mins)
+  1. Pre-call: Send IG handle + website link
+  2. 15-min video call: Demo page generation, explain page-to-WA flow
+  3. One-click approval: Owner approves page variant (usually takes 1 attempt)
+  4. Page goes live: 60s from approval to page live in market
+
+Day N+1: Content Creation
+  1. Owner records 1-2 short videos:
+     • "Welcome to [Venue]" (15s)
+     • "Here's what's special" (30s)
+  2. Owner shares page link in their IG stories (day 1 + day 3)
+  3. Turnout reposts owner stories to turnout.club story (gives visibility + proof)
+
+Day N+2 to N+7: Attribution Gathering
+  1. Concierge tracks all bookings from page (source attribution)
+  2. Each booking: record channel (page, creator share, word-of-mouth, owner share)
+  3. Daily check-in: owner confirms show-ups, gives feedback on any friction
+  4. Iterate: if 5+ inquiries don't convert, test new page variant
+
+EXPECTED OUTCOME PER VENUE (7 days):
+  • 30-50 page visits (from owner + initial shares)
+  • 5-8 WA inquiries (15% conversion from visits)
+  • 3-5 confirmed bookings (60-70% WA-to-booking)
+  • 2-3 attributed show-ups (60-70% no-show rate for first cohort)
+  • 1-2 secondary activations (friend of booker becomes new visitor)
+</div>
+
+<p><strong>First 10 Venues Expected Output (By Day 7):</strong></p>
+<ul>
+    <li>300-500 page visits (cumulative)</li>
+    <li>50-80 WA inquiries</li>
+    <li>30-50 confirmed bookings</li>
+    <li>20-30 attributed show-ups (walk-ins)</li>
+    <li>10-15 secondary activations</li>
+    <li><strong>Proof: "AI page → real bookings" is proven.</strong> Attribution confidence ≥75%.</li>
+</ul>
+
+<h3>The Second 10 Venues (Days 8-14)</h3>
+
+<p><strong>Selection Strategy:</strong> Hand-pick 5 venues refereed by First 10 (word-of-mouth from owners + creators), + 5 from strongest pre-order queue. K-factor target: ≥0.4 (each of First 10 refers ≥2 more venues).</p>
+
+<p><strong>Acceleration Lever:</strong> Reduce owner onboarding friction:</p>
+<ul>
+    <li>Async approval flow (owner approves page via Loom video, not live call)</li>
+    <li>Pre-loaded templates (similar venue category → template already drafted)</li>
+    <li>Creator co-activation (match venue with 1-2 creators from our network who've shared similar venues)</li>
+</ul>
+
+<p><strong>Expected Outcome (Days 8-14):</strong> 20-30 attributed show-ups + 10-15 secondary activations from Second 10 venues.</p>
+
+<h3>The Third 10 Venues & Beyond (Days 15-60)</h3>
+
+<p><strong>By Day 21:</strong> 30 venues live, 100+ attributed bookings, clear unit economics, creator partnerships producing measurable attribution.</p>
+
+<p><strong>Days 22-60:</strong> Standardize activation playbook. Target: 50-75 total venues by Day 60, 200+ attributed bookings.</p>
+
+<!-- ══════════════════════════════════════════════════════════════
+     4. PLG GROWTH ENGINE
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="plg-engine">4. PLG Growth Engine: The 4 Patterns That Compound</h2>
+<div class="section-intro">How Turnout acquires venues and consumers through pure product mechanics.</div>
+
+<h3 id="4-patterns">The Four PLG Patterns</h3>
+
+<div class="grid-2">
+    <div class="grid-item">
+        <h4>1. Output IS the Ad</h4>
+        <p><strong>Mechanic:</strong> Venue page is not a listing; it's a shareable artifact. When owner shares page link in their IG story or sends to a friend, the link becomes a referral. Every share = organic acquisition funnel.</p>
+        <p><strong>Proof:</strong> If 10 venues go live and each gets 50 shares (organic), that's 500 discovery events with zero paid spend.</p>
+    </div>
+    <div class="grid-item">
+        <h4>2. Instant Output</h4>
+        <p><strong>Mechanic:</strong> Venue sees their page live in &lt;2 minutes after onboarding. This creates instant validation. Owner shows page to 2-3 staff members, they share internally. Viral loop inside venue.</p>
+        <p><strong>Proof:</strong> Speed = credibility. Slower product → venue owner waits days → loses excitement → cancels.</p>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="grid-item">
+        <h4>3. Free Hook → Paid Upsell</h4>
+        <p><strong>Mechanic:</strong> Free tier: page generation + 10 WA conversations/month. Growth tier: campaign management + full concierge + attribution reports + multi-page templates.</p>
+        <p><strong>Proof:</strong> First 50 venues free (proof gathering). Wave 2 venues: pricing introduced. Expected free-to-paid conversion: 10-15% (vs 3-5% industry baseline) due to attribution proof.</p>
+    </div>
+    <div class="grid-item">
+        <h4>4. Embedded Virality</h4>
+        <p><strong>Mechanic:</strong> Every share card, invite link, split-pay link, creator attribution link = referral event. Consumer shares booking → friend clicks → discovers page → friend becomes secondary activation.</p>
+        <p><strong>Proof:</strong> Target: 5-10% of first-time bookers refer 1 friend. Viral coefficient k ≥0.05-0.1.</p>
+    </div>
+</div>
+
+<h3 id="growth-loops">Growth Loops Detailed</h3>
+
+<h4>Loop 1: Venue Acquisition Loop (The Core)</h4>
+
+<div class="code-list">
+Content (turnout.club IG)
+  ↓ [awareness, pain validation]
+Micro-Creator Collabs (15 creators × 250K+ reach)
+  ↓ [turnout.club reach = 250K by Week 2]
+Venue Owner Awareness
+  ↓ [20% of reached owners visit turnout.so]
+Pre-Order + Qualification
+  ↓ [50% of pre-orders qualify ≥55]
+Onboarding + Page Goes Live
+  ↓ [see Cold Start section]
+Proof: Bookings + Attribution
+  ↓ [show metrics to other venues]
+Venue Referral Loop (K-factor ≥0.4)
+  ↓ [each venue refers 2+ others]
+Next Venue Cohorts
+  ↓ [exponential growth: 10 → 30 → 75 venues]
+</div>
+
+<h4>Loop 2: Consumer Activation Loop</h4>
+
+<div class="code-list">
+Venue Page
+  ↓ [page shared by owner, creator, or friend]
+Consumer Discovery
+  ↓ [consumer lands on page, sees photos + reviews + offer]
+Decision Friction → WA Handoff
+  ↓ [consumer hesitates; clicks "Chat with us"]
+Concierge Resolution
+  ↓ [concierge answers price, timing, group split, etc.]
+Booking Confirmed
+  ↓ [consumer reserves, gets confirmation]
+Share Card / Invite Link
+  ↓ [consumer invites friends to same booking]
+Secondary Activation
+  ↓ [friend becomes independent booker; new loop starts]
+Attribution Tracked Back
+  ↓ [venue owner sees booking source: "referred by friend"]
+</div>
+
+<h4>Loop 3: Creator Distribution Loop</h4>
+
+<div class="code-list">
+Turnout Invites Creator to Collab
+  ↓ [DM 15 micro-creators (2K-10K) + 5 established (50K+)]
+Creator Records Reel with Turnout Page
+  ↓ [creator shares Turnout value prop + link to specific venue page]
+Reel Gets 16K-100K+ reach
+  ↓ [Reels get 1.36x more reach; micro-creators = niche audiences]
+Viewers Click Page
+  ↓ [10-15% click rate from Reel → page visit]
+Visitors → Bookings → Attribution
+  ↓ [venue owner sees: "20 visitors from creator [name]"]
+Creator Proof Dashboard
+  ↓ [creator sees: "I drove 15 bookings, earned Rs [payout]"]
+Creator Repeat: Shares Next Venue
+  ↓ [creator now willing to share multiple Turnout venues]
+Creator Network Effect
+  ↓ [15 creators × 4-6 venues each = 60-90 organic creator shares]
+</div>
+
+<h4>Loop 4: WhatsApp Viral Loop (Group Booking)</h4>
+
+<div class="code-list">
+Consumer Lands on Page
+  ↓ [friend shared the page]
+Consumer Hesitates: Group Coordination Problem
+  ↓ [e.g., "I want to go but only if I can split cost + bring my friends"]
+WA Group Split-Pay Flow
+  ↓ [concierge creates group link, invites 3 friends]
+Friends Click Link → See Page
+  ↓ [3 friends now see page in WA context]
+Friends Confirm Participation → Payment Shared
+  ↓ [4 people book as a group, cost split evenly]
+Group Books Together
+  ↓ [all 4 arrive together, venue gets 4-person party from 1 page]
+Viral: Each Member Becomes Discoverer
+  ↓ [each of 4 people becomes potential referrer to their friend group]
+</div>
+
+<h4>Loop 5: Owner Proof Loop (Merchant Flywheel)</h4>
+
+<div class="code-list">
+Venue Owns Their Page
+  ↓ [page is fully customizable, venue controls messaging]
+Weekly Summary Report
+  ↓ [concierge sends: "This week: 25 page visits, 5 bookings, $500 attributed revenue"]
+Owner Shares Success Internally
+  ↓ [owner shows report to staff, marketing manager, investor]
+Owner Shares Success Externally
+  ↓ [owner posts on IG: "25 people found us through [platform]"]
+Peer Venue Sees Proof
+  ↓ [competitor venue owner sees proof, asks owner about platform]
+Word-of-Mouth Referral
+  ↓ [owner refers competitor to Turnout]
+Network Effect Across City
+  ↓ [referrals → exponential growth within venue ecosystem]
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     5. 3-WAVE GTM STRATEGY
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="gtm-waves">5. Three-Wave Go-to-Market Strategy</h2>
+<div class="section-intro">Phased city entry with deep vertical penetration. Proof → scale → repeat.</div>
+
+<h3 id="wave1-plan">Wave 1 (Days 1-60): Delhi NCR, Bangalore, Mumbai</h3>
+
+<div class="grid-2">
+    <div class="grid-item">
+        <h4>Delhi NCR (Target: 15-20 venues)</h4>
+        <p><strong>Theme Focus:</strong> Sports-social (2-3 pickleball courts, 2-3 run clubs), Brunch/Cafe (4-5), Wellness (3-4)</p>
+        <p><strong>Lead Wedge:</strong> Hauz Khas Sports Complex + Karol Bagh brunch corridor</p>
+        <p><strong>Creator Partners:</strong> ZingyZest (893K), Anubhav Sapra (1M YouTube), Shivesh Bhatia (4M)</p>
+        <p><strong>Challenge:</strong> High choice abundance; repeat utility preference (venues need to prove differentiation)</p>
+        <p><strong>Day 60 Target:</strong> 15-20 venues live, 50+ attributed bookings</p>
+    </div>
+    <div class="grid-item">
+        <h4>Bangalore (Target: 18-22 venues)</h4>
+        <p><strong>Theme Focus:</strong> Microbreweries (4-5), Creator culture (3-4), Sports-social (3-4), Brunch/Cafe (4-5)</p>
+        <p><strong>Lead Wedge:</strong> Koramangala (highest density), Indiranagar (creator/startup hub)</p>
+        <p><strong>Creator Partners:</strong> Bangalore Nightlife Guide (32K), BangalorePicure (205K)</p>
+        <p><strong>Opportunity:</strong> 70+ microbreweries in city; strong community loops; creator culture</p>
+        <p><strong>Day 60 Target:</strong> 18-22 venues live, 60+ attributed bookings</p>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="grid-item">
+        <h4>Mumbai (Target: 15-18 venues)</h4>
+        <p><strong>Theme Focus:</strong> Nightlife/Events (3-4), Brunch/Cafe (3-4), Interactive Dining (3-4), Fitness (2-3)</p>
+        <p><strong>Lead Wedge:</strong> Bandra (lifestyle identity), Fort (business brunch)</p>
+        <p><strong>Creator Partners:</strong> DJ ALEX (113K), Delhi Clubs (116K, but has Mumbai audience)</p>
+        <p><strong>Unique Angle:</strong> Daylight social rituals strong; nightlife + brunch combo venues</p>
+        <p><strong>Day 60 Target:</strong> 15-18 venues live, 50+ attributed bookings</p>
+    </div>
+    <div class="grid-item">
+        <h4>Wave 1 Consolidated Targets</h4>
+        <p><strong>Total Wave 1 Venues:</strong> 50-75 (stretch)</p>
+        <p><strong>Total Wave 1 Pages Live:</strong> 45+ (90%+ approval rate)</p>
+        <p><strong>Total Wave 1 Attributed Bookings:</strong> 200+ (4-5 per venue)</p>
+        <p><strong>Creator Partnerships:</strong> 15-20 across Wave 1</p>
+        <p><strong>Proof Metric:</strong> Attribution accuracy ≥80%, no-show rate ≤30%</p>
+    </div>
+</div>
+
+<h3>Wave 2 (Days 61-120): Pune, Hyderabad, Chennai</h3>
+
+<p><strong>Gates to unlock Wave 2:</strong></p>
+<ul>
+    <li>Wave 1 produces ≥150 attributed bookings with ≥75% attribution confidence</li>
+    <li>Wave 1 venues achieve ≥70% repeat booking rate (venue owner sees proof of LTV)</li>
+    <li>Free-to-paid conversion demonstrated on Wave 1 (3-5 venues convert to Growth tier)</li>
+    <li>Creator network produces ≥20% of secondary activation volume</li>
+</ul>
+
+<p><strong>Wave 2 Targets:</strong> 30-40 venues per city, faster activation (14-day cycle vs 15-day). Estimated cumulative: 120-150 venues by Day 120.</p>
+
+<h3>Wave 3 (Days 121+): Selective Entry — Kolkata, Goa, Jaipur</h3>
+
+<p>Based on proof from Waves 1-2 and category fit (Goa = wellness destination; Kolkata = adda culture). Not required for beta success but options for expansion.</p>
+
+<!-- ══════════════════════════════════════════════════════════════
+     6. COMMERCIAL PACKAGING FOR BETA
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="commercial-packaging">6. Commercial Packaging for Beta</h2>
+<div class="section-intro">Pricing, packaging, and monetization strategy for 0-60 day launch window.</div>
+
+<h3 id="pricing-strategy">Pricing for Beta</h3>
+
+<div class="metric-box">
+    <h4>Free Tier (Days 0-60: Entire Wave 1)</h4>
+    <ul>
+        <li><strong>What's Included:</strong> Unlimited page generation + editing, 10 WA conversations/month, basic analytics (visits, CTR, conversions), concierge support for first 3 bookings</li>
+        <li><strong>Rationale:</strong> Proof gathering. First 50-75 venues are reference customers. Goal: attribution accuracy ≥80%, no-show rate ≤30%.</li>
+        <li><strong>Retention Hook:</strong> After 3rd booking, owner sees proof dashboard: "You got 15 page visits, 3 bookings, 2 walk-ins. Revenue attributed: Rs X." This proof is the conversion engine.</li>
+    </ul>
+</div>
+
+<div class="metric-box">
+    <h4>Growth Tier (Introduced Day 61, Wave 2)</h4>
+    <ul>
+        <li><strong>Pricing:</strong> Rs 3,000-5,000/month (aim: 0.5-1% of venue monthly revenue)</li>
+        <li><strong>What's Included:</strong>
+            <ul>
+                <li>Unlimited pages + campaigns (multiple page variants for A/B testing)</li>
+                <li>Unlimited WA conversations + full concierge (price, group coordination, trust-building)</li>
+                <li>Weekly performance dashboard + attribution reports</li>
+                <li>Creator collaboration matching (Turnout connects venue with 2-3 relevant creators/month)</li>
+                <li>Monthly strategy call with Turnout team</li>
+            </ul>
+        </li>
+        <li><strong>Target Conversion:</strong> 10-15% of free users (vs 3-5% industry). Conversion drivers: attribution proof, creator partnerships, operational time-saving.</li>
+    </ul>
+</div>
+
+<div class="metric-box">
+    <h4>Premium Tier (Future, Post-Beta)</h4>
+    <ul>
+        <li><strong>Pricing:</strong> Rs 10,000-15,000/month</li>
+        <li><strong>For:</strong> Multi-location venues, high-volume operations, API access, custom integrations</li>
+    </ul>
+</div>
+
+<p><strong>Beta Revenue Model (60 Days):</strong> $0 expected. Investment in proof gathering. By Day 120, target: 5-10 venues on Growth tier = Rs 15,000-50,000 MRR.</p>
+
+<!-- ══════════════════════════════════════════════════════════════
+     7. VALIDATION TRACKER
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="validation-tracker">7. Core Assumptions & Validation Tracker</h2>
+<div class="section-intro">52 assumptions across 11 categories. These must be validated or corrected before content sprint begins (Ground Zero: Days 0-1).</div>
+
+<h3>P0 Assumptions (Must Validate by Day 1)</h3>
+
+<div class="metric-box">
+    <h4 style="color: #e74c3c;">Funnel Assumptions</h4>
+    <table>
+        <tr>
+            <th>Assumption</th>
+            <th>Source</th>
+            <th>How to Validate</th>
+            <th>Success Criterion</th>
+        </tr>
+        <tr>
+            <td>5% impression-to-profile CTR on IG Reels (&lt;5K followers)</td>
+            <td>Growth Stack</td>
+            <td>IG analytics from first 5-10 posts; SocialInsider benchmarks</td>
+            <td>≥4% observed CTR</td>
+        </tr>
+        <tr>
+            <td>25% profile-visit-to-follow rate</td>
+            <td>Growth Stack</td>
+            <td>Audit 3-5 micro-creator accounts (similar niche)</td>
+            <td>≥20% observed rate</td>
+        </tr>
+        <tr>
+            <td>10% follow-to-action rate (WA/DM click)</td>
+            <td>Growth Stack</td>
+            <td>InfluenceFlow benchmarks; pilot with 3 creators</td>
+            <td>≥8% observed</td>
+        </tr>
+        <tr>
+            <td>30% action-to-demo conversion</td>
+            <td>Growth Stack</td>
+            <td>Sendwo/Quantique WA benchmarks</td>
+            <td>≥25% observed</td>
+        </tr>
+        <tr>
+            <td>33% demo-to-activation</td>
+            <td>PLG benchmarks</td>
+            <td>Canva/Figma free-to-paid; first pilot test</td>
+            <td>≥25% observed on Cold Start Day 7</td>
+        </tr>
+        <tr>
+            <td>Full-funnel conversion A = 0.012%</td>
+            <td>Derived</td>
+            <td>Validate each stage independently; multiply</td>
+            <td>Derived from above; revise if stages differ</td>
+        </tr>
+    </table>
+</div>
+
+<div class="metric-box">
+    <h4 style="color: #e74c3c;">ICP Pain Assumptions</h4>
+    <table>
+        <tr>
+            <th>Assumption</th>
+            <th>Validation Method</th>
+            <th>Target Sample</th>
+        </tr>
+        <tr>
+            <td>Venue owners spend Rs 2-5L/year on Zomato with zero owned channel</td>
+            <td>Direct venue owner calls (ask: "What % of your revenue is on Zomato? What's your acquisition mix?")</td>
+            <td>3-5 BLR venue owners</td>
+        </tr>
+        <tr>
+            <td>Zomato takes 20-25% commission</td>
+            <td>Venue owner direct statements; Zomato rate-card research</td>
+            <td>Every venue contacted</td>
+        </tr>
+        <tr>
+            <td>Venues have zero first-party consumer data</td>
+            <td>Ask: "Do you have a CRM? Email list? WhatsApp broadcast group?"</td>
+            <td>Every venue call</td>
+        </tr>
+        <tr>
+            <td>Creators earn Rs 15K-30K/month, no offline-to-revenue bridge exists</td>
+            <td>DM 20 micro-creators: "How much do you earn per reel? From what sources?"</td>
+            <td>20 micro-creator DMs</td>
+        </tr>
+    </table>
+</div>
+
+<div class="metric-box">
+    <h4 style="color: #e74c3c;">Product Assumptions</h4>
+    <table>
+        <tr>
+            <th>Assumption</th>
+            <th>Validation Method</th>
+            <th>Success Criterion</th>
+        </tr>
+        <tr>
+            <td>Free AI landing page in &lt;60 seconds creates "magic" perception</td>
+            <td>Build prototype; show to 3 venue owners. Ask: "Would you activate this?"</td>
+            <td>≥2/3 say "yes, I'd try it"</td>
+        </tr>
+        <tr>
+            <td>IG handle input alone sufficient for meaningful page generation</td>
+            <td>Test IG scraping feasibility on 10 venue handles</td>
+            <td>≥7/10 produce pages with ≥15 photos + meaningful metadata</td>
+        </tr>
+        <tr>
+            <td>WA concierge preferred over app/dashboard by venue owners</td>
+            <td>Ask every venue owner: "Would you prefer WhatsApp or an app?"</td>
+            <td>≥70% prefer WA</td>
+        </tr>
+        <tr>
+            <td>3 booking primitives cover 90%+ of venue types</td>
+            <td>Map 20+ venue booking flows; identify uncovered cases</td>
+            <td>≤2 venue types require custom primitive</td>
+        </tr>
+    </table>
+</div>
+
+<h3>P1 Assumptions (Validate by Day 3-7)</h3>
+
+<p>50% of venues spend ≥Rs 2L/year on Zomato | K-factor for venue referrals ≥0.4 | Day-parting is real (weekday brunch, early runs growing) | No competitor offers AI-generated venue landing page + WA concierge | 72% of Gen Z book within 48 hours of discovery</p>
+
+<!-- ══════════════════════════════════════════════════════════════
+     8. SUCCESS GATES & METRICS
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="success-gates">8. Beta Success Gates & Metrics</h2>
+<div class="section-intro">What constitutes beta success. Gates must pass to unlock next wave or continue execution.</div>
+
+<h3 id="success-metrics">Success Metrics by Category</h3>
+
+<div class="metric-box">
+    <h4>Gate 1: Market Validation (Days 0-1)</h4>
+    <ul style="list-style: none; padding: 0;">
+        <li><span class="badge badge-p0">P0</span> <strong>≥3 venue owners confirm aggregator pain:</strong> Zomato spend 2-5L/yr, no owned channel, data loss frustration</li>
+        <li><span class="badge badge-p0">P0</span> <strong>≥5 creator DM responses:</strong> Proves creator channel viability for distribution</li>
+        <li><span class="badge badge-p0">P0</span> <strong>≥2 venue owners pre-commit to onboarding:</strong> Willingness to activate</li>
+        <li><span class="badge badge-p1">P1</span> <strong>K-factor ≥0.4:</strong> Each of first 3 venues refers ≥2 others</li>
+    </ul>
+</div>
+
+<div class="metric-box">
+    <h4>Gate 2: Product Viability (Days 7-14)</h4>
+    <ul style="list-style: none; padding: 0;">
+        <li><span class="badge badge-p0">P0</span> <strong>Time-to-live &lt;2 hours:</strong> From onboarding to page live</li>
+        <li><span class="badge badge-p0">P0</span> <strong>Page approval rate ≥80%:</strong> First variant approved or minor revision only</li>
+        <li><span class="badge badge-p0">P0</span> <strong>≥5 attributed bookings from First 10 venues:</strong> Page → WA → confirmed booking</li>
+        <li><span class="badge badge-p1">P1</span> <strong>Attribution accuracy ≥75%:</strong> Can trace booking back to specific source (page, creator, owner share)</li>
+    </ul>
+</div>
+
+<div class="metric-box">
+    <h4>Gate 3: Growth Velocity (Days 15-30)</h4>
+    <ul style="list-style: none; padding: 0;">
+        <li><span class="badge badge-p0">P0</span> <strong>30 venues onboarded:</strong> Pace: 2/day sustained</li>
+        <li><span class="badge badge-p0">P0</span> <strong>100+ attributed bookings:</strong> 3-4 per venue average</li>
+        <li><span class="badge badge-p0">P0</span> <strong>5%+ secondary activation rate:</strong> Friend of booker → independent booker</li>
+        <li><span class="badge badge-p1">P1</span> <strong>Venue retention ≥85%:</strong> ≥85% of onboarded venues stay active after 7 days</li>
+    </ul>
+</div>
+
+<div class="metric-box">
+    <h4>Gate 4: 60-Day Beta Success (Days 45-60)</h4>
+    <ul style="list-style: none; padding: 0;">
+        <li><span class="badge badge-p0">P0</span> <strong>50-75 venues live:</strong> Final tally for Wave 1</li>
+        <li><span class="badge badge-p0">P0</span> <strong>200+ attributed bookings:</strong> 4-5 per venue, traceable to page</li>
+        <li><span class="badge badge-p0">P0</span> <strong>15%+ page-to-WA conversion:</strong> Page visit → WA inquiry</li>
+        <li><span class="badge badge-p0">P0</span> <strong>90%+ WA-to-confirmation:</strong> WA handoff → booking confirmed</li>
+        <li><span class="badge badge-p1">P1</span> <strong>3-5 venues actively on Growth tier or pre-committing:</strong> Proof of willingness to pay</li>
+        <li><span class="badge badge-p1">P1</span> <strong>Creator partnerships: 15-20 total:</strong> Measurable attribution from creator shares</li>
+        <li><span class="badge badge-p1">P1</span> <strong>Unit Economics: CAC $0 (proof), LTV $5-15K+ (Year 1 estimate):</strong> Path to profitability visible</li>
+    </ul>
+</div>
+
+<h3>Metrics Dashboard (Real-Time Tracking)</h3>
+
+<table>
+    <tr>
+        <th>Metric</th>
+        <th>Day 7</th>
+        <th>Day 14</th>
+        <th>Day 30</th>
+        <th>Day 60</th>
+        <th>Measurement Method</th>
+    </tr>
+    <tr>
+        <td><strong>Venues Onboarded</strong></td>
+        <td>10</td>
+        <td>20</td>
+        <td>35</td>
+        <td>50-75</td>
+        <td>Database count</td>
+    </tr>
+    <tr>
+        <td><strong>Pages Live</strong></td>
+        <td>9</td>
+        <td>18</td>
+        <td>32</td>
+        <td>45+</td>
+        <td>Live page count (90%+ approval rate)</td>
+    </tr>
+    <tr>
+        <td><strong>Time-to-Live (Avg)</strong></td>
+        <td>&lt;2h</td>
+        <td>&lt;1.5h</td>
+        <td>&lt;1h</td>
+        <td>&lt;45min</td>
+        <td>Log timestamps</td>
+    </tr>
+    <tr>
+        <td><strong>Page Visits</strong></td>
+        <td>300-500</td>
+        <td>800-1200</td>
+        <td>1500-2000</td>
+        <td>2000+</td>
+        <td>Analytics (GTM/Segment)</td>
+    </tr>
+    <tr>
+        <td><strong>WA Handoffs</strong></td>
+        <td>50-80</td>
+        <td>120-180</td>
+        <td>250-350</td>
+        <td>300+</td>
+        <td>WA event tracking</td>
+    </tr>
+    <tr>
+        <td><strong>Attributed Bookings</strong></td>
+        <td>30-50</td>
+        <td>100+</td>
+        <td>150+</td>
+        <td>200+</td>
+        <td>DB booking records with source</td>
+    </tr>
+    <tr>
+        <td><strong>Show-Ups (Verified)</strong></td>
+        <td>20-30</td>
+        <td>60-80</td>
+        <td>100+</td>
+        <td>140+</td>
+        <td>Venue checkin + photo proof</td>
+    </tr>
+    <tr>
+        <td><strong>Secondary Activations</strong></td>
+        <td>5-10</td>
+        <td>15-25</td>
+        <td>40-60</td>
+        <td>60-90</td>
+        <td>Tracking links on share cards</td>
+    </tr>
+    <tr>
+        <td><strong>Creator Partnerships</strong></td>
+        <td>2-3</td>
+        <td>5-8</td>
+        <td>12-15</td>
+        <td>15-20</td>
+        <td>Reel partnership count</td>
+    </tr>
+    <tr>
+        <td><strong>Creator-Driven Bookings</strong></td>
+        <td>5-8</td>
+        <td>20-30</td>
+        <td>50-80</td>
+        <td>80-120</td>
+        <td>Attribution tracking on Reels</td>
+    </tr>
+</table>
+
+<!-- ══════════════════════════════════════════════════════════════
+     9. BLITZKRIEG CALENDAR
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="blitzkrieg-calendar">9. 17-Day Blitzkrieg Execution Calendar (Ground Zero + Content Sprint)</h2>
+<div class="section-intro">Day-by-day plan for Days 0-16. Every task is assigned. NSM targets are clear. Validation gates are baked in.</div>
+
+<h3 id="daily-milestones">Critical Milestones</h3>
+
+<div class="timeline">
+    <div class="timeline-item">
+        <div class="label">Day 0 (Sun, Mar 30): Ground Zero Validation</div>
+        <p><strong>Sudipta (8 hrs):</strong> Call 4-5 venue owners (BLR, DEL, fitness, experience). Validate pain, pricing, willingness to activate. Synthesize findings by EOD.</p>
+        <p><strong>Nikita (8 hrs):</strong> DM 50 creators + venue handles. Gauge creator interest + venue IG scrape feasibility. Compile responses by 6pm.</p>
+        <p><strong>Gate:</strong> ≥3 venue owners confirm pain. ≥5 creator responses.</p>
+    </div>
+
+    <div class="timeline-item">
+        <div class="label">Day 1 (Mon, Mar 31): Sharpen + Launch Content</div>
+        <p><strong>Sudipta (6 hrs):</strong> Morning huddle. Adjust targets based on Day 0 learnings. Finalize First 10 venue list. Kick off onboarding calls (3-4 venues).</p>
+        <p><strong>Nikita (8 hrs):</strong> Publish first 3 IG posts (carousel, testimonial, metrics). Record Reels with 2-3 micro-creators. Draft creator partnership terms.</p>
+        <p><strong>Gate:</strong> First 3 posts live. First 3 venues onboarded.</p>
+    </div>
+
+    <div class="timeline-item">
+        <div class="label">Days 2-4: Velocity Building</div>
+        <p><strong>Daily Sudipta (4 hrs):</strong> Onboarding 2-3 venues/day. Page approval. Content shoot for OG venues. Daily checkin on WA friction.</p>
+        <p><strong>Daily Nikita (6 hrs):</strong> Publish 1 post/day. Launch 2 creator Reel collabs/day. Monitor IG analytics. Adjust messaging based on engagement.</p>
+        <p><strong>Target:</strong> 10 venues live by end of Day 4. 30K+ IG reach accumulated.</p>
+    </div>
+
+    <div class="timeline-item">
+        <div class="label">Days 5-7: Attribution Gathering</div>
+        <p><strong>Daily Sudipta (3 hrs):</strong> Daily venue checkins. Gather booking attributions. Troubleshoot WA friction. Document proof metrics.</p>
+        <p><strong>Daily Nikita (6 hrs):</strong> Continue content cadence. Launch creator collabs. Monitor creator Reel performance.</p>
+        <p><strong>Target:</strong> 30-50 attributed bookings from First 10. Attribution confidence ≥75%.</p>
+    </div>
+
+    <div class="timeline-item">
+        <div class="label">Days 8-11: Second Cohort + Proof Package</div>
+        <p><strong>Sudipta (4 hrs):</strong> Onboard Second 10 venues (venue referrals + pre-order queue). Compile proof package (screenshots, metrics, testimonials).</p>
+        <p><strong>Nikita (6 hrs):</strong> Publish proof package on IG (50% of posts now focus on proof: "Venue X got Y bookings"). Creator collabs continue.</p>
+        <p><strong>Target:</strong> 20 venues live. Proof package becomes conversion engine for next cohorts.</p>
+    </div>
+
+    <div class="timeline-item">
+        <div class="label">Days 12-16: Standardization + Wave 2 Prep</div>
+        <p><strong>Sudipta (3 hrs):</strong> Onboard Third 10 venues (faster, async). Document standardized playbook (what works, what doesn't). Prepare Wave 2 city targets.</p>
+        <p><strong>Nikita (5 hrs):</strong> Content focused on standardized proof. Creator network expansion (25+ creators by Day 16).</p>
+        <p><strong>Target:</strong> 30 venues live by Day 16. 100+ attributed bookings. Creator network producing 10-15% of volume.</p>
+    </div>
+
+    <div class="timeline-item">
+        <div class="label">Day 17+: Wave 2 Launch Readiness</div>
+        <p><strong>Handoff:</strong> Blitzkrieg playbook documented. First 30 venues producing proof (screenshots, testimonials, metrics). Creator network active. Pricing model validated with 3-5 early beta testers.</p>
+        <p><strong>Wave 2 Gates:</strong> ≥100 attributed bookings. ≥80% attribution accuracy. ≥70% venue retention after 7 days.</p>
+    </div>
+</div>
+
+<p><strong>Owner Responsibilities:</strong></p>
+<ul>
+    <li><strong>Nikita (Content + Creator):</strong> 8-10 hrs/day. IG posts, Reel partnerships, creator outreach, analytics monitoring. Success metric: 5K+ followers + 25+ creator partnerships by Day 16.</li>
+    <li><strong>Sudipta (Venue + Product):</strong> 5-7 hrs/day. Venue onboarding, page approval, WA friction resolution, attribution validation. Success metric: 30 venues live, 100+ bookings, playbook documented.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════════════════════════
+     10. RISK REGISTER & GUARDRAILS
+     ══════════════════════════════════════════════════════════════ -->
+
+<h2 id="risk-register">10. Risk Register & Mitigation</h2>
+<div class="section-intro">What can go wrong and how we prevent it.</div>
+
+<div class="risk-item">
+    <h4>Risk 1: Qualification Engine Doesn't Filter Properly</h4>
+    <p><strong>Impact:</strong> Onboard low-quality venues (bad photos, no pricing, low engagement). They activate but produce zero bookings. Waste time, no proof.</p>
+    <p><strong>Mitigation:</strong> Validate threshold (≥55 for launch) on first 5-10 venue applications. If threshold wrong, recalibrate before mass onboarding.</p>
+    <p><strong>Trigger:</strong> If ≥30% of venues produce &lt;1 page visit in first 3 days, pause and recalibrate.</p>
+</div>
+
+<div class="risk-item">
+    <h4>Risk 2: Creator Partnerships Don't Convert</h4>
+    <p><strong>Impact:</strong> Creators share Turnout pages but viewers don't click. Creator reach is wasted.</p>
+    <p><strong>Mitigation:</strong> Test with 3-5 creators first. Measure Reel CTR on first 3 collaborations. If &lt;3%, revise messaging/CTA before scaling to 15+.</p>
+    <p><strong>Trigger:</strong> Pause creator outreach if first 5 Reels average &lt;5% CTR. Diagnosis phase: test different CTAs, landing page copy.</p>
+</div>
+
+<div class="risk-item">
+    <h4>Risk 3: WA Concierge Bottleneck</h4>
+    <p><strong>Impact:</strong> WA inquiries spike but concierge response time increases to &gt;2 hrs. Conversion drops. Venue owners get frustrated.</p>
+    <p><strong>Mitigation:</strong> Set up chatbot escalation (80% of questions answerable by template bot; 20% routed to human). Daily concierge schedule: 10am-6pm coverage.</p>
+    <p><strong>Trigger:</strong> If &gt;20% of WA threads have &gt;2hr first-response time, activate second concierge operator.</p>
+</div>
+
+<div class="risk-item">
+    <h4>Risk 4: No-Show Rate &gt;40%</h4>
+    <p><strong>Impact:</strong> Bookings confirm but customers don't show up. Venue owner sees: "5 bookings, 2 show-ups." Trust in platform breaks.</p>
+    <p><strong>Mitigation:</strong> Add reminder + incentive layer. 24h before booking: auto-send WA reminder + offer (e.g., free drink). Test on first 20 bookings.</p>
+    <p><strong>Trigger:</strong> If show-up rate &lt;60% by Day 14, activate reminder + incentive.</p>
+</div>
+
+<div class="risk-item">
+    <h4>Risk 5: Attribution Confidence &lt;70%</h4>
+    <p><strong>Impact:</strong> Venue owner sees bookings but doubts attribution. Can't trace which page/creator/share caused which booking. Loses proof value.</p>
+    <p><strong>Mitigation:</strong> Implement multi-layer tracking: UTM params on all links, WA source tracking, survey at concierge (ask: "How did you find us?"), page analytics.</p>
+    <p><strong>Trigger:</strong> If reconciliation between page analytics + booking source shows &gt;30% discrepancy by Day 7, investigate tracking implementation.</p>
+</div>
+
+<div class="risk-item">
+    <h4>Risk 6: Venue Owner Activation Friction</h4>
+    <p><strong>Impact:</strong> Onboarding takes &gt;2 hours instead of &lt;60 mins. Owner gives up. Page never goes live.</p>
+    <p><strong>Mitigation:</strong> Async approval flow by Day 3. Owner approves via 1-min Loom video + auto-generate page from IG + website (no manual input).</p>
+    <p><strong>Trigger:</strong> If &gt;20% of venues haven't approved pages by Day 2 after onboarding, shift to async flow.</p>
+</div>
+
+<h2 id="guardrails">Strategic Guardrails</h2>
+
+<div class="critical-box">
+    <h4>Do Not Ship If:</h4>
+    <ul>
+        <li>Page generation fails on ≥30% of venue IG handles (technical risk)</li>
+        <li>Attribution accuracy &lt;60% by Day 14 (proof risk)</li>
+        <li>Venue approval rate &lt;70% on first variant (UX risk)</li>
+        <li>WA infrastructure fails for &gt;1 hour (concierge downtime)</li>
+    </ul>
+</div>
+
+<div class="critical-box">
+    <h4>Pause Expansion If:</h4>
+    <ul>
+        <li>K-factor drops below 0.2 (referral loop broken)</li>
+        <li>Venue retention &lt;75% after 7 days (product doesn't hold)</li>
+        <li>No-show rate &gt;50% (proof confidence breaks)</li>
+        <li>Free-to-paid conversion &lt;5% by Day 60 (monetization signal weak)</li>
+    </ul>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════════════════ -->
+
+<div class="footer">
+    <p><strong>Document Status:</strong> Final | March 30, 2026 | v4.0</p>
+    <p><strong>Supercedes:</strong> Turnout Growth Stack v2 (2,612 lines) | Turnout Blitzkrieg Calendar v2 (Excel) | Turnout PRD v3 (Sections 10-13)</p>
+    <p><strong>Consolidation Source:</strong> Algorithm UX Contract v1 | PRD v3 Sections 10-13 | Growth Stack v2 | Blitzkrieg Calendar v2 Validation Tracker</p>
+    <p><strong>Next Milestone:</strong> Day 1 (Mar 31) — First venue onboarding + first IG posts live. Day 7 — First 10 venues, 30-50 attributed bookings. Day 17 — 30 venues, 100+ bookings, Wave 2 readiness.</p>
+    <p><strong>Owner Reviewers:</strong> Nikita (Content + Creator Growth), Sudipta (Venue + Product Validation)</p>
+    <p style="margin-top: 2rem; color: #666;"><em>This document is the execution blueprint. It supersedes all prior growth planning documents. Every section is actionable; every number is a target. Ground Zero begins in 72 hours.</em></p>
+</div>
+
+</div>
+
+</body>
+</html>
